@@ -1,5 +1,5 @@
 # iction
-World of warcraf warlock timer.
+World of warcraft warlock timer.
 
 Alpha stages testing pre options build / release
 

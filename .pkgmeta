@@ -1,0 +1,4 @@
+externals:
+    libs/LibStub:
+        url: svn://svn.wowace.com/wow/libsharedmedia-3-0/mainline/trunk
+        tag: latest

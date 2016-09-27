@@ -10,6 +10,7 @@ __pycache__/
 .Python
 .idea
 .!archive
+.Libs
 env/
 build/
 develop-eggs/
