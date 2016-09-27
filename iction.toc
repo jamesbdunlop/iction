@@ -1,0 +1,18 @@
+﻿## Interface: 70000
+## Title: iction
+## Version: 1.00
+## Author: Macky kaz`goroth
+## Notes: MOAR DOTS!
+
+#@no-lib-strip@
+Libs\LibSharedMedia-3.0\lib.xml
+#@end-no-lib-strip@
+
+ict_core.lua
+ict_utils.lua
+ict_buttonLib.lua
+ict_button.lua
+ict_timers.lua
+ict_spellFrame.lua
+ict_target.lua
+iction.lua
