@@ -8,14 +8,14 @@ iction.ictionMF:SetMovable(true)
 iction.ictionMF:EnableMouse(false)
 iction.ictionMF:SetUserPlaced(true);
 
---- Player cast bar location if this was to be released this would need a clean way to move it and set position
---print("iction.setCastBar: ".. iction.setCastBar)
---if iction.setCastBar then
---    CastingBarFrame:ClearAllPoints()
---    CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
---    CastingBarFrame.SetPoint = function() end
---    CastingBarFrame:SetScale(iction.cbScale)
---end
+-- Player cast bar location if this was to be released this would need a clean way to move it and set position
+print("iction.setCastBar: ".. tostring(iction.setCastBar))
+if iction.setCastBar then
+    CastingBarFrame:ClearAllPoints()
+    CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
+    CastingBarFrame.SetPoint = function() end
+    CastingBarFrame:SetScale(iction.cbScale)
+end
 ----------------------------------------------------------------------------------------------
 --- REGISTER THE ADDON ---
 local sframe = CreateFrame("Frame", 'ictionRoot')

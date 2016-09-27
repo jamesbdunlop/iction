@@ -60,7 +60,9 @@ function iction.createTargetData(guid, creatureName, spellName, spellType)
     if not iction.targetData[guid] then
         -- If the creatureGUID isn't in the table consider it a fresh target.
         if iction.debug then print("\t new target") end
-        iction.targetData[guid] = {name = creatureName, spellData = {} }
+        iction.targetData[guid] = {}
+        iction.targetData[guid]['name'] = creatureName
+        iction.targetData[guid]['spellData'] = {}
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
         iction.targetData[guid]['spellData'][spellName]['endTime'] = 0
