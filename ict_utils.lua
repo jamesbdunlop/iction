@@ -58,10 +58,10 @@ end
 --- BUTTON UTILS -----------------------------------------------------------------------------
 function iction.setButtonState(active, hidden, button)
     if button ~= nil then
-        if active == true then
+        if active then
             button:SetBackdropColor(1, 1, 1, 1)
             button.texture:SetVertexColor(0.9,0.9,0.9, .9)
-        elseif hidden == true then
+        elseif hidden then
             button:SetBackdropColor(0,0,0, 0)
             button.texture:SetVertexColor(0,0,0, 0)
             button.tex:SetVertexColor(0,0,0, 0)
@@ -232,7 +232,7 @@ function iction.hideFrame(guid, isDead, spName, spType)
                 if iction.targetData[guid]['spellData'] ~= nil then
                     if next(iction.targetData[guid]['spellData']) then
                         if iction.targetData[guid]['spellData'][spName] ~= nil then
-                            iction.targetData[guid]['spellData'][spName]['endTime'] = 0
+                            iction.targetData[guid]['spellData'][spName]['endTime'] = nil -- changed from 0
                             iction.targetData[guid]['spellData'][spName]= nil
                         end
                     end

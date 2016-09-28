@@ -8,8 +8,11 @@ iction.ictionMF:SetMovable(true)
 iction.ictionMF:EnableMouse(false)
 iction.ictionMF:SetUserPlaced(true);
 
--- Player cast bar location if this was to be released this would need a clean way to move it and set position
-print("iction.setCastBar: ".. tostring(iction.setCastBar))
+----------------------------------------------------------------------------------------------
+--- CAST BAR ---
+-- Player cast bar location if this was to be released this would need a clean way to move
+-- it and set position
+if iction.debug then print("iction.setCastBar: ".. tostring(iction.setCastBar)) end
 if iction.setCastBar then
     CastingBarFrame:ClearAllPoints()
     CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
@@ -17,7 +20,7 @@ if iction.setCastBar then
     CastingBarFrame:SetScale(iction.cbScale)
 end
 ----------------------------------------------------------------------------------------------
---- REGISTER THE ADDON ---
+--- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers for intial load of addon
 sframe:RegisterEvent("PLAYER_LOGIN")
@@ -32,7 +35,8 @@ sframe:SetScript("OnEvent", function(self, event)
             iction.setMaxTargetTable()
             iction.initMainUI()
             iction.highlightFrameTexture = iction.createHighlightFrame()
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Loaded Iction UI. Use /iction to show the ui ", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Loaded Iction UI. Use /iction unlock to move ui elements ", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44valid iction args: unlock lock 666", 15, 25, 35);
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
@@ -40,10 +44,15 @@ end)
 
 ----------------------------------------------------------------------------------------------
 --- REGISTER THE SLASH COMMAND ---
-SLASH_ICTION1 = "/iction"
-SlashCmdList["ICTION"] = function()
-    iction.initMainUI()
+SLASH_ICTION1  = "/iction"
+local function ictionArgs(arg, editbox)
+    if not arg then iction.initMainUI()
+    elseif arg == 'unlock' then iction.unlockUIElements()
+    elseif arg == '666' then print ('tsitlucco')
+    end
 end
+SlashCmdList["ICTION"] = ictionArgs
+
 
 ----------------------------------------------------------------------------------------------
 --- BEGIN UI NOW ---
@@ -74,7 +83,7 @@ function iction.initMainUI()
     local anch = iction.colAnchor:CreateTexture(nil, "MEDIUM")
           anch:SetAllPoints(true)
           anch:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-          anch:SetVertexColor(.5, 1, .5, 0)
+          anch:SetVertexColor(.5, 1, .5, 1)
     iction.colAnchor.texture = anch
     iction.colAnchor:SetPoint("BOTTOM", iction.ictionMF, 0, iction.ictionSpellAnchorOffset)
     iction.colAnchor:SetWidth(64)
@@ -255,7 +264,7 @@ function iction.createArtifactFrame()
 
         local function _onUpdate()
             local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", artifact['name'])
-            local charges, maxCharges, start, duration = GetSpellCharges(artifact['name'])
+            local charges, _, _, _ = GetSpellCharges(artifact['name'])
             if count == nil and charges == nil then
                 iction.setButtonText(0, true, fnt)
             elseif count then
@@ -314,14 +323,8 @@ function iction.ictionFrameWatcher()
             --if iction.debug then print("\t sourceGUID: " .. tostring(sourceGUID)) end
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
-                    if eventName == "SPELL_DAMAGE" then
-                        --iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
-                        -- create a channeled spell bar here for 5 seconds the dur of the spell
-                        -- get the button to show the cool down for felfire instead
-                    end
                     if eventName == "SPELL_ENERGIZE" or eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" or eventName == "SPELL_AURA_DOSE" then
                         -- Add Target
-                        --if not iction.colGUIDExists(prefix2) == true then
                         if iction.debug then print("\t CAST INFO: ") end
                         if iction.debug then print("\t prefix2: " .. tostring(prefix2)) end
                         if iction.debug then print("\t prefix3: " .. tostring(prefix3)) end
@@ -337,7 +340,6 @@ function iction.ictionFrameWatcher()
                         elseif sufx6 == 'BUFF' then
                             iction.createTarget(prefix2, prefix3, sufx4, sufx6)
                         end
-                        --end
                     elseif eventName == "SPELL_AURA_REMOVED" then
                         -- Set frame accordingly
                         iction.hideFrame(prefix2, false, sufx4, sufx6)
@@ -365,3 +367,7 @@ function iction.ictionFrameWatcher()
     iction.ictionMF:SetScript("OnUpdate", _onUpdate)
     iction.ictionMF:UnregisterEvent("ADDON_LOADED")
 end
+
+function iction.unlockUIElements()
+    local elements = {'IctionMainWindow'}
+    end

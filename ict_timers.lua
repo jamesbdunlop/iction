@@ -6,13 +6,13 @@ function iction.updateTimers()
     if iction.targetData ~= nil then
         for guid, data in pairs(iction.targetData) do
             if data['spellData'] ~= nil then
-                local creatureName = data['name']
+                --local creatureName = data['name']
                 local isDead = data['dead']
                 local spells = data['spellData']
                 if not isDead then
                     for spellName, spellData in pairs(spells) do
                         local endTime = spellData['endTime']
-                        if endTime then
+                        if endTime ~= nil then
                             if endTime < GetTime() or endTime == GetTime() then
                                 if iction.targetButtons[guid] then -- fucking target dummies
                                     iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
@@ -35,7 +35,7 @@ function iction.updateTimers()
                     end
                 else
                     for spellName, _ in pairs(spells) do
-                        iction.targetData[guid]['spellData'][spellName]['endTime'] = 0
+                        iction.targetData[guid]['spellData'][spellName]['endTime'] = nil -- changed from 0
                     end
                 end
             end

@@ -4,7 +4,7 @@ externals:
         tag: latest
 
 ignore:
-    - .idea # ignore pycharm idea folder
+    - .idea
     - !archive
 
 package-as: iction
