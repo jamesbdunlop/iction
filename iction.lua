@@ -5,6 +5,7 @@
 -- Fix clash with Followers immolate when using Rityssn as a follower (timers see his debuff as player owned)
 -- Fix bug where directly after reload in destruction the first target doesn't appear correctly at all!
 
+--- version alpha0.0.2
 local iction = iction
 ----------------------------------------------------------------------------------------------
 --- CREATE GLOBAL MAIN FRAME ---
