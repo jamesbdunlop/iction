@@ -3,7 +3,7 @@
 -- Fix cooldown for felflame
 -- Sniff down issue with siphon life on affliction that sees it not refreshing sometimes
 -- Fix clash with Followers immolate when using Rityssn as a follower (timers see his debuff as player owned)
---
+-- Fix bug where directly after reload in destruction the first target doesn't appear correctly at all!
 
 local iction = iction
 ----------------------------------------------------------------------------------------------
