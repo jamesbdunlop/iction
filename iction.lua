@@ -4,10 +4,19 @@ local iction = iction
 --- note: IctionMainWindow is now a global accessor to this frame
 iction.ictionMF = CreateFrame("Frame", "IctionMainWindow", UIParent)
 iction.ictionMF:SetPoint("CENTER", 0, 0);
+--- Settings for mainFrame ---
 iction.ictionMF:SetMovable(true)
 iction.ictionMF:EnableMouse(false)
-iction.ictionMF:SetUserPlaced(true);
+iction.ictionMF:SetUserPlaced(true)
+iction.ictionMF:SetClampedToScreen(true)
+iction.ictionMF:SetFrameStrata("LOW")
+iction.ictionMF:SetWidth(iction.ictionMFH)
+iction.ictionMF:SetHeight(iction.ictionMFH)
 
+local bgF = iction.ictionMF:CreateTexture(nil, "ARTWORK")
+      bgF:SetAllPoints(true)
+      bgF:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+      bgF:SetVertexColor(.5, .5, .5, .1)
 ----------------------------------------------------------------------------------------------
 --- CAST BAR ---
 -- Player cast bar location if this was to be released this would need a clean way to move
@@ -22,10 +31,10 @@ end
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
 local sframe = CreateFrame("Frame", 'ictionRoot')
---- Triggers for intial load of addon
+--- Triggers attached to dummy frame for intial load of addon
 sframe:RegisterEvent("PLAYER_LOGIN")
 sframe:RegisterEvent("ADDON_LOADED")
-sframe:SetScript("OnEvent", function(self, event)
+sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "PLAYER_LOGIN" ) then
         local localizedClass, _, _ = UnitClass("Player");
         iction.playerGUID = UnitGUID("Player")
@@ -40,6 +49,14 @@ sframe:SetScript("OnEvent", function(self, event)
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
+    if( event == "ADDON_LOADED" ) and arg1 == "iction" then
+        if ictionFramePos == nil then
+            ictionFramePos = {}
+            print('Setting ictioFramePos to table now.')
+--        else
+--            ictionFramePos = {}
+        end
+    end
 end)
 
 ----------------------------------------------------------------------------------------------
@@ -47,48 +64,25 @@ end)
 SLASH_ICTION1  = "/iction"
 local function ictionArgs(arg, editbox)
     if not arg then iction.initMainUI()
-    elseif arg == 'unlock' then iction.unlockUIElements()
-    elseif arg == '666' then print ('tsitlucco')
+    elseif arg == 'unlock' then iction.unlockUIElements(true)
+    elseif arg == 'lock' then iction.unlockUIElements(false)
     end
 end
 SlashCmdList["ICTION"] = ictionArgs
-
 
 ----------------------------------------------------------------------------------------------
 --- BEGIN UI NOW ---
 function iction.initMainUI()
     --- Setup the event watcher ---
     iction.ictionFrameWatcher(iction.ictionMF)
-    --- Set up the mainFrame now ---
-    iction.ictionMF:SetMovable(true)
-    iction.ictionMF:EnableMouse(false)
-    iction.ictionMF:SetUserPlaced(true);
-    iction.ictionMF:SetResizable(true)
-    iction.ictionMF:SetClampedToScreen(true)
-    iction.ictionMF:SetFrameStrata("LOW")
-    iction.ictionMF:SetBackdropColor(0,0,0,.15);
-    iction.ictionMF:SetWidth(iction.ictionMFH)
-    iction.ictionMF:SetHeight(iction.ictionMFH)
-
+    --- Now fire off all the other build functions ---
     iction.createBottomBarArtwork()
     iction.setMTapBorder()
     iction.createShardFrame()
     iction.createConflagFrame()
     iction.createArtifactFrame()
     iction.createBuffFrame()
-
-    --- Column anchor for debuffs ---
-    iction.colAnchor = CreateFrame("Frame", "iction_colAnchor", iction.ictionMF)
-    iction.colAnchor:SetFrameStrata("BACKGROUND")
-    local anch = iction.colAnchor:CreateTexture(nil, "MEDIUM")
-          anch:SetAllPoints(true)
-          anch:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-          anch:SetVertexColor(.5, 1, .5, 1)
-    iction.colAnchor.texture = anch
-    iction.colAnchor:SetPoint("BOTTOM", iction.ictionMF, 0, iction.ictionSpellAnchorOffset)
-    iction.colAnchor:SetWidth(64)
-    iction.colAnchor:SetHeight(24)
-
+    iction.createDebuffColumns()
     --- Column anchor for Cooldowns ---
     iction.colAnchor = CreateFrame("Frame", "iction_CoolDown", iction.ictionMF)
     iction.colAnchor:SetFrameStrata("MEDIUM")
@@ -161,10 +155,46 @@ function iction.createBuffFrame()
     iction.buffFrame:EnableMouse(false)
     iction.buffFrame:SetWidth(128)
     iction.buffFrame:SetHeight(32)
-    iction.buffFrame:SetBackdropColor(0,1,0,1);
+    iction.buffFrame:SetBackdropColor(0,1,0,0);
     iction.buffFrame:SetPoint("BOTTOM", iction.ictionMF, -2, 5)
     iction.buffFrame:CreateTexture("ictionMFBackground", "ARTWORK")
     iction.buffFrame:CreateTexture("ictionMFBorder", "BACKGROUND")
+end
+
+function iction.createDebuffColumns()
+    iction.debuffColumns = {}
+    x = -(iction.bw*2 + iction.ictionMFW)
+    y = -(iction.ictionMFH/2)
+    for i = 1, 4 do
+        local frameName = "iction_col_".. i
+        local dFrame = CreateFrame("Frame", frameName, iction.ictionMF)
+              dFrame:SetAttribute('name', frameName)
+              if ictionFramePos[frameName] == nil then
+                  dFrame:ClearAllPoints()
+                  if i == 3 then x = x + iction.ictionMFW+50 end
+                  dFrame:SetPoint("CENTER", iction.ictionMF, "CENTER", x, y)
+                  ictionFramePos[frameName] = {x = x, y = y }
+                  x = x + 75
+              else
+                  dFrame:SetDontSavePosition()
+                  dFrame:ClearAllPoints()
+                  dFrame:SetPoint("CENTER", iction.ictionMF, ictionFramePos[frameName]['x'], ictionFramePos[frameName]['y'])
+              end
+              dFrame:SetMovable(true)
+              dFrame:EnableMouse(false)
+              dFrame:SetClampedToScreen(true)
+              dFrame:SetFrameStrata("BACKGROUND")
+              dFrame:SetWidth(iction.bw+5)
+              dFrame:SetHeight(iction.bh+5)
+        local bg = dFrame:CreateTexture("iction_col" .. i .. '_bg', "ARTWORK")
+              bg:SetAllPoints(true)
+              bg:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+              bg:SetVertexColor(1, 1, 1, 0.1)
+
+        dFrame.texture = bg
+        if iction.debug then print("dFrame: ".. tostring(dFrame))end
+        table.insert(iction.debuffColumns, dFrame)
+    end
 end
 
 function iction.createShardFrame()
@@ -368,6 +398,61 @@ function iction.ictionFrameWatcher()
     iction.ictionMF:UnregisterEvent("ADDON_LOADED")
 end
 
-function iction.unlockUIElements()
-    local elements = {'IctionMainWindow'}
+function iction.unlockUIElements(lock)
+    local cols = iction.debuffColumns
+    for f in list_iter(cols) do
+      iction.setMovable(f, lock)
     end
+    --iction.shardFrame
+end
+
+function iction.setMovable(f, isMovable)
+    local frameName = f:GetAttribute("name")
+    if isMovable then
+        f:SetParent(iction.ictionMF)
+        f.texture:SetVertexColor(.1, 1, .1, .7)
+        f:EnableMouse(true)
+        f:SetParent(iction.ictionMF)
+
+        ---Scripts for moving---
+        f:SetScript("OnMouseDown", function(self, button)
+          if button == "LeftButton" and not f.isMoving then
+           f:StartMoving();
+           f.isMoving = true;
+          end
+        end)
+
+        f:SetScript("OnMouseUp", function(self, button)
+          if button == "LeftButton" and f.isMoving then
+           f:StopMovingOrSizing()
+           f.isMoving = false
+           f:SetParent(iction.ictionMF)
+           local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
+           local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
+           print('0X: ' .. xOffset)
+           print('0Y: ' .. yOffset)
+           print('point: ' .. tostring(point))
+           print('relativeTo: ' .. tostring(relativeTo))
+           print('relativePoint: ' .. tostring(relativePoint))
+           print(tostring(f:GetNumPoints()))
+           ictionFramePos[frameName]['x'] = xOffset-MFxOffset
+           ictionFramePos[frameName]['y'] = yOffset-MFyOffset
+
+          end
+        end)
+    else
+        f:EnableMouse(false)
+        f:SetScript("OnMouseDown", nil)
+        f:SetScript("OnMouseUp", nil)
+        f.texture:SetVertexColor(1, 1, 1, 0)
+    end
+end
+
+function list_iter (t)
+  local i = 0
+  local n = table.getn(t)
+  return function ()
+           i = i + 1
+           if i <= n then return t[i] end
+         end
+end

@@ -85,27 +85,8 @@ end
 ----------------------------------------------------------------------------------------------
 --- TIMERS UI MANAGE DEBUFF COLUMNS UI  ---
 function iction.setMaxTargetTable()
-    local posX, posY, offset
-    if not iction.ictionHorizontal  then
-        posY = 96
-        posX = -(iction.ictionMFW/1.5)
-        if iction.ict_maxTargets == 2 then
-            offset =  (iction.ictionMFW/1.5)*2
-        else
-            offset = (iction.ictionMFW/iction.ict_maxTargets)-(iction.ictionSpellAnchorOffset/iction.ict_maxTargets) + iction.bw
-        end
-    else
-        offset = (iction.ictionMFH/iction.ict_maxTargets)-(iction.ictionSpellAnchorOffset/iction.ict_maxTargets)
-        posX = -(iction.ictionMFW/2)
-        posY = iction.ict_frameOffset
-    end
     for i=1, iction.ict_maxTargets, 1 do
-            iction.targetCols['col_'.. i] = {guid = '', colID = 'col_'.. i, active = false, posX = posX, posY = posY}
-            if not iction.ictionHorizontal  then
-                posX = posX + offset
-            else
-                posY = posY + offset
-            end
+            iction.targetCols['col_'.. i] = {guid = '', colID = 'col_'.. i, active = false}
     end
 end
 
@@ -146,7 +127,7 @@ function iction.findSlot(guid)
                 if not iction.targetCols[colID]["active"] then
                     iction.targetCols[colID]["active"] = true
                     iction.targetCols[colID]["guid"] = guid
-                    return true, colID, iction.targetCols[colID]["posX"], iction.targetCols[colID]["posY"]
+                    return true, colID
                 end
             end
         end

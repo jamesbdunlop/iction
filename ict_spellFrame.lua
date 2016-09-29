@@ -2,7 +2,7 @@
 --- CREATE TARGET SPELLS UI  ---
 function iction.createSpellFrame(creatureName, guid, bgFile)
     if iction.debug then print("Dbg: iction.createSpellFrame") end
-    local freeSlot, colID, xPos, yPos = iction.findSlot(guid)
+    local freeSlot, colID = iction.findSlot(guid)
     if iction.debug then print("\t freeSlot: " .. tostring(freeSlot)) end
     if iction.debug then print("\t colID: " .. tostring(colID)) end
 
@@ -24,14 +24,9 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
             iction.targetFrames[guid]:SetHeight(fh)
             iction.targetCols[colID]['guid'] = guid
             iction.targetCols[colID]['active'] = true
-            if not iction.ictionHorizontal then
-                iction.targetFrames[guid]:SetPoint("LEFT", "iction_colAnchor", xPos, yPos);
-                iction.targetFrames[guid]:SetPoint("CENTER", "iction_colAnchor", 0, 0);
-            else
-                iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_colAnchor", xPos, yPos);
-                iction.targetFrames[guid]:SetPoint("CENTER", "iction_colAnchor", 0, 0);
-            end
-            iction.targetFrames[guid]:SetParent("iction_colAnchor")
+            iction.targetFrames[guid]:SetPoint("CENTER", "iction_"..colID);
+            iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_"..colID);
+            iction.targetFrames[guid]:SetParent("iction_"..colID)
             return iction.targetFrames[guid]
         else
             return false
