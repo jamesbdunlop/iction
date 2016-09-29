@@ -1,3 +1,10 @@
+-- TO DO
+-- Add unending resolve
+-- Fix cooldown for felflame
+-- Sniff down issue with siphon life on affliction that sees it not refreshing sometimes
+-- Fix clash with Followers immolate when using Rityssn as a follower (timers see his debuff as player owned)
+--
+
 local iction = iction
 ----------------------------------------------------------------------------------------------
 --- CREATE GLOBAL MAIN FRAME ---
@@ -12,11 +19,12 @@ iction.ictionMF:SetClampedToScreen(true)
 iction.ictionMF:SetFrameStrata("LOW")
 iction.ictionMF:SetWidth(iction.ictionMFH)
 iction.ictionMF:SetHeight(iction.ictionMFH)
-
 local bgF = iction.ictionMF:CreateTexture(nil, "ARTWORK")
       bgF:SetAllPoints(true)
       bgF:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-      bgF:SetVertexColor(.5, .5, .5, .1)
+      bgF:SetVertexColor(.5, .5, .5, 0)
+iction.ictionMF.texture = bgF
+
 ----------------------------------------------------------------------------------------------
 --- CAST BAR ---
 -- Player cast bar location if this was to be released this would need a clean way to move
@@ -188,8 +196,8 @@ function iction.createDebuffColumns()
               dFrame:SetHeight(iction.bh+5)
         local bg = dFrame:CreateTexture("iction_col" .. i .. '_bg', "ARTWORK")
               bg:SetAllPoints(true)
-              bg:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-              bg:SetVertexColor(1, 1, 1, 0.1)
+              bg:SetTexture("Interface/AddOns/iction/media/"..i)--"Interface\\ChatFrame\\ChatFrameBackground")
+              bg:SetVertexColor(1, 1, 1, 0)
 
         dFrame.texture = bg
         if iction.debug then print("dFrame: ".. tostring(dFrame))end
@@ -268,15 +276,21 @@ function iction.createArtifactFrame()
         if iction.debug then print("Dbg: iction.createArtifactFrame") end
         if iction.debug then print("\t artifact['name']: " .. artifact['name']) end
         if iction.debug then print("\t artifact['icon']: " .. artifact['icon']) end
-        iction.artifacts = {}
         iction.artifactFrame = CreateFrame("Button", "iction_artifactFrame", iction.ictionMF)
+        iction.artifactFrame:SetAttribute('name', 'Artifact')
         iction.artifactFrame:SetFrameStrata("MEDIUM")
+        iction.artifactFrame:SetMovable(true)
         iction.artifactFrame:EnableMouse(false)
         iction.artifactFrame:SetWidth(iction.bw)
         iction.artifactFrame:SetHeight(iction.bh)
         iction.artifactFrame:SetBackdropColor(1,1,1,1);
-        iction.artifactFrame:SetPoint("BOTTOM", iction.ictionMF, 0, 10)
-        iction.artifactFrame:SetPoint("CENTER", iction.ictionMF, -75, 0)
+        if ictionFramePos['Artifact'] == nil then
+            --iction.artifactFrame:SetPoint("BOTTOM", iction.ictionMF, 0, 20)
+            iction.artifactFrame:SetPoint("CENTER", iction.ictionMF, -75, 20)
+            ictionFramePos['Artifact'] = {x = -75, y = 20}
+        else
+            iction.artifactFrame:SetPoint('CENTER', iction.ictionMF, ictionFramePos['Artifact']['x'], ictionFramePos['Artifact']['y'])
+        end
         local arti01 = iction.artifactFrame:CreateTexture("artifact-01", "ARTWORK")
               arti01:SetAllPoints(true)
               local file_id = GetSpellTexture(artifact['id'])
@@ -290,8 +304,6 @@ function iction.createArtifactFrame()
               fnt:SetFontObject("GameFontWhite")
         iction.artifactFrame.text = fnt
         iction.artifactFrame.texture = arti01
-        table.insert(iction.artifacts, arti01)
-
         local function _onUpdate()
             local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", artifact['name'])
             local charges, _, _, _ = GetSpellCharges(artifact['name'])
@@ -398,12 +410,19 @@ function iction.ictionFrameWatcher()
     iction.ictionMF:UnregisterEvent("ADDON_LOADED")
 end
 
-function iction.unlockUIElements(lock)
+function iction.unlockUIElements(isMovable)
+    ---Show the full iction frame---
     local cols = iction.debuffColumns
-    for f in list_iter(cols) do
-      iction.setMovable(f, lock)
+    if isMovable then
+        iction.ictionMF.texture:SetVertexColor(.1, .1, .1, .3)
+        iction.artifactFrame.texture:SetVertexColor(.1, .1, .1, 0)
+        iction.setMovable(iction.artifactFrame, isMovable)
+    else
+        iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
     end
-    --iction.shardFrame
+    for f in list_iter(cols) do
+        iction.setMovable(f, isMovable)
+    end
 end
 
 function iction.setMovable(f, isMovable)
@@ -429,15 +448,9 @@ function iction.setMovable(f, isMovable)
            f:SetParent(iction.ictionMF)
            local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
            local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
-           print('0X: ' .. xOffset)
-           print('0Y: ' .. yOffset)
-           print('point: ' .. tostring(point))
-           print('relativeTo: ' .. tostring(relativeTo))
-           print('relativePoint: ' .. tostring(relativePoint))
-           print(tostring(f:GetNumPoints()))
            ictionFramePos[frameName]['x'] = xOffset-MFxOffset
            ictionFramePos[frameName]['y'] = yOffset-MFyOffset
-
+           f:SetPoint("CENTER", iction.ictionMF, ictionFramePos[frameName]['x'], ictionFramePos[frameName]['y'])
           end
         end)
     else
