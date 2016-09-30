@@ -5,6 +5,9 @@
 ## Notes: MOAR DOTS!
 ##SavedVariablesPerCharacter: ictionFramePos
 ##SavedVariablesPerCharacter: ictionTargetCount
+##SavedVariablesPerCharacter: ictionSetCastBar
+##SavedVariablesPerCharacter: iction_cbx
+##SavedVariablesPerCharacter: iction_cby
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml
 #@end-no-lib-strip@

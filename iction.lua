@@ -30,13 +30,16 @@ iction.ictionMF.texture = bgF
 --- CAST BAR ---
 -- Player cast bar location if this was to be released this would need a clean way to move
 -- it and set position
-if iction.debug then print("iction.setCastBar: ".. tostring(iction.setCastBar)) end
-if iction.setCastBar then
-    CastingBarFrame:ClearAllPoints()
-    CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
-    CastingBarFrame.SetPoint = function() end
-    CastingBarFrame:SetScale(iction.cbScale)
+function iction.setcastbar()
+    if iction.debug then print("iction.setCastBar: ".. tostring(iction.setCastBar)) end
+    if iction.setCastBar then
+        CastingBarFrame:ClearAllPoints()
+        CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
+        CastingBarFrame.SetPoint = function() end
+        CastingBarFrame:SetScale(iction.cbScale)
+    end
 end
+
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
 local sframe = CreateFrame("Frame", 'ictionRoot')
@@ -53,22 +56,29 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.setMaxTargetTable()
             iction.initMainUI()
             iction.highlightFrameTexture = iction.createHighlightFrame()
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Loaded Iction UI. Use /iction unlock to move ui elements ", 15, 25, 35);
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44valid iction args: unlock lock 666", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo]Loaded Iction UI. Use /iction unlock to move ui elements ", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo]Valid iction args: /iction unlock /iction lock  /iction max #[1-4] ", 15, 25, 35);
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
         if ictionFramePos == nil then
             ictionFramePos = {}
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44First time load detected setting default frame positions...", 65, 35, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting default frame positions...", 65, 35, 35);
         end
         if not ictionTargetCount then
             iction.ict_maxTargets = 2
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44First time load detected setting tgt count to 2...", 65, 35, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2...", 65, 35, 35);
         else
             iction.ict_maxTargets = ictionTargetCount
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Set max count to ".. iction.ict_maxTargets, 100, 35, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Set max count to ".. iction.ict_maxTargets, 100, 35, 35);
+        end
+        if ictionSetCastBar == nil then
+            iction.setCastBar = false
+        else
+            iction.setCastBar = ictionSetCastBar
+            if iction_cbx ~= nil then iction.cbX = iction_cbx end
+            if iction_cby ~= nil then iction.cbY = iction_cby end
         end
     end
 end)
@@ -81,6 +91,7 @@ local function ictionArgs(arg, editbox)
     if not arg then iction.initMainUI()
     elseif arg == 'unlock' then iction.unlockUIElements(true)
     elseif arg == 'lock' then iction.unlockUIElements(false)
+    elseif arg == 'options' then iction.setOptionsFrame()
     else
         local max, cnt =  strsplit(" ", arg)
         if max == 'max' then
@@ -109,6 +120,7 @@ function iction.initMainUI()
     iction.createArtifactFrame()
     iction.createBuffFrame()
     iction.createDebuffColumns()
+    iction.setcastbar()
     --- Column anchor for Cooldowns ---
     iction.colAnchor = CreateFrame("Frame", "iction_CoolDown", iction.ictionMF)
     iction.colAnchor:SetFrameStrata("MEDIUM")
@@ -477,6 +489,87 @@ function iction.setMovable(f, isMovable)
         f:SetScript("OnMouseUp", nil)
         f.texture:SetVertexColor(1, 1, 1, 0)
     end
+end
+
+function iction.setOptionsFrame()
+    print("[IctionINFO]Showing options panel")
+    local ictionOptionsFrame = CreateFrame('Frame', 'ictionOptions', UIParent)
+    ictionOptionsFrame:SetPoint("CENTER", UIParent, 0, 0 )
+    ictionOptionsFrame:SetFrameStrata("BACKGROUND")
+    ictionOptionsFrame:EnableMouse(true)
+    ictionOptionsFrame:SetMovable(true)
+    ictionOptionsFrame:SetWidth(200)
+    ictionOptionsFrame:SetHeight(150)
+    ictionOptionsFrame:SetBackdropColor(0,1,0, 1);
+    local OptionsBgT = ictionOptionsFrame:CreateTexture(nil, "ARTWORK")
+          OptionsBgT:SetAllPoints(true)
+          OptionsBgT:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+          OptionsBgT:SetVertexColor(.5, .5, .5, .3)
+    ictionOptionsFrame.texture = OptionsBgT
+
+    --- FRAMES MOUSE CLICK AND DRAG ---
+    ictionOptionsFrame:SetScript("OnMouseDown", function(self, button)
+      if button == "LeftButton" and not ictionOptionsFrame.isMoving then
+       ictionOptionsFrame:StartMoving();
+       ictionOptionsFrame.isMoving = true;
+      end
+    end)
+    ictionOptionsFrame:SetScript("OnMouseUp", function(self, button)
+      if button == "LeftButton" and ictionOptionsFrame.isMoving then
+       ictionOptionsFrame:StopMovingOrSizing();
+       ictionOptionsFrame.isMoving = false;
+      end
+    end)
+
+    --- Close button ---
+    local closeOptionsButton = CreateFrame("Button", "Close", ictionOptionsFrame)
+    closeOptionsButton:SetFrameStrata("HIGH")
+    closeOptionsButton:SetPoint("TOPRIGHT", ictionOptionsFrame, -5, -5 )
+    closeOptionsButton:SetScript("OnClick", function() ictionOptionsFrame:Hide() CastingBarFrame:Show()end)
+    closeOptionsButton:SetWidth(45)
+    closeOptionsButton:SetHeight(25)
+    local closeButText = closeOptionsButton:CreateTexture(nil, "ARTWORK")
+          closeButText:SetAllPoints(true)
+          closeButText:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+          closeButText:SetVertexColor(0.9,0.3,0.3, 1)
+    closeOptionsButton:Show()
+    -- Create the fontString for the close button
+    local fnt = closeOptionsButton:CreateFontString(nil, "OVERLAY", "GameFontWhite")
+          fnt:SetFont(iction.font, 12, "OVERLAY", "THICKOUTLINE")
+          fnt:SetPoint("CENTER", closeOptionsButton, 0, 0)
+          fnt:SetText("Close")
+    closeOptionsButton.text = fnt
+
+    CastingBarFrame:Show()
+    -- okay I really need to be bothered making some base funcs for creating this stuff...
+    local myCheckButton = CreateFrame("CheckButton", "myCheckButton_GlobalName", ictionOptionsFrame, "ChatConfigCheckButtonTemplate")
+    myCheckButton_GlobalNameText:SetText("Set cast bar location")
+    myCheckButton.tooltip = "Set place your bliz cast bar in a custom location or not."
+    myCheckButton:SetPoint("LEFT", ictionOptionsFrame, 0, 0)
+    myCheckButton:SetPoint("TOP", ictionOptionsFrame, 0, -20)
+    myCheckButton:SetScript("OnClick", function()
+                            ictionSetCastBar = true
+                            CastingBarFrame:EnableMouse(true)
+                            CastingBarFrame:SetMovable(true)
+                            --- FRAMES MOUSE CLICK AND DRAG ---
+                            CastingBarFrame:SetScript("OnMouseDown", function(self, button)
+                                        if button == "LeftButton" and not CastingBarFrame.isMoving then
+                                            CastingBarFrame:StartMoving();
+                                            CastingBarFrame.isMoving = true;
+                                        end
+                                    end)
+                            CastingBarFrame:SetScript("OnMouseUp", function(self, button)
+                                        if button == "LeftButton" and CastingBarFrame.isMoving then
+                                            CastingBarFrame:StopMovingOrSizing()
+                                            CastingBarFrame.isMoving = false
+                                            local point, relativeTo, relativePoint, xOffset, yOffset = CastingBarFrame:GetPoint(1)
+                                            iction_cbx = xOffset
+                                            iction_cby = yOffset
+                                        end
+                                    end)
+                            CastingBarFrame:Show()
+                        end)
+    ictionOptionsFrame:Show()
 end
 
 function list_iter (t)
