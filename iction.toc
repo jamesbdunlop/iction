@@ -4,6 +4,7 @@
 ## Author: Macky kaz`goroth
 ## Notes: MOAR DOTS!
 ##SavedVariablesPerCharacter: ictionFramePos
+##SavedVariablesPerCharacter: ictionTargetCount
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml
 #@end-no-lib-strip@

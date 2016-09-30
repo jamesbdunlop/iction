@@ -61,9 +61,14 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
         if ictionFramePos == nil then
             ictionFramePos = {}
-            print('Setting ictioFramePos to table now.')
---        else
---            ictionFramePos = {}
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44First time load detected setting default frame positions...", 65, 35, 35);
+        end
+        if not ictionTargetCount then
+            iction.ict_maxTargets = 2
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44First time load detected setting tgt count to 2...", 65, 35, 35);
+        else
+            iction.ict_maxTargets = ictionTargetCount
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Set max count to ".. iction.ict_maxTargets, 100, 35, 35);
         end
     end
 end)
@@ -72,9 +77,21 @@ end)
 --- REGISTER THE SLASH COMMAND ---
 SLASH_ICTION1  = "/iction"
 local function ictionArgs(arg, editbox)
+    local split = split
     if not arg then iction.initMainUI()
     elseif arg == 'unlock' then iction.unlockUIElements(true)
     elseif arg == 'lock' then iction.unlockUIElements(false)
+    else
+        local max, cnt =  strsplit(" ", arg)
+        if max == 'max' then
+            local count = tonumber(cnt)
+            if count > 0 and count < 5 then
+                ictionTargetCount = count
+                ReloadUI()
+            else
+                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Max count too high. Use 1 2 3 or 4", 100, 35, 35);
+            end
+        end
     end
 end
 SlashCmdList["ICTION"] = ictionArgs

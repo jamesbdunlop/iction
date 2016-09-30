@@ -21,7 +21,6 @@ iction.highlightFrame = ''
 iction.highlightFrameTexture = ''
 iction.hlGuid = "burp"
 iction.targetCols = {}
-iction.ict_maxTargets = 4 -- max is 4 as we only have 4 movable columns
 iction.ict_frameOffset = 0
 iction.uiPlayerSpellButtons = {}
 iction.uiPlayerBuffButtons = {}
