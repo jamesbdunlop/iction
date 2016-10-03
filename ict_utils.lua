@@ -231,13 +231,9 @@ function iction.oocCleanup()
     --if iction.debug then print("Dbg iction.oocCleanup: ") end
     --- Clear target all data as we exited combat except buffs that might be running
     if not UnitAffectingCombat("player") then
-        --if iction.debug then print("\t ooc true") end
         if iction.targetTableExists() then
             for guid, targets in pairs(iction.targetData) do
                 if guid ~= iction.playerGUID then
-                    --if iction.debug then print("\t targetTableExists") end
-                    --if iction.debug then print("\t guid: " .. guid) end
-                    --if iction.debug then print("\t ['dead']: " .. tostring(iction.targetData[guid]['dead'])) end
                     if iction.targetData[guid]['dead'] then
                         if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
                         iction.targetData[guid] = nil
@@ -379,7 +375,6 @@ end
 function iction.tagDeadTarget(guid)
     -- Fix the current tracked targets state
     if guid ~= iction.playerGUI then
-        if iction.debug then print("\t TAGGING NON PLAYER TO DEAD") end
         if iction.targetData[guid] ~= nil then
             iction.hideFrame(guid, true)
             iction.targetData[guid]['dead'] = true
@@ -387,8 +382,6 @@ function iction.tagDeadTarget(guid)
         end
         -- Fix the display tables
         local found, id = iction.colGUIDExists(guid)
-        if iction.debug then print("\t tagDeadTarget found: " .. tostring(found)) end
-        if iction.debug then print("\t tagDeadTarget id: " .. id) end
         if found == true then
             iction.targetCols[id]['active'] = false
             iction.targetCols[id]['guid'] = ''
