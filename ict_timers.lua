@@ -2,7 +2,6 @@
 --- MAIN TIMER UPDATE ------------------------------------------------------------------------
 function iction.updateTimers()
     local next = next
-    --if iction.debug then print("iction.updateTimers: ") end
     -- {GUID = {name = creatureName, dead = false, spellData = {spellName = {name=spellName, endtime=float}}}}
     for guid, data in pairs(iction.targetData) do
         if data['spellData'] ~= nil then
@@ -12,14 +11,12 @@ function iction.updateTimers()
             if not isDead then
                 for spellName, spellData in pairs(spells) do
                     local endTime = spellData['endTime']
-                    --if iction.debug then print("\t endTime: " .. endTime) end
                     if endTime ~= nil then
                         if endTime < GetTime() or endTime == GetTime() then
                             if iction.targetButtons[guid] then -- fucking target dummies
                                 iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
                                 iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
                                 iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
-                                if iction.debug then print("\t spellName expired: " .. spellName) end
                             end
                         elseif endTime > GetTime() then
                             local remainingT = tonumber(string.format("%.2d", (endTime - GetTime())))

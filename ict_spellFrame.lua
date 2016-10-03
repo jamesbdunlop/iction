@@ -1,13 +1,13 @@
 ----------------------------------------------------------------------------------------------
 --- CREATE TARGET SPELLS UI  ---
 function iction.createSpellFrame(creatureName, guid, bgFile)
-    if iction.debug then print("Dbg: iction.createSpellFrame") end
+    if iction.debug then print("Dbg: iction.createSpellFrame for " .. tostring(creatureName)) end
     local freeSlot, colID = iction.findSlot(guid)
     if iction.debug then print("\t freeSlot: " .. tostring(freeSlot)) end
     if iction.debug then print("\t colID: " .. tostring(colID)) end
 
     if freeSlot and not iction.targetFrames[guid] then
-        if iction.debug then print("\t creating tgt frame...") end
+        if iction.debug then print("\t Creating tgt frame...") end
         iction.targetFrames[guid] = CreateFrame("Frame", nil)
         iction.targetFrames[guid]:EnableMouse(false)
         iction.targetFrames[guid]:SetFrameStrata("HIGH")
@@ -21,8 +21,11 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
         fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
         iction.targetFrames[guid]:SetWidth(fw)
         iction.targetFrames[guid]:SetHeight(fh)
+
+        -- Set frame to be an active column in the debuff columns table
         iction.targetCols[colID]['guid'] = guid
         iction.targetCols[colID]['active'] = true
+
         iction.targetFrames[guid]:SetPoint("CENTER", "iction_"..colID);
         iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_"..colID);
         iction.targetFrames[guid]:SetParent("iction_"..colID)

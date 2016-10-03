@@ -234,7 +234,6 @@ function iction.createDebuffColumns()
               bg:SetVertexColor(1, 1, 1, 0)
 
         dFrame.texture = bg
-        if iction.debug then print("dFrame: ".. tostring(dFrame))end
         table.insert(iction.debuffColumns, dFrame)
     end
 end
@@ -373,9 +372,6 @@ function iction.createHighlightFrame()
 end
 
 function iction.ictionFrameWatcher()
-    --- http://wowprogramming.com/docs/api_types#guid
-    --- http://wowwiki.wikia.com/wiki/API_COMBAT_LOG_EVENT
-    --- http://www.wowinterface.com/forums/showthread.php?t=15457
     iction.ictionMF:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     iction.ictionMF:RegisterEvent("PLAYER_TARGET_CHANGED")
     iction.ictionMF:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -398,18 +394,18 @@ function iction.ictionFrameWatcher()
             if iction.debug then print("\t sourceGUID: " .. tostring(sourceGUID)) end
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
-                    if eventName == "SPELL_ENERGIZE" or eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" or eventName == "SPELL_AURA_DOSE" then
+                    if eventName == "SPELL_ENERGIZE" or eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" or eventName == "SPELL_AURA_DOSE" and eventName ~= "SPELL_AURA_APPLIED_DOSE" then
                         -- Add Target
                         if iction.debug then print("\t CAST INFO: ") end
                         if iction.debug then print("\t prefix2: " .. tostring(prefix2)) end
                         if iction.debug then print("\t prefix3: " .. tostring(prefix3)) end
                         if iction.debug then print("\t sufx4: " .. tostring(sufx4)) end
                         if iction.debug then print("\t sufx6: " .. tostring(sufx6)) end
-                        if sufx4 == "Unstable Affliction" then
+                        if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
                             iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
                         elseif sufx4 == 'Agony'  then -- seriously wtf Agony you SUCK
                             iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
-                        elseif sufx6 == 'DEBUFF' then --and sufx4 ~= 'Mana Tap' and sufx4 ~= 'Life Tap' and sufx4 ~= 'Hearthstone'  and sufx4 ~= 'Reap Souls' and not string.find(sufx4, 'Summon') then
+                        elseif sufx6 == 'DEBUFF' then
                             iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
                             iction.highlightTargetSpellframe(prefix2)
                         elseif sufx6 == 'BUFF' then

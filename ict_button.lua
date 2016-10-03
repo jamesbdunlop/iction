@@ -38,18 +38,11 @@ function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
                   fnt:SetPoint("CENTER", b, 0, 0)
                   fnt:SetTextColor(.1, 1, .1, 1)
             b.text = fnt
-
             -- Add the button the the creatures button table
             buttonFrames[value['name']] = b
             buttonText[value['name']] = fnt
-
-            if not iction.ictionHorizontal then
-                paddingY = paddingY + iction.bh
-                paddingX = paddingX
-            else
-                paddingY = paddingY
-                paddingX = paddingX + iction.bh
-            end
+            paddingY = paddingY + iction.bh
+            paddingX = paddingX
         end
     end
     return buttonFrames, buttonText

@@ -25,31 +25,23 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
             local tgF = iction.targetButtons[guid]
             if iction.debug then print("\t tgF: " .. tostring(tgF)) end
             local padX, padY
-            padX = iction.ictionButtonFramePad
-            padY = 0
-            if not iction.ictionHorizontal then
-                padX = 0
-                padY = iction.ictionButtonFramePad
-            end
+            padX = 0
+            padY = iction.ictionButtonFramePad
 
-            if iction.debug then print("\t padX: " .. padX) end
-            if iction.debug then print("\t padY: " .. padY) end
             local b, fnt
             if spellType == 'DEBUFF' then
                 b, fnt = iction.addButtons(frm, guid, iction.uiPlayerSpellButtons, padX, padY, false)
             else
                 b, fnt = iction.addButtons(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
             end
-            if iction.debug then print("\t b: " .. tostring(b)) end
-            if iction.debug then print("\t fnt: " .. tostring(fnt)) end
             tgF["buttonFrames"] = b
             tgF["buttonText"] = fnt
         end
+        -- Add the base target deets into the table
+        iction.createFreshTarget(guid, creatureName)
+        iction.createTargetSpellData(guid, spellName, spellType)
+        iction.createSpellData(guid, spellName, spellType)
     end
-    -- Add the base target deets into the table
-    iction.createFreshTarget(guid, creatureName)
-    iction.createTargetSpellData(guid, spellName, spellType)
-    iction.createSpellData(guid, spellName, spellType)
 end
 
 ----------------------------------------------------------------------------------------------
@@ -71,12 +63,12 @@ end
 function iction.createTargetSpellData(guid, spellName, spellType)
     if iction.spellActive(guid, spellName) ~= true then
         -- We have the creature being tracked already, just not this spell. Add it now
-        if iction.debug then print("\t Adding spell " .. spellName .. " to table now.") end
+        if iction.debug then print("\t Adding spell " .. spellName .. " to creatureTable now.") end
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
         iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
     else
-        print('Spell was currently active!')
+        if iction.debug then print('Spell was currently active!') end
     end
 end
 
