@@ -89,8 +89,12 @@ SLASH_ICTION1  = "/iction"
 local function ictionArgs(arg, editbox)
     local split = split
     if not arg then iction.initMainUI()
-    elseif arg == 'unlock' then iction.unlockUIElements(true)
-    elseif arg == 'lock' then iction.unlockUIElements(false)
+    elseif arg == 'unlock' then
+        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Unlocking iction ui elements.", 100, 35, 35);
+        iction.unlockUIElements(true)
+    elseif arg == 'lock' then
+        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Locked iction ui elements.", 100, 35, 35);
+        iction.unlockUIElements(false)
     elseif arg == 'options' then iction.setOptionsFrame()
     else
         local max, cnt =  strsplit(" ", arg)
@@ -382,17 +386,16 @@ function iction.ictionFrameWatcher()
         -- curSpellName = sufx4, creatureGUID = prefix2, creatureName = prefix3
         --- START DOING COMBAT LOG STUFF NOW
         if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            if iction.debug then print("\t eventName: " .. tostring(eventName)) end
             if eventName == "UNIT_DIED" then
                 -- Remove unit from the table if it died.
                 iction.tagDeadTarget(prefix2)
                 iction.targetData[prefix2] = nil
             end
         end
-        if sourceGUID == iction.playerGUID then
-            --if iction.debug then print("\t eventName: " .. tostring(eventName)) end
-            --if iction.debug then print("\t playerGUID: " .. tostring(iction.playerGUID)) end
-            --if iction.debug then print("\t sourceGUID: " .. tostring(sourceGUID)) end
+        if sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
+            if iction.debug then print("\t eventName: " .. tostring(eventName)) end
+            if iction.debug then print("\t playerGUID: " .. tostring(iction.playerGUID)) end
+            if iction.debug then print("\t sourceGUID: " .. tostring(sourceGUID)) end
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
                     if eventName == "SPELL_ENERGIZE" or eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" or eventName == "SPELL_AURA_DOSE" then
@@ -492,7 +495,6 @@ function iction.setMovable(f, isMovable)
 end
 
 function iction.setOptionsFrame()
-    print("[IctionINFO]Showing options panel")
     local ictionOptionsFrame = CreateFrame('Frame', 'ictionOptions', UIParent)
     ictionOptionsFrame:SetPoint("CENTER", UIParent, 0, 0 )
     ictionOptionsFrame:SetFrameStrata("BACKGROUND")

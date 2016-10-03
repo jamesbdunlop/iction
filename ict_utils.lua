@@ -114,25 +114,30 @@ function iction.hasEmptyColumn()
 end
 
 function iction.findSlot(guid)
-    local emptyCExists = iction.hasEmptyColumn()
-    if emptyCExists then
-        local orderCol = {}
-        for x = 1, iction.ict_maxTargets do
-            table.insert(orderCol, "col_" .. x)
-        end
-        local guidIsActiveFrame, id = iction.colGUIDExists(guid)
-        if not guidIsActiveFrame then
-            for col = 1, iction.ict_maxTargets do
-                colID = orderCol[col]
-                if not iction.targetCols[colID]["active"] then
-                    iction.targetCols[colID]["active"] = true
-                    iction.targetCols[colID]["guid"] = guid
-                    return true, colID
+    local guidIsActiveFrame, id = iction.colGUIDExists(guid)
+    if guidIsActiveFrame then
+        return false, id
+    else
+        local emptyCExists = iction.hasEmptyColumn()
+        if emptyCExists then
+            local orderCol = {}
+            for x = 1, iction.ict_maxTargets do
+                table.insert(orderCol, "col_" .. x)
+            end
+
+            if not guidIsActiveFrame then
+                for col = 1, iction.ict_maxTargets do
+                    colID = orderCol[col]
+                    if not iction.targetCols[colID]["active"] then
+                        iction.targetCols[colID]["active"] = true
+                        iction.targetCols[colID]["guid"] = guid
+                        return true, colID
+                    end
                 end
             end
+        else
+            return false
         end
-    else
-        return false, false, false
     end
 end
 

@@ -8,17 +8,18 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
         if iction.debug then print("\t creatureName: " .. tostring(creatureName)) end
         if iction.debug then print("\t spellName: " .. tostring(spellName)) end
         if iction.debug then print("\t spellType: " .. tostring(spellType)) end
+
         local frm
         -- Create the base spell button frame for the target
         if guid ~= iction.playerGUID then
             if iction.debug then print("\t tgt frm: " .. tostring(frm)) end
             frm = iction.createSpellFrame(creatureName, guid, "Interface\\ChatFrame\\ChatFrameBackground")
-        else
+        elseif guid == iction.playerGUID then
             if iction.debug then print("\t bff frm: " .. tostring(frm)) end
             frm = iction.createPlayerBuffFrame()
         end
 
-        if frm and guid ~= iction.playerGUI then
+        if frm then
             -- If we've created a new frame add the buttons
             iction.targetButtons[guid] = {}
             local tgF = iction.targetButtons[guid]
@@ -45,63 +46,58 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
             tgF["buttonText"] = fnt
         end
     end
-    -- Add the target details into the table
-    iction.createTargetData(guid, creatureName, spellName, spellType)
+    -- Add the base target deets into the table
+    iction.createFreshTarget(guid, creatureName)
+    iction.createTargetSpellData(guid, spellName, spellType)
+    iction.createSpellData(guid, spellName, spellType)
 end
 
 ----------------------------------------------------------------------------------------------
---- CREATE SPELL TIMER DATA ------------------------------------------------------------------
-function iction.createTargetData(guid, creatureName, spellName, spellType)
-    if iction.debug then print("Dbg iction.createTargetData") end
+--- CREATE CRETURE TABLE ENTRY ------------------------------------------------------------------
+function iction.createFreshTarget(guid, creatureName)
+    if iction.debug then print("Dbg iction.createFreshTarget") end
     if iction.targetData[guid] then
-        if iction.debug then for k, v in pairs(iction.targetData[guid]) do print("\t k: " .. tostring(k), "\t v: " .. tostring(v)) end end
-    end
-
-    if not iction.targetData[guid] then
+        return
+    else
         -- If the creatureGUID isn't in the table consider it a fresh target.
-        if iction.debug then print("\t new target") end
+        if iction.debug then print("\t NEW TARGET") end
         iction.targetData[guid] = {}
         iction.targetData[guid]['name'] = creatureName
+        iction.targetData[guid]['dead'] = false
         iction.targetData[guid]['spellData'] = {}
+    end
+end
+
+function iction.createTargetSpellData(guid, spellName, spellType)
+    if iction.spellActive(guid, spellName) ~= true then
+        -- We have the creature being tracked already, just not this spell. Add it now
+        if iction.debug then print("\t Adding spell " .. spellName .. " to table now.") end
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
-        iction.targetData[guid]['spellData'][spellName]['endTime'] = 0
-        iction.targetData[guid]['dead'] = false
-
-    elseif iction.spellActive(guid, spellName) ~= true then
-        if iction.debug then print("\t updating spell") end
-        -- We have the creature being tracked already, just not this spell. Add it now
-        if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
-            iction.targetData[guid]['spellData'][spellName] = {}
-            iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = 0
-        else
-            iction.targetData[guid]['spellData'][spellName] = {}
-            iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = 0
-        end
+        iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
+    else
+        print('Spell was currently active!')
     end
+end
 
+function iction.createSpellData(guid, spellName, spellType)
+    if iction.debug then print("Dbg iction.createSpellData: ") end
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
-        -- we have an active creature and an active spell. Update the spelltimers endTime now
-        if iction.targetData[guid]['spellData'][spellName]['endTime'] ~= 0 then
-            if spellType == 'BUFF' then
-                iction.currentTargetBuffExpires()
+        if iction.debug then print("\t Have table adding data now...") end
+        if spellType == 'BUFF' then
+            --- UNITBUFF
+            local _, _, _, _, _, _, expires, _, _, _, _  = UnitBuff("Player", spellName)
+            if iction.debug then print("\t Adding buff expires " .. tostring(expires)) end
+            if expires ~= nil then
+                iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
             end
         else
-            if spellType == 'BUFF' then
-                --- UNITBUFF for Mana Tap
-                local name, rank, icon, count, debuffType, duration, expires, unitCaster, isStealable, shouldConsolidate, spellId  = UnitBuff("Player", spellName)
-                if expires ~= nil then
-                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-                end
-            else
-                --- UnitDebuff
-                local name, rank, icon, count, debuffType, duration, expires, unitCaster, isStealable, shouldConsolidate, spellId  = UnitDebuff("Target", spellName)
-                -- VERY ANNOYING to have to duplicate this code!
-                if expires ~= nil then
-                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-                end
+            --- UNITDEBUFF
+            local _, _, _, _, _, _, expires, _, _, _, _  = UnitDebuff("Target", spellName)
+            if iction.debug then print("\t Adding debuff expires " .. tostring(expires)) end
+            if expires ~= nil then
+                iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+                if iction.debug then print("expires: " .. expires) end
             end
         end
     end

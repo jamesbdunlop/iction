@@ -6,31 +6,27 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
     if iction.debug then print("\t freeSlot: " .. tostring(freeSlot)) end
     if iction.debug then print("\t colID: " .. tostring(colID)) end
 
-    if freeSlot then
+    if freeSlot and not iction.targetFrames[guid] then
         if iction.debug then print("\t creating tgt frame...") end
-        if not iction.targetFrames[guid] then
-            iction.targetFrames[guid] = CreateFrame("Frame", nil)
-            iction.targetFrames[guid]:EnableMouse(false)
-            iction.targetFrames[guid]:SetFrameStrata("HIGH")
-            -- Set draw for frame
-            local bg = iction.targetFrames[guid]:CreateTexture(nil, "ARTWORK")
-                  bg:SetAllPoints(true)
-                  bg:SetTexture(bgFile)
-                  bg:SetVertexColor(0, 0, 0, 0)
-            -- Set the height of the frame based on the number of buttons
-            local fw, fh
-            fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
-            iction.targetFrames[guid]:SetWidth(fw)
-            iction.targetFrames[guid]:SetHeight(fh)
-            iction.targetCols[colID]['guid'] = guid
-            iction.targetCols[colID]['active'] = true
-            iction.targetFrames[guid]:SetPoint("CENTER", "iction_"..colID);
-            iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_"..colID);
-            iction.targetFrames[guid]:SetParent("iction_"..colID)
-            return iction.targetFrames[guid]
-        else
-            return false
-        end
+        iction.targetFrames[guid] = CreateFrame("Frame", nil)
+        iction.targetFrames[guid]:EnableMouse(false)
+        iction.targetFrames[guid]:SetFrameStrata("HIGH")
+        -- Set draw for frame
+        local bg = iction.targetFrames[guid]:CreateTexture(nil, "ARTWORK")
+              bg:SetAllPoints(true)
+              bg:SetTexture(bgFile)
+              bg:SetVertexColor(0, 0, 0, 0)
+        -- Set the height of the frame based on the number of buttons
+        local fw, fh
+        fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
+        iction.targetFrames[guid]:SetWidth(fw)
+        iction.targetFrames[guid]:SetHeight(fh)
+        iction.targetCols[colID]['guid'] = guid
+        iction.targetCols[colID]['active'] = true
+        iction.targetFrames[guid]:SetPoint("CENTER", "iction_"..colID);
+        iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_"..colID);
+        iction.targetFrames[guid]:SetParent("iction_"..colID)
+        return iction.targetFrames[guid]
     else
         return false
     end
