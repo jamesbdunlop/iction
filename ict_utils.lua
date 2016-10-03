@@ -64,9 +64,7 @@ function iction.setButtonState(active, hidden, button)
         elseif hidden then
             button:SetBackdropColor(0,0,0, 0)
             button.texture:SetVertexColor(0,0,0, 0)
-            button.tex:SetVertexColor(0,0,0, 0)
         else
-            --button:SetBackdropColor(.5, .5, .5, 1)
             button.texture:SetVertexColor(0.9,0.3,0.3, .3)
         end
     end
@@ -189,13 +187,13 @@ function iction.hideFrame(guid, isDead, spName, spType)
     if iction.targetFrames[guid] ~= nil and iction.targetButtons[guid] ~= nil then
         if isDead == true then
             -- set the backdrop to invis
-            iction.targetFrames[guid]:SetBackdropColor(0,0,0, 0)
+            iction.targetFrames[guid]:SetBackdropColor(0,0,0, 1)
             -- set the buttons for this frame to invis
             -- {GUID = {buttonFrames = {spellName = ButtonFrame}, buttonText = {spellName = fontString}}}
             for spellName, buttonFrame in pairs(iction.targetButtons[guid]['buttonFrames']) do
-                buttonFrame:SetBackdropColor(0,0,0, 0)
-                buttonFrame:SetBackdropBorderColor(0,0,0, 0)
+                iction.setButtonState(false, true, buttonFrame)
             end
+            -- set text
             for spellName, buttonText in pairs(iction.targetButtons[guid]['buttonText']) do
                 buttonText:SetText("")
             end
@@ -203,8 +201,7 @@ function iction.hideFrame(guid, isDead, spName, spType)
             -- set backdrop
             for spellName, buttonFrame in pairs(iction.targetButtons[guid]['buttonFrames']) do
                 if spellName == spName then
-                    buttonFrame:SetBackdropColor(1,1,1, .3)
-                    buttonFrame:SetBackdropBorderColor(.2,.2,.2, 1)
+                    iction.setButtonState(false, false, buttonFrame)
                 end
             end
             -- set text
@@ -382,14 +379,16 @@ end
 function iction.tagDeadTarget(guid)
     -- Fix the current tracked targets state
     if guid ~= iction.playerGUI then
+        if iction.debug then print("\t TAGGING NON PLAYER TO DEAD") end
         if iction.targetData[guid] ~= nil then
             iction.hideFrame(guid, true)
             iction.targetData[guid]['dead'] = true
             iction.targetData[guid]['spellData'] = nil
         end
-
         -- Fix the display tables
         local found, id = iction.colGUIDExists(guid)
+        if iction.debug then print("\t tagDeadTarget found: " .. tostring(found)) end
+        if iction.debug then print("\t tagDeadTarget id: " .. id) end
         if found == true then
             iction.targetCols[id]['active'] = false
             iction.targetCols[id]['guid'] = ''

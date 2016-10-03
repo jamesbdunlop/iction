@@ -38,7 +38,6 @@ local destro_artifact = {name = "Dimensional Rift", isArtifact = true, isTalentS
 
 --- UTILS ------------------------------------------------------------------------------------
 function iction.addButtonsToTable(buttonList, desttable)
-    if iction.debug then print("Dbg: iction.addButtonsToTable ") end
     for _, data in pairs(buttonList) do
         local insert = true
         if data["isTalentSpell"] then
@@ -54,7 +53,6 @@ function iction.addButtonsToTable(buttonList, desttable)
         end
 
         if insert then
-            if iction.debug then print("\t inserting button: " .. data['name']) end
             table.insert(desttable, {name = data['name'],
                                      h = iction.bh,
                                      w = iction.bw,

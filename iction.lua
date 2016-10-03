@@ -31,7 +31,6 @@ iction.ictionMF.texture = bgF
 -- Player cast bar location if this was to be released this would need a clean way to move
 -- it and set position
 function iction.setcastbar()
-    if iction.debug then print("iction.setCastBar: ".. tostring(iction.setCastBar)) end
     if iction.setCastBar then
         CastingBarFrame:ClearAllPoints()
         CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
@@ -232,7 +231,6 @@ function iction.createDebuffColumns()
               bg:SetAllPoints(true)
               bg:SetTexture("Interface/AddOns/iction/media/"..i)--"Interface\\ChatFrame\\ChatFrameBackground")
               bg:SetVertexColor(1, 1, 1, 0)
-
         dFrame.texture = bg
         table.insert(iction.debuffColumns, dFrame)
     end
@@ -306,9 +304,6 @@ function iction.createArtifactFrame()
     local icon
     local artifact = iction.uiPlayerArtifact
     if next(artifact) ~= nil then
-        if iction.debug then print("Dbg: iction.createArtifactFrame") end
-        if iction.debug then print("\t artifact['name']: " .. artifact['name']) end
-        if iction.debug then print("\t artifact['icon']: " .. artifact['icon']) end
         iction.artifactFrame = CreateFrame("Button", "iction_artifactFrame", iction.ictionMF)
         iction.artifactFrame:SetAttribute('name', 'Artifact')
         iction.artifactFrame:SetFrameStrata("MEDIUM")
@@ -388,19 +383,12 @@ function iction.ictionFrameWatcher()
                 iction.targetData[prefix2] = nil
             end
         end
+
         if sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
-            if iction.debug then print("\t eventName: " .. tostring(eventName)) end
-            if iction.debug then print("\t playerGUID: " .. tostring(iction.playerGUID)) end
-            if iction.debug then print("\t sourceGUID: " .. tostring(sourceGUID)) end
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
-                    if eventName == "SPELL_ENERGIZE" or eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" or eventName == "SPELL_AURA_DOSE" and eventName ~= "SPELL_AURA_APPLIED_DOSE" then
+                    if eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then --eventName == "SPELL_CAST_SUCCESS" or
                         -- Add Target
-                        if iction.debug then print("\t CAST INFO: ") end
-                        if iction.debug then print("\t prefix2: " .. tostring(prefix2)) end
-                        if iction.debug then print("\t prefix3: " .. tostring(prefix3)) end
-                        if iction.debug then print("\t sufx4: " .. tostring(sufx4)) end
-                        if iction.debug then print("\t sufx6: " .. tostring(sufx6)) end
                         if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
                             iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
                         elseif sufx4 == 'Agony'  then -- seriously wtf Agony you SUCK

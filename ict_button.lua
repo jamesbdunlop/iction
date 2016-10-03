@@ -1,15 +1,10 @@
 ----------------------------------------------------------------------------------------------
 --- BUTTON GENERATOR -------------------------------------------------------------------------
 function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
-    if iction.debug then print("Dbg: iction.addButtons") end
-    if iction.debug then print("\t pFrame: " .. tostring(pFrame)) end
     -- Create an empty button table
     local buttonFrames = {}
     local buttonText = {}
     for key, value in pairs(buttons) do
-        if iction.debug then print("\t value['name']: " .. value['name']) end
-        if iction.debug then print("\t value['inherits']: " .. value['inherits']) end
-        -- Ace font for UI
         if value['vis'] then
             -- Create the button frame
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
@@ -28,7 +23,7 @@ function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
                       but:SetTexture(value['icon'])
                   else
                      local file_id = GetSpellTexture(value['id'])
-                      but:SetTexture(file_id)--artifact['icon'])
+                      but:SetTexture(file_id)
                  end
                   but:SetVertexColor(0.9,0.3,0.3, .5)
             b.texture = but
@@ -38,11 +33,13 @@ function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
                   fnt:SetPoint("CENTER", b, 0, 0)
                   fnt:SetTextColor(.1, 1, .1, 1)
             b.text = fnt
+
+            paddingY = paddingY + iction.bh
+            paddingX = paddingX
+
             -- Add the button the the creatures button table
             buttonFrames[value['name']] = b
             buttonText[value['name']] = fnt
-            paddingY = paddingY + iction.bh
-            paddingX = paddingX
         end
     end
     return buttonFrames, buttonText
