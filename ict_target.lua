@@ -48,7 +48,12 @@ function iction.createExpiresData(guid, spellName, spellType)
         else
             --- UNITDEBUFF
             local _, _, _, _, _, _, expires, _, _, _, _ = UnitDebuff("Target", spellName)
+            if not expires then
+                local name, subText, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo("Player")
+                dur = endTime/1000.0 - GetTime()
+                expires =  GetTime() + dur
             iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+            end
         end
     end
 end
@@ -61,9 +66,13 @@ function iction.createButtons(frm, guid, spellType)
     padY = iction.ictionButtonFramePad
     local b, fnt
     if spellType == 'DEBUFF' then
-        b, fnt = iction.addButtons(frm, guid, iction.uiPlayerSpellButtons, padX, padY, false)
+        if frm:GetAttribute("name") == 'ictionDeBuffFrame' then
+            b, fnt = iction.addButtons(frm, guid, iction.uiPlayerSpellButtons, padX, padY, false)
+        end
     else
-        b, fnt = iction.addButtons(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
+        if frm:GetAttribute("name") == 'ictionBuffFrame' then
+            b, fnt = iction.addButtons(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
+        end
     end
     iction.targetButtons[guid]["buttonFrames"] = b
     iction.targetButtons[guid]["buttonText"] = fnt

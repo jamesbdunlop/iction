@@ -5,6 +5,7 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
     local freeSlot, colID = iction.findSlot(guid)
     if freeSlot and not iction.targetFrames[guid] then
         iction.targetFrames[guid] = CreateFrame("Frame", nil)
+        iction.targetFrames[guid]:SetAttribute("name", 'ictionDeBuffFrame')
         iction.targetFrames[guid]:EnableMouse(false)
         iction.targetFrames[guid]:SetFrameStrata("HIGH")
         iction.targetFrames[guid]:SetBackdropColor(0, 0, 0, 0)
@@ -44,16 +45,15 @@ function iction.createPlayerBuffFrame()
         fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
 
         local butCount = iction.tablelength(iction.uiPlayerBuffButtons)
-        if butCount > 1 then offset = -(fh/butCount) else offset = 0 end
-
         iction.targetFrames[iction.playerGUID] = CreateFrame("Frame", nil, iction.buffFrame)
+        iction.targetFrames[iction.playerGUID]:SetAttribute("name", 'ictionBuffFrame')
         iction.targetFrames[iction.playerGUID]:EnableMouse(false)
         iction.targetFrames[iction.playerGUID]:SetClampedToScreen(true)
         iction.targetFrames[iction.playerGUID]:SetFrameStrata("MEDIUM")
         iction.targetFrames[iction.playerGUID]:SetBackdropColor(1,1,1, 1)
         iction.targetFrames[iction.playerGUID]:SetWidth(fw)
         iction.targetFrames[iction.playerGUID]:SetHeight(fh)
-        iction.targetFrames[iction.playerGUID]:SetPoint("BOTTOM", "iction_buffFrame", 0, offset)
+        iction.targetFrames[iction.playerGUID]:SetPoint("TOP", "iction_buffFrame", 0, 0 )
         iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", "iction_buffFrame", 0, 0)
 
         return iction.targetFrames[iction.playerGUID]

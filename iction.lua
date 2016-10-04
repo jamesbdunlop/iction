@@ -1,8 +1,5 @@
 -- TO DO
--- Add unending resolve?
 -- Fix cooldown for felflame / channeling spell
--- Fix clash with Followers immolate when using Rityssn as a follower (timers see his debuff as player owned)
--- Fix bug where directly after reload in destruction the first target doesn't appear correctly at all!
 -- Debuffs / Buffs ending up in wrong parent frame. This gets cleared on ooc but it's kinda annoying!
 
 --- version alpha0.0.2
@@ -190,14 +187,23 @@ end
 
 function iction.createBuffFrame()
     iction.buffFrame = CreateFrame("Frame", "iction_buffFrame", iction.ictionMF)
-    iction.buffFrame:SetFrameStrata("BACKGROUND")
+    iction.buffFrame:SetFrameStrata("HIGH")
     iction.buffFrame:EnableMouse(false)
+    iction.buffFrame:SetAttribute('name', 'Buff')
     iction.buffFrame:SetWidth(128)
     iction.buffFrame:SetHeight(32)
-    iction.buffFrame:SetBackdropColor(0,1,0,0);
-    iction.buffFrame:SetPoint("BOTTOM", iction.ictionMF, -2, 5)
-    iction.buffFrame:CreateTexture("ictionMFBackground", "ARTWORK")
-    iction.buffFrame:CreateTexture("ictionMFBorder", "BACKGROUND")
+    iction.buffFrame:SetBackdropColor(0,1,0,0)
+    if ictionFramePos['Buff'] == nil then
+        iction.buffFrame:SetPoint("BOTTOM", iction.ictionMF, -2, 5)
+        ictionFramePos['Buff'] = {x = -75, y = 20}
+    else
+        iction.buffFrame:SetPoint('CENTER', iction.ictionMF, ictionFramePos['Buff']['x'], ictionFramePos['Buff']['y'])
+    end
+    local ftx = iction.buffFrame:CreateTexture(nil, "ARTWORK")
+          ftx:SetAllPoints(true)
+          ftx:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+          ftx:SetVertexColor(1, 1, 1, 0)
+    iction.buffFrame.texture = ftx
 end
 
 function iction.createDebuffColumns()
@@ -365,9 +371,9 @@ function iction.createHighlightFrame()
 end
 
 function iction.ictionFrameWatcher()
-    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+--    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+--    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+--    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
     iction.ictionMF:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     iction.ictionMF:RegisterEvent("PLAYER_TARGET_CHANGED")
     iction.ictionMF:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -404,6 +410,10 @@ function iction.ictionFrameWatcher()
                         -- Set frame accordingly
                         iction.hideFrame(prefix2, false, sufx4, sufx6)
                         iction.setMTapBorder()
+                    elseif eventName == "SPELL_CAST_SUCCESS" then
+                        if sufx4 == 'Channel Demonfire' then
+                            iction.createTarget(UnitGUID("Target"), 'burp', sufx4, "DEBUFF")
+                        end
                     end
                 end
             end
@@ -435,8 +445,10 @@ function iction.unlockUIElements(isMovable)
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, .3)
         iction.artifactFrame.texture:SetVertexColor(.1, .1, .1, 0)
         iction.setMovable(iction.artifactFrame, isMovable)
+        iction.setMovable(iction.buffFrame, isMovable)
     else
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
+        iction.buffFrame.texture:SetVertexColor(.1, .1, .1, 0)
     end
     for f in list_iter(cols) do
         iction.setMovable(f, isMovable)
@@ -449,6 +461,7 @@ function iction.setMovable(f, isMovable)
         f:SetParent(iction.ictionMF)
         f.texture:SetVertexColor(.1, 1, .1, .7)
         f:EnableMouse(true)
+        f:SetMovable(true)
         f:SetParent(iction.ictionMF)
 
         ---Scripts for moving---
@@ -476,10 +489,11 @@ function iction.setMovable(f, isMovable)
         f:SetScript("OnMouseDown", nil)
         f:SetScript("OnMouseUp", nil)
         f.texture:SetVertexColor(1, 1, 1, 0)
+        f:SetMovable(false)
     end
 end
 
-function list_iter (t)
+function list_iter(t)
   local i = 0
   local n = table.getn(t)
   return function ()

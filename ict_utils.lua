@@ -307,17 +307,17 @@ end
 ----------------------------------------------------------------------------------------------
 --- TARGET UTILS -----------------------------------------------------------------------------
 function iction.currentTargetDebuffExpires()
-    -- get a list of spell names from the button
-    local spellNames = {}
-    for x,  info in pairs(iction.uiPlayerSpellButtons) do
-        table.insert(spellNames, info['name'])
-    end
-    if spellNames then
-        if (UnitName("target")) then
-            for x= 1, 5 do
+    if (UnitName("target")) then
+        local spellNames = {} -- get a clean list of spell names from the button
+        for x, info in pairs(iction.uiPlayerSpellButtons) do
+            table.insert(spellNames, info['name'])
+        end
+        if spellNames then
+            for x = 1, iction.tablelength(spellNames) do --5 do
                 if spellNames[x] ~= nil then
                     local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
-                    if expirationTime ~= nil then
+
+                    if expirationTime ~= nil and unitCaster == 'player'  and spellId ~= 216145 then -- ritz follower immolate spell id
                         local getGUID = UnitGUID("Target")
                         if iction.targetTableExists() and iction.targetData[getGUID] ~= nil  and iction.spellActive(getGUID, spellNames[x]) then
                             iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
@@ -335,9 +335,10 @@ function iction.currentTargetBuffExpires()
     for x,  info in pairs(iction.uiPlayerBuffButtons) do
         table.insert(spellNames, info['name'])
     end
+
     if spellNames then
         if (UnitName("Player")) then
-            for x = 1, 5 do
+            for x = 1, iction.tablelength(spellNames) do --5 do
                 if spellNames[x] ~= nil then
                     --_, _, _, _, _, duration, expires = UnitBuff("Player", spellNames[x])
                     local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", spellNames[x], nil, "player")

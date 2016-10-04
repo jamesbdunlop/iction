@@ -25,12 +25,14 @@ local destro_SpellList = {
                         Eradication = {name = "Eradication", isTalentSpell = true, vis = true, id = nil, duration = 6, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/eradication"},
                         Havoc = {name = "Havoc", isTalentSpell = false, vis = true, id = 80240, duration = 7, maxTime = 7, icon = "Interface/AddOns/iction/media/icons/baneofHavoc"},
                         DrainLife = {name = "Drain Life", isTalentSpell = false, vis = true, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
-                        Demonfire = {name = "Channel Demonfire", isTalentSpell = true, vis = true, id = 196448, duration = 7, maxTime = 7, icon = "Interface/AddOns/iction/media/icons/felflame"},
+                        ChannelDemonfire = {name = "Channel Demonfire", isTalentSpell = true, vis = true, id = 196447, duration = 2.6, maxTime = 2.6, icon = "Interface/AddOns/iction/media/icons/felflame"},
 }
 local destro_BuffList = {
                          backdraft = {name = "Backdraft", isTalentSpell = true, vis = true, id = nil, duration = 3, maxTime = 3, icon = "Interface/AddOns/iction/media/icons/backdraft"},
-                         manaTap    = {name = "Mana Tap", isTalentSpell = true, vis = true, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
-                         soulHarvest    = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
+                         manaTap = {name = "Mana Tap", isTalentSpell = true, vis = true, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
+                         soulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
+                         DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
+
 }
 
 local destro_artifact = {name = "Dimensional Rift", isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
