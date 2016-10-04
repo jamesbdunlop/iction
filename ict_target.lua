@@ -50,9 +50,14 @@ function iction.createExpiresData(guid, spellName, spellType)
             local _, _, _, _, _, _, expires, _, _, _, _ = UnitDebuff("Target", spellName)
             if not expires then
                 local name, subText, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo("Player")
-                dur = endTime/1000.0 - GetTime()
-                expires =  GetTime() + dur
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+                if endTime then
+                    dur = endTime/1000.0 - GetTime()
+                    expires =  GetTime() + dur
+                end
+            end
+
+            if expires then
+                iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
             end
         end
     end

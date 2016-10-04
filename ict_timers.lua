@@ -13,7 +13,7 @@ function iction.updateTimers()
                     local endTime = spellData['endTime']
                     if endTime ~= nil then
                         if endTime < GetTime() or endTime == GetTime() then
-                            if iction.targetButtons[guid] then -- fucking target dummies
+                            if iction.targetButtons[guid] and iction.targetButtons[guid]['buttonFrames'] then -- fucking target dummies
                                 iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
                                 iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
                                 iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
@@ -26,7 +26,7 @@ function iction.updateTimers()
                             end
                         end
                     else
-                        if iction.targetButtons[guid] then
+                        if iction.targetButtons[guid] and iction.targetButtons[guid]['buttonFrames'] then
                             iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
                             iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
                         end
