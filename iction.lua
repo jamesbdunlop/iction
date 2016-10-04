@@ -1,6 +1,12 @@
 -- TO DO
--- Fix cooldown for felflame / channeling spell
--- Debuffs / Buffs ending up in wrong parent frame. This gets cleared on ooc but it's kinda annoying!
+-- Make it so when felflame is on cooldown the button is red
+-- When locking the ui again the atrifact frame needs to restore it's color correctly
+-- Add demo buttons
+-- Look for any other talent stuff that might need to be tracked
+-- Make it so the buff bar can be horizontal as well as vertical
+-- Cleanup - base frame class for all frames to inherit
+-- Sniff out that emtpy button table issue coming from the watcher changes
+--
 
 --- version alpha0.0.2
 local iction = iction
