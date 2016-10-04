@@ -371,9 +371,6 @@ function iction.createHighlightFrame()
 end
 
 function iction.ictionFrameWatcher()
---    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
---    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
---    iction.ictionMF:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
     iction.ictionMF:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     iction.ictionMF:RegisterEvent("PLAYER_TARGET_CHANGED")
     iction.ictionMF:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -447,11 +444,16 @@ function iction.unlockUIElements(isMovable)
         iction.setMovable(iction.artifactFrame, isMovable)
         iction.setMovable(iction.buffFrame, isMovable)
     else
+        iction.setMovable(iction.artifactFrame, isMovable)
+        iction.setMovable(iction.buffFrame, isMovable)
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
         iction.buffFrame.texture:SetVertexColor(.1, .1, .1, 0)
     end
     for f in list_iter(cols) do
         iction.setMovable(f, isMovable)
+        if not isMovable then
+            f.texture:SetVertexColor(1, 1, 1, 0)
+        end
     end
 end
 
@@ -486,10 +488,9 @@ function iction.setMovable(f, isMovable)
         end)
     else
         f:EnableMouse(false)
+        f:SetMovable(false)
         f:SetScript("OnMouseDown", nil)
         f:SetScript("OnMouseUp", nil)
-        f.texture:SetVertexColor(1, 1, 1, 0)
-        f:SetMovable(false)
     end
 end
 
