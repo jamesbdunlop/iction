@@ -53,8 +53,8 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.setMaxTargetTable()
             iction.initMainUI()
             iction.highlightFrameTexture = iction.createHighlightFrame()
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo]Loaded Iction UI. Use /iction unlock to move ui elements ", 15, 25, 35);
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo]Valid iction args: /iction unlock /iction lock  /iction max #[1-4] ", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Loaded Iction UI. Use /iction options for option ui ", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] args: /iction unlock /iction lock  /iction max 1, 2, 3 or 4 ", 15, 25, 35);
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
