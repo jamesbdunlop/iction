@@ -14,6 +14,7 @@ Libs\LibSharedMedia-3.0\lib.xml
 
 ict_core.lua
 ict_framePos.lua
+ict_options.lua
 ict_utils.lua
 ict_buttonLib.lua
 ict_button.lua
