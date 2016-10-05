@@ -37,6 +37,17 @@ local destro_BuffList = {
 
 local destro_artifact = {name = "Dimensional Rift", isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
 --- DEMO -------------------------------------------------------------------------------------
+local demo_SpellList = {
+                        Doom = {name = "Doom", isTalentSpell = false, vis = true, id = 603, duration = 17.5, maxTime = 17.5, icon = ""},
+}
+local demo_BuffList = {
+                         BurningRush = {name = "Burning Rush", isTalentSpell = true, vis = true, id = 111400, duration = 999, maxTime = 999, icon = ""},
+                         soulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = ""},
+                         DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
+                         ShadowyInspiration = {name = "Shadowy Inspiration", isTalentSpell = true, vis = true, id = 196606, duration = 14, maxTime = 14, icon = ""},
+}
+--Demonic Synergy 171982
+local demo_artifact = {name = "Thal`kiel's Consumption", isArtifact = true, isTalentSpell = false, vis = true, id = 211714, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
 
 --- UTILS ------------------------------------------------------------------------------------
 function iction.addButtonsToTable(buttonList, desttable)
@@ -80,6 +91,8 @@ function iction.setDebuffButtonLib()
     local spec = GetSpecialization()
     if spec == 1 then
         iction.addButtonsToTable(aff_SpellList, iction.uiPlayerSpellButtons)
+    elseif spec == 2 then
+        iction.addButtonsToTable(demo_SpellList, iction.uiPlayerSpellButtons)
     elseif spec == 3 then
         iction.addButtonsToTable(destro_SpellList, iction.uiPlayerSpellButtons)
     end
@@ -91,6 +104,9 @@ function iction.setBuffButtonLib()
     if spec == 1 then
         iction.addButtonsToTable(aff_BuffList, iction.uiPlayerBuffButtons)
         iction.uiPlayerArtifact = aff_artifact
+    elseif spec == 2 then
+        iction.addButtonsToTable(demo_BuffList, iction.uiPlayerBuffButtons)
+        iction.uiPlayerArtifact = demo_artifact
     elseif spec == 3 then
         iction.addButtonsToTable(destro_BuffList, iction.uiPlayerBuffButtons)
         iction.uiPlayerArtifact = destro_artifact

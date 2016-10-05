@@ -125,7 +125,13 @@ function iction.initMainUI()
     iction.createBuffFrame()
     iction.createDebuffColumns()
     iction.setcastbar()
-    --- Column anchor for Cooldowns ---
+    iction.createColumnAnchor()
+end
+
+----------------------------------------------------------------------------------------------
+--- UI STUFF ---------------------------------------------------------------------------------
+function iction.createColumnAnchor()
+     --- Column anchor for Cooldowns ---
     iction.colAnchor = CreateFrame("Frame", "iction_CoolDown", iction.ictionMF)
     iction.colAnchor:SetFrameStrata("MEDIUM")
     local anch = iction.colAnchor:CreateTexture(nil, "ARTWORK")
@@ -139,8 +145,6 @@ function iction.initMainUI()
     iction.ictionMF:SetScale(iction.ictionScale)
 end
 
-----------------------------------------------------------------------------------------------
---- UI STUFF ---------------------------------------------------------------------------------
 function iction.createBottomBarArtwork()
     local barStrata = "BACKGROUND"
     local barTexLvL = "ARTWORK"
