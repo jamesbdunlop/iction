@@ -15,7 +15,8 @@ local aff_SpellList = {
 local aff_BuffList = {
                       manaTap = {name = "Mana Tap", isArtifact = false, isTalentSpell = true,  vis = true, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
                       reapSouls = {name = "Deadwind Harvester", isArtifact = false, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
-                      }
+                      Unending = {name = "Unending Resolve", isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
+}
 local aff_artifact = {
                       name = "Tormented Souls", isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
                       }
@@ -32,7 +33,7 @@ local destro_BuffList = {
                          manaTap = {name = "Mana Tap", isTalentSpell = true, vis = true, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
                          soulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
                          DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
-
+                         Unending = {name = "Unending Resolve", isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
 }
 
 local destro_artifact = {name = "Dimensional Rift", isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }

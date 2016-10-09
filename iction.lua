@@ -1,51 +1,20 @@
+-- IN PROGRESS
+-- Cleanup - base frame class for all frames to inherit
+
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
 -- When locking the ui again the atrifact frame needs to restore it's color correctly
 -- Add demo buttons
 -- Look for any other talent stuff that might need to be tracked
 -- Make it so the buff bar can be horizontal as well as vertical
--- Cleanup - base frame class for all frames to inherit
 -- Sniff out that emtpy button table issue coming from the watcher changes
---
+-- Add buff to destro for damage reduction procs
 
---- version alpha0.0.2
+--- version alpha0.0.3
 local iction = iction
-----------------------------------------------------------------------------------------------
---- CREATE GLOBAL MAIN FRAME ---
---- note: IctionMainWindow is now a global accessor to this frame
-iction.ictionMF = CreateFrame("Frame", "IctionMainWindow", UIParent)
-iction.ictionMF:SetPoint("CENTER", 0, 0);
---- Settings for mainFrame ---
-iction.ictionMF:SetMovable(true)
-iction.ictionMF:EnableMouse(false)
-iction.ictionMF:SetUserPlaced(true)
-iction.ictionMF:SetClampedToScreen(true)
-iction.ictionMF:SetFrameStrata("LOW")
-iction.ictionMF:SetWidth(iction.ictionMFW)
-iction.ictionMF:SetHeight(iction.ictionMFH)
-local bgF = iction.ictionMF:CreateTexture(nil, "ARTWORK")
-      bgF:SetAllPoints(true)
-      bgF:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-      bgF:SetVertexColor(.5, .5, .5, 0)
-iction.ictionMF.texture = bgF
-
-----------------------------------------------------------------------------------------------
---- CAST BAR ---
-function iction.setcastbar()
-    if iction.setCastBar then
-        CastingBarFrame:ClearAllPoints()
-        CastingBarFrame:SetPoint("CENTER",UIParent,"CENTER", iction.cbX, iction.cbY)
-        CastingBarFrame.SetPoint = function() end
-        CastingBarFrame:SetScale(iction.cbScale)
-    end
-end
-
-----------------------------------------------------------------------------------------------
---- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
 sframe:RegisterEvent("PLAYER_LOGIN")
-sframe:RegisterEvent("ADDON_LOADED")
 sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "PLAYER_LOGIN" ) then
         local localizedClass, _, _ = UnitClass("Player");
@@ -61,27 +30,18 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
-    if( event == "ADDON_LOADED" ) and arg1 == "iction" then
-        if ictionFramePos == nil then
-            ictionFramePos = {}
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting default frame positions...", 65, 35, 35);
-        end
-        if not ictionTargetCount then
-            iction.ict_maxTargets = 2
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2...", 65, 35, 35);
-        else
-            iction.ict_maxTargets = ictionTargetCount
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Set max count to ".. iction.ict_maxTargets, 100, 35, 35);
-        end
-        if ictionSetCastBar == nil then
-            iction.setCastBar = false
-        else
-            iction.setCastBar = ictionSetCastBar
-            if iction_cbx ~= nil then iction.cbX = iction_cbx end
-            if iction_cby ~= nil then iction.cbY = iction_cby end
-        end
-    end
 end)
+
+----------------------------------------------------------------------------------------------
+--- CAST BAR ---
+function iction.setcastbar()
+    if iction.setCastBar then
+        CastingBarFrame:ClearAllPoints()
+        CastingBarFrame:SetPoint("CENTER", UIParent, "CENTER", iction.cbX, iction.cbY)
+        CastingBarFrame.SetPoint = function() end
+        CastingBarFrame:SetScale(iction.cbScale)
+    end
+end
 
 ----------------------------------------------------------------------------------------------
 --- REGISTER THE SLASH COMMAND ---
@@ -114,7 +74,9 @@ SlashCmdList["ICTION"] = ictionArgs
 ----------------------------------------------------------------------------------------------
 --- BEGIN UI NOW ---
 function iction.initMainUI()
-    --- Setup the event watcher ---
+    --- Setup the mainFrame and Eventwatcher ---
+    local mainFrame = iction.UIElement
+    iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
     iction.ictionFrameWatcher(iction.ictionMF)
     --- Now fire off all the other build functions ---
     iction.createBottomBarArtwork()
@@ -125,192 +87,75 @@ function iction.initMainUI()
     iction.createBuffFrame()
     iction.createDebuffColumns()
     iction.setcastbar()
-    iction.createColumnAnchor()
 end
 
 ----------------------------------------------------------------------------------------------
 --- UI STUFF ---------------------------------------------------------------------------------
-function iction.createColumnAnchor()
-     --- Column anchor for Cooldowns ---
-    iction.colAnchor = CreateFrame("Frame", "iction_CoolDown", iction.ictionMF)
-    iction.colAnchor:SetFrameStrata("MEDIUM")
-    local anch = iction.colAnchor:CreateTexture(nil, "ARTWORK")
-          anch:SetAllPoints(true)
-          anch:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-          anch:SetVertexColor(.5, 1, .5, 0)
-    iction.colAnchor.texture = anch
-    iction.colAnchor:SetPoint("BOTTOM", iction.ictionMF, -2, 0)
-    iction.colAnchor:SetWidth(120)
-    iction.colAnchor:SetHeight(iction.bh)
-    iction.ictionMF:SetScale(iction.ictionScale)
-end
-
 function iction.createBottomBarArtwork()
-    local barStrata = "BACKGROUND"
-    local barTexLvL = "ARTWORK"
-    local botbar01 = {bg1 = {name = "iction_bg1", w=64, h=64,
-                             strata = barStrata, textureLevel = barTexLvL, parent = iction.ictionMF,
-                             centerOffsetX = -96, centerOffsetY = 0, bottomOffsetX = 0, bottomOffsetY = 2,
-                             texture = "Interface/AddOns/iction/media/bg/bg1"},
-                      bg2 = {name = "iction_bg2", w=64, h=64,
-                             strata = barStrata, textureLevel = barTexLvL, parent = iction.ictionMF,
-                             centerOffsetX = -32, centerOffsetY = 0, bottomOffsetX = 0, bottomOffsetY = 2,
-                             texture = "Interface/AddOns/iction/media/bg/bg2"},
-                      bg3 = {name = "iction_bg3", w=64, h=64,
-                             strata = barStrata, textureLevel = barTexLvL, parent = iction.ictionMF,
-                             centerOffsetX = 32, centerOffsetY = 0, bottomOffsetX = 0, bottomOffsetY = 2,
-                             texture = "Interface/AddOns/iction/media/bg/bg3"},
-                      bg4 = {name = "iction_bg4", w=64, h=64,
-                             strata = barStrata, textureLevel = barTexLvL, parent = iction.ictionMF,
-                             centerOffsetX = 96, centerOffsetY = 0, bottomOffsetX = 0, bottomOffsetY = 2,
-                             texture = "Interface/AddOns/iction/media/bg/bg4"}}
-    local botframe
-    for barName, barData in pairs(botbar01) do
-        botframe =  CreateFrame("Frame", barData['name'], barData['parent'])
-        botframe:SetFrameStrata(barData['strata'])
-        botframe:SetWidth(barData['w'])
-        botframe:SetHeight(barData['h'])
-        local ftx = botframe:CreateTexture(nil, barData['textureLevel'])
-              ftx:SetAllPoints(true)
-              ftx:SetTexture(barData['texture'])
-              ftx:SetVertexColor(1, 1, 1, 1)
-        botframe.texture = ftx
-        botframe:SetPoint("CENTER", barData['parent'], barData['centerOffsetX'], barData['centerOffsetY'])
-        botframe:SetPoint("BOTTOM", barData['parent'], barData['bottomOffsetX'], barData['bottomOffsetY'])
-        --- FRAMES MOUSE CLICK AND DRAG ---
-        botframe:SetScript("OnMouseDown", function(self, button)
-          if button == "LeftButton" and not iction.ictionMF.isMoving then
-           iction.ictionMF:StartMoving();
-           iction.ictionMF.isMoving = true;
-          end
-        end)
-        botframe:SetScript("OnMouseUp", function(self, button)
-          if button == "LeftButton" and iction.ictionMF.isMoving then
-           iction.ictionMF:StopMovingOrSizing();
-           iction.ictionMF.isMoving = false;
-          end
-        end)
-        table.insert(iction.uiBotBarArt, ftx)
+    local skin = iction.skinData[iction.skin]
+    for x = 1, 4 do
+        local barData = skin[x]
+        barData["uiParentFrame"] = iction.ictionMF
+        barData["point"]['p'] = iction.ictionMF
+        iction.skinFrameBldr = iction.UIElement
+        iction.skinFrame = iction.skinFrameBldr.create(iction.skinFrameBldr, barData)
+        iction.skinFrameBldr.setMoveScript(iction.skinFrame, iction.ictionMF, UIParent)
     end
-
 end
 
 function iction.createBuffFrame()
-    iction.buffFrame = CreateFrame("Frame", "iction_buffFrame", iction.ictionMF)
-    iction.buffFrame:SetFrameStrata("HIGH")
-    iction.buffFrame:EnableMouse(false)
-    iction.buffFrame:SetAttribute('name', 'Buff')
-    iction.buffFrame:SetWidth(128)
-    iction.buffFrame:SetHeight(32)
-    iction.buffFrame:SetBackdropColor(0,1,0,0)
-    if ictionFramePos['Buff'] == nil then
-        iction.buffFrame:SetPoint("BOTTOM", iction.ictionMF, -2, 5)
-        ictionFramePos['Buff'] = {x = -75, y = 20}
-    else
-        iction.buffFrame:SetPoint('CENTER', iction.ictionMF, ictionFramePos['Buff']['x'], ictionFramePos['Buff']['y'])
-    end
-    local ftx = iction.buffFrame:CreateTexture(nil, "ARTWORK")
-          ftx:SetAllPoints(true)
-          ftx:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-          ftx:SetVertexColor(1, 1, 1, 0)
-    iction.buffFrame.texture = ftx
+    iction.ictBuffFrameData['uiParentFrame'] = iction.ictionMF
+    iction.ictBuffFrameData['point']['p'] = iction.ictionMF
+    local buffFrame = iction.UIElement
+    iction.buffFrame = buffFrame.create(buffFrame, iction.ictBuffFrameData)
 end
 
 function iction.createDebuffColumns()
     iction.debuffColumns = {}
+    local x, y
     x = -(iction.bw*2 + iction.ictionMFW)
     y = -(iction.ictionMFH/2)
     for i = 1, 4 do
-        local frameName = "iction_col_".. i
-        local dFrame = CreateFrame("Frame", frameName, iction.ictionMF)
-              dFrame:SetAttribute('name', frameName)
-              if ictionFramePos[frameName] == nil then
-                  dFrame:ClearAllPoints()
-                  if i == 3 then x = x + iction.ictionMFW+50 end
-                  dFrame:SetPoint("CENTER", iction.ictionMF, "CENTER", x, y)
-                  ictionFramePos[frameName] = {x = x, y = y }
-                  x = x + 75
-              else
-                  dFrame:SetDontSavePosition()
-                  dFrame:ClearAllPoints()
-                  dFrame:SetPoint("CENTER", iction.ictionMF, ictionFramePos[frameName]['x'], ictionFramePos[frameName]['y'])
-              end
-              dFrame:SetMovable(true)
-              dFrame:EnableMouse(false)
-              dFrame:SetClampedToScreen(true)
-              dFrame:SetFrameStrata("BACKGROUND")
-              dFrame:SetWidth(iction.bw+5)
-              dFrame:SetHeight(iction.bh+5)
-        local bg = dFrame:CreateTexture("iction_col" .. i .. '_bg', "ARTWORK")
-              bg:SetAllPoints(true)
-              bg:SetTexture("Interface/AddOns/iction/media/"..i)
-              bg:SetVertexColor(1, 1, 1, 0)
-        dFrame.texture = bg
-        table.insert(iction.debuffColumns, dFrame)
+        if i == 3 then x = x + iction.ictionMFW+50 end
+        local colData = iction.ictDeBuffColumnData
+        colData["uiName"] = "iction_col_".. i
+        colData["uiParentFrame"] = iction.ictionMF
+        colData["nameAttr"] = "iction_col_".. i
+        colData["point"]["pos"] = "CENTER"
+        colData["point"]["p"] = iction.ictionMF
+        colData["point"]["x"] = x
+        colData["point"]["y"] = y
+        local debuffColumn = iction.UIElement
+        local deBfCol = debuffColumn.create(debuffColumn, colData)
+        debuffColumn.addTexture(deBfCol, "iction_col" .. i .. '_bg', 32, 28, "ARTWORK", true, nil, nil, nil, "Interface/AddOns/iction/media/"..i, .1, .5, .1, 0)
+        x = x + 75
+        table.insert(iction.debuffColumns, deBfCol)
     end
 end
 
 function iction.createShardFrame()
     iction.soulShards = {}
-    iction.shardFrame = CreateFrame("Frame", "iction_shardFrame", iction.ictionMF)
-    iction.shardFrame:SetFrameStrata("MEDIUM")
-    iction.shardFrame:EnableMouse(false)
-    iction.shardFrame:SetWidth(128)
-    iction.shardFrame:SetHeight(32)
-    iction.shardFrame:SetBackdropColor(1,1,1,1);
-    iction.shardFrame:SetPoint("BOTTOM", iction.ictionMF, 0, 50)
-    iction.shardFrame:SetPoint("CENTER", iction.ictionMF, 0, 0)
-    local shards = {shd1 = {name = "shard-01", w = 32, h = 22, strata = "ARTWORK", parent = iction.shardFrame,
-                            leftOffsetX = 5, leftOffsetY = 0, icon = "Interface/AddOns/iction/media/icons/soulShard"},
-                    shd2 = {name = "shard-02", w = 32, h = 28, strata = "ARTWORK", parent = iction.shardFrame,
-                            leftOffsetX = 28, leftOffsetY = 3, icon = "Interface/AddOns/iction/media/icons/soulShard" },
-                    shd3 = {name = "shard-03", w = 32, h = 32, strata = "ARTWORK", parent = iction.shardFrame,
-                            leftOffsetX = 51, leftOffsetY = 5, icon = "Interface/AddOns/iction/media/icons/soulShard"},
-                    shd4 = {name = "shard-04", w = 32, h = 36, strata = "ARTWORK", parent = iction.shardFrame,
-                            leftOffsetX = 74, leftOffsetY = 7, icon = "Interface/AddOns/iction/media/icons/soulShard"},
-                    shd5 = {name = "shard-05", w = 32, h = 42, strata = "ARTWORK", parent = iction.shardFrame,
-                            leftOffsetX = 95, leftOffsetY = 9, icon = "Interface/AddOns/iction/media/icons/soulShard"},
-                    }
-    for x = 1, 5 do
-        local shardData = shards["shd" .. x]
-        local shrd = iction.shardFrame:CreateTexture(shardData['name'], shardData['strata'])
-              shrd:SetPoint("LEFT", shardData['leftOffsetX'], shardData['leftOffsetY'])
-              shrd:SetWidth(shardData["w"])
-              shrd:SetHeight(shardData["h"])
-              shrd:SetTexture(shardData["icon"])
-              shrd:SetVertexColor(1, 1, 1, 1)
-        iction.shardFrame.texture = shrd
-        table.insert(iction.soulShards, shrd)
-    end
+    local shardData = iction.ictShardData
+    shardData["uiParentFrame"] = iction.ictionMF
+    shardData["point"]["p"] = iction.ictionMF
+    iction.shardFrameBldr = iction.UIElement
+    iction.shardFrame = iction.shardFrameBldr.create(iction.shardFrameBldr, shardData)
+    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrame, "shard-01", 32, 22, "ARTWORK", nil, "LEFT", 5, 0, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
+    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrame, "shard-02", 32, 28, "ARTWORK", nil, "LEFT", 28, 3, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
+    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrame, "shard-03", 32, 32, "ARTWORK", nil, "LEFT", 51, 5, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
+    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrame, "shard-04", 32, 36, "ARTWORK", nil, "LEFT", 74, 7, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
+    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrame, "shard-05", 32, 42, "ARTWORK", nil, "LEFT", 95, 9, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
 end
 
 function iction.createConflagFrame()
     iction.conflags = {}
-    iction.conflagFrame = CreateFrame("Frame", "iction_conflagFrame", iction.ictionMF)
-    iction.conflagFrame:SetFrameStrata("MEDIUM")
-    iction.conflagFrame:EnableMouse(false)
-    iction.conflagFrame:SetWidth(128)
-    iction.conflagFrame:SetHeight(32)
-    iction.conflagFrame:SetBackdropColor(1,1,1,1);
-    iction.conflagFrame:SetPoint("BOTTOM", iction.ictionMF, 0, 80)
-    iction.conflagFrame:SetPoint("CENTER", iction.ictionMF, 0, 0)
-    local conf01 = iction.conflagFrame:CreateTexture("conflag-01", "ARTWORK")
-          conf01:SetPoint("LEFT", 15, 0)
-          conf01:SetWidth(15)
-          conf01:SetHeight(15)
-          conf01:SetTexture("Interface/AddOns/iction/media/icons/conflag")
-          conf01:SetVertexColor(1, 1, 1, 1)
-    local conf02 = iction.conflagFrame:CreateTexture("conflag-02", "ARTWORK")
-          conf02:SetPoint("LEFT", 35, 0)
-          conf02:SetWidth(15)
-          conf02:SetHeight(15)
-          conf02:SetTexture("Interface/AddOns/iction/media/icons/conflag")
-          conf02:SetVertexColor(1, 1, 1, 1)
-
-    iction.conflagFrame.texture = conf01
-    iction.conflagFrame.texture = conf02
-    table.insert(iction.conflags, conf01)
-    table.insert(iction.conflags, conf02)
+    local conflagData = iction.ictConflagData
+    conflagData["uiParentFrame"] = iction.ictionMF
+    conflagData["point"]["p"] = iction.ictionMF
+    iction.conflagFrameBldr = iction.UIElement
+    iction.conflagFrame = iction.conflagFrameBldr.create(iction.conflagFrameBldr, conflagData)
+    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-01", 15, 15, "ARTWORK", nil, "LEFT", 15, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 1))
+    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 1))
 end
 
 function iction.createArtifactFrame()
@@ -491,9 +336,9 @@ function iction.setMovable(f, isMovable)
            f:SetParent(iction.ictionMF)
            local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
            local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
-           ictionFramePos[frameName]['x'] = xOffset-MFxOffset
-           ictionFramePos[frameName]['y'] = yOffset-MFyOffset
-           f:SetPoint("CENTER", iction.ictionMF, ictionFramePos[frameName]['x'], ictionFramePos[frameName]['y'])
+           ictionFramePos[frameName]['point']['x'] = xOffset-MFxOffset
+           ictionFramePos[frameName]['point']['y'] = yOffset-MFyOffset
+           f:SetPoint("CENTER", iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
           end
         end)
     else

@@ -67,14 +67,16 @@ function iction.createButtons(frm, guid, spellType)
     -- If we've created a new frame add the buttons
     iction.targetButtons[guid] = {}
     local padX, padY
-    padX = 0
-    padY = iction.ictionButtonFramePad
     local b, fnt
     if spellType == 'DEBUFF' then
+        padX = 0
+        padY = iction.ictionButtonFramePad
         if frm:GetAttribute("name") == 'ictionDeBuffFrame' then
             b, fnt = iction.addButtons(frm, guid, iction.uiPlayerSpellButtons, padX, padY, false)
         end
     else
+        padX = iction.ictionButtonFramePad
+        padY = 0
         if frm:GetAttribute("name") == 'ictionBuffFrame' then
             b, fnt = iction.addButtons(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
         end

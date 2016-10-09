@@ -142,26 +142,15 @@ end
 ----------------------------------------------------------------------------------------------
 --- TIMERS UI UTILS --------------------------------------------------------------------------
 function iction.calcFrameSize(Tbl)
-    local fsize = iction.ictionButtonFramePad
-    for key, value in pairs(Tbl) do
-        if iction.ictionHorizontal == false then
-            fsize = fsize + iction.bh
-        else
-            fsize = fsize + iction.bw
-        end
-    end
-    fsize = fsize + iction.ictionButtonFramePad
-
     local cfh, cfw
-    if not iction.ictionHorizontal  then
-        cfh = fsize
-        cfw = iction.bh + 5 -- frame edge padding
-        return cfw, cfh
-    else
-        cfh = iction.bh + 5 -- frame edge padding
-        cfw = fsize
-        return cfw, cfh
+    local fsize = iction.ictionButtonFramePad *2
+
+    for key, value in pairs(Tbl) do
+        fsize = fsize + iction.bw
     end
+    cfh = fsize
+    cfw = iction.bh + 5 -- frame edge padding
+    return cfw, cfh
 end
 
 function iction.setFrameManaTapColor(frame)

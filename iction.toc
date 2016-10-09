@@ -8,17 +8,26 @@
 ##SavedVariablesPerCharacter: ictionSetCastBar
 ##SavedVariablesPerCharacter: iction_cbx
 ##SavedVariablesPerCharacter: iction_cby
+##SavedVariablesPerCharacter: ictionGlobalScale
+##SavedVariablesPerCharacter: ictionSkin
+##
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml
 #@end-no-lib-strip@
 
-ict_core.lua
-ict_framePos.lua
-ict_options.lua
-ict_utils.lua
-ict_buttonLib.lua
-ict_button.lua
-ict_timers.lua
-ict_spellFrame.lua
-ict_target.lua
+core\ict_core.lua
+core\ictFrame.lua
+core\ict_options.lua
+core\ict_utils.lua
+core\ict_buttonLib.lua
+core\ict_button.lua
+core\ict_timers.lua
+core\ict_spellFrame.lua
+core\ict_target.lua
+frames\mainFrame.lua
+frames\buffFrame.lua
+frames\debuffFrame.lua
+frames\shardFrame.lua
+frames\conflagFrame.lua
+frames\skins.lua
 iction.lua

@@ -42,8 +42,11 @@ function iction.createPlayerBuffFrame()
     if not iction.targetFrames[iction.playerGUID] then
         local fw, fh
         local offset
-        fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
-
+        if iction.ictionBuffFrameHorizontal then
+            fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        else
+            fh, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        end
         local butCount = iction.tablelength(iction.uiPlayerBuffButtons)
         iction.targetFrames[iction.playerGUID] = CreateFrame("Frame", nil, iction.buffFrame)
         iction.targetFrames[iction.playerGUID]:SetAttribute("name", 'ictionBuffFrame')
@@ -53,8 +56,8 @@ function iction.createPlayerBuffFrame()
         iction.targetFrames[iction.playerGUID]:SetBackdropColor(1,1,1, 1)
         iction.targetFrames[iction.playerGUID]:SetWidth(fw)
         iction.targetFrames[iction.playerGUID]:SetHeight(fh)
-        iction.targetFrames[iction.playerGUID]:SetPoint("TOP", "iction_buffFrame", 0, 0 )
-        iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", "iction_buffFrame", 0, 0)
+        iction.targetFrames[iction.playerGUID]:SetPoint("TOP", iction.buffFrame, 0, 0 )
+        iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", iction.buffFrame, 0, 0)
 
         return iction.targetFrames[iction.playerGUID]
     else
