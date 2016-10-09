@@ -74,7 +74,7 @@ function iction.addButtonsToTable(buttonList, desttable)
             end
         end
 
-        if insert then
+        if insert and data['vis'] then
             table.insert(desttable, {name = data['name'],
                                      h = iction.bh,
                                      w = iction.bw,

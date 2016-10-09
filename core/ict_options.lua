@@ -141,7 +141,7 @@ function iction.setOptionsFrame()
         if ictionTargetCount == 4 then ict_MaxTarget4Input:SetChecked(true) setCount = 4 end
 
         ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_UnlockCBx.tooltip = "Set targets to track to 4. \nNote: Changing count will reload the UI on close."
+        ict_UnlockCBx.tooltip = "Unlock moveable ui elements. Uncheck to lock again."
         ict_UnlockCBx:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         ict_UnlockCBx:SetPoint("BOTTOM", iction.OptionsFrame, 0, 10)
         ict_UnlockCBxtext = _G["ict_unlockText"]
