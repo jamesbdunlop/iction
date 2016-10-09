@@ -4,11 +4,15 @@
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
 -- When locking the ui again the atrifact frame needs to restore it's color correctly
--- Add demo buttons
+-- handle absolute corruption id change 146739
+-- handle drainsoul talent switching to drain life 196098
 -- Look for any other talent stuff that might need to be tracked
 -- Make it so the buff bar can be horizontal as well as vertical
 -- Sniff out that emtpy button table issue coming from the watcher changes
 -- Add buff to destro for damage reduction procs
+-- add hover info to buttons
+-- add Agony charge counter 1 2 3 - 20
+-- Add demo buttons?? boo hiss
 
 --- version alpha0.0.3
 local iction = iction

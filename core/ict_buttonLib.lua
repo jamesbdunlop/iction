@@ -6,16 +6,21 @@ local activeSpellBookSpells = {}
 local aff_SpellList = {
                         UA = {name = "Unstable Affliction", isTalentSpell = false, vis = true, id = 30108, uration = 5, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/unstableAffliction"},
                         Corruption = {name = "Corruption", isTalentSpell = false, vis = true, id = 172, duration = 15, maxTime = 17.9, icon = "Interface/AddOns/iction/media/icons/corruption"},
-                        DrainSoul = {name = "Drain Soul", isTalentSpell = false, vis = true, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
+                        DrainSoul = {name = "Drain Soul", isTalentSpell = true, vis = true, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
+                        DrainLife = {name = "Drain Life", isTalentSpell = false, vis = false, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
                         Agony = {name = "Agony", isTalentSpell = false, vis = true, id = 980, duration = 17, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
-                        SiphonLife = {name = "Siphon Life", isTalentSpell = false, vis = true, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
+                        SiphonLife = {name = "Siphon Life", isTalentSpell = true, vis = true, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
                         Seed = {name = "Seed of Corruption", isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 13.9, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"},
+                        PhantomSingularity = {name = "Phantom Singularity", isTalentSpell = true, vis = true, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
                         }
 -- healthFunnel
 local aff_BuffList = {
                       manaTap = {name = "Mana Tap", isArtifact = false, isTalentSpell = true,  vis = true, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
                       reapSouls = {name = "Deadwind Harvester", isArtifact = false, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
                       Unending = {name = "Unending Resolve", isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
+                      SoulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
+                      BurningRush = {name = "Burning Rush", isTalentSpell = true, vis = true, id = 111400, duration = 999, maxTime = 999, icon = ""},
+                      DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
 }
 local aff_artifact = {
                       name = "Tormented Souls", isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
@@ -34,6 +39,7 @@ local destro_BuffList = {
                          soulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
                          DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
                          Unending = {name = "Unending Resolve", isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
+                         BurningRush = {name = "Burning Rush", isTalentSpell = true, vis = true, id = 111400, duration = 999, maxTime = 999, icon = ""},
 }
 
 local destro_artifact = {name = "Dimensional Rift", isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
@@ -61,6 +67,8 @@ function iction.addButtonsToTable(buttonList, desttable)
                     local talentID, name, texture, selected, available = GetTalentInfo(x, c, 1)
                     if name == data['name'] and selected then
                         insert = true
+                    elseif name == data['name'] and data['name'] == 'Drain Soul' then
+                        buttonList['DrainLife']['vis'] = true
                     end
                 end
             end
