@@ -11,7 +11,7 @@ iction.ictionMFH = 64
 iction.ictionMFW = 128
 iction.ictionScale = 1
 iction.ictionHorizontal = false
-iction.ictionBuffFrameHorizontal = true
+iction.buffFrameHorizontal = true
 iction.ictionSpellAnchorOffset = 65
 iction.ictionButtonFramePad = 5
 iction.targetData = {}     -- {GUID = {name = creatureName, spellData = {spellName = {name=spellName, endtime=float}}}}
