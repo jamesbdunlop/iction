@@ -10,7 +10,7 @@ function iction.setOptionsFrame()
         iction.OptionsFrame:SetMovable(true)
         iction.OptionsFrame:SetUserPlaced(true)
         iction.OptionsFrame:SetWidth(300)
-        iction.OptionsFrame:SetHeight(180)
+        iction.OptionsFrame:SetHeight(300)
         iction.OptionsFrame:SetBackdropColor(1, 0, 0, 1)
 
         local OptionsBgT = iction.OptionsFrame:CreateTexture(nil, "BACKGROUND")
@@ -73,12 +73,28 @@ function iction.setOptionsFrame()
                                 end
                             end)
 
+        ict_BBarHorizontalButton = CreateFrame("CheckButton", "ict_BBarHorizontalButton", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
+        ict_BBarHorizontalButton.tooltip = "Set buffBar to be horizontal or not."
+        bbhtext = _G["ict_BBarHorizontalButtonText"]
+        if ictionBuffBarBarH then ict_BBarHorizontalButton:SetChecked(true) end
+        ict_BBarHorizontalButton:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
+        ict_BBarHorizontalButton:SetPoint("TOP", iction.OptionsFrame, 0, -40)
+        bbhtext:SetText("Horizontal BuffBar?")
+        ict_BBarHorizontalButton:SetScript("OnClick", function()
+            if ict_BBarHorizontalButton:GetChecked() then
+                PlaySound("igMainMenuOptionCheckBoxOn")
+                ictionBuffBarBarH = true
+            else
+                ictionBuffBarBarH = false
+                end
+        end)
+
         iction.TargetOptionsFrame = CreateFrame('Frame', 'TargetOptionsFrame', iction.OptionsFrame, "InsetFrameTemplate")
         iction.TargetOptionsFrame:SetFrameStrata("MEDIUM")
         iction.TargetOptionsFrame:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
         iction.TargetOptionsFrame:SetPoint("RIGHT", iction.OptionsFrame, -20, 0)
-        iction.TargetOptionsFrame:SetPoint("TOP", iction.OptionsFrame, -20, -35)
-        iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, 35)
+        iction.TargetOptionsFrame:SetPoint("TOP", iction.OptionsFrame, -20, -65)
+        iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, 95)
 
         ict_MaxTarget1Input = CreateFrame("CheckButton", "ict_maxCount1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget1Input.tooltip = "Set targets to track to 1. \nNote: Changing count will reload the UI on close."

@@ -6,6 +6,7 @@
 ##SavedVariablesPerCharacter: ictionFramePos
 ##SavedVariablesPerCharacter: ictionTargetCount
 ##SavedVariablesPerCharacter: ictionSetCastBar
+##SavedVariablesPerCharacter: ictionBuffBarBarH
 ##SavedVariablesPerCharacter: iction_cbx
 ##SavedVariablesPerCharacter: iction_cby
 ##SavedVariablesPerCharacter: ictionGlobalScale

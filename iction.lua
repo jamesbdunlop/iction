@@ -20,6 +20,7 @@
     -- Dark Pact
 -- Handling drainLife switching to drain soul for affliction. Needs a reloadUI though.
 -- Frame creation overhaul (still in progress)
+-- Added valid spell check to ignore any spells cast outside of playerBuffButtons or spellButtons tables
 
 --- version alpha0.0.3
 local iction = iction
@@ -258,16 +259,29 @@ function iction.ictionFrameWatcher()
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
                     if eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then --eventName == "SPELL_CAST_SUCCESS" or
-                        -- Add Target
-                        if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
-                            iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
-                        elseif sufx4 == 'Agony'  then -- seriously wtf Agony you SUCK
-                            iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
-                        elseif sufx6 == 'DEBUFF' then
-                            iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
-                            iction.highlightTargetSpellframe(prefix2)
-                        elseif sufx6 == 'BUFF' then
-                            iction.createTarget(prefix2, prefix3, sufx4, sufx6)
+                        validSpell = false
+                        for _, v in pairs(iction.uiPlayerSpellButtons) do
+                            if v['name'] == sufx4 then
+                                validSpell = true
+                            end
+                        end
+                        for _, v in pairs(iction.uiPlayerBuffButtons) do
+                            if v['name'] == sufx4 then
+                                validSpell = true
+                            end
+                        end
+                        if validSpell then
+                            -- Add Target
+                            if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
+                                iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
+                            elseif sufx4 == 'Agony'  then -- seriously wtf Agony you SUCK
+                                iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
+                            elseif sufx6 == 'DEBUFF' then
+                                iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
+                                iction.highlightTargetSpellframe(prefix2)
+                            elseif sufx6 == 'BUFF' then
+                                iction.createTarget(prefix2, prefix3, sufx4, sufx6)
+                            end
                         end
                     elseif eventName == "SPELL_AURA_REMOVED" then
                         -- Set frame accordingly
