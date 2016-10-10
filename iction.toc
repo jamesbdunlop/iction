@@ -30,5 +30,7 @@ frames\buffFrame.lua
 frames\debuffFrame.lua
 frames\shardFrame.lua
 frames\conflagFrame.lua
+frames\artifactFrame.lua
+frames\highlightFrame.lua
 frames\skins.lua
 iction.lua

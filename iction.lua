@@ -175,44 +175,23 @@ function iction.createArtifactFrame()
     local icon
     local artifact = iction.uiPlayerArtifact
     if next(artifact) ~= nil then
-        iction.artifactFrame = CreateFrame("Button", "iction_artifactFrame", iction.ictionMF)
-        iction.artifactFrame:SetAttribute('name', 'Artifact')
-        iction.artifactFrame:SetFrameStrata("MEDIUM")
-        iction.artifactFrame:SetMovable(true)
-        iction.artifactFrame:EnableMouse(false)
-        iction.artifactFrame:SetWidth(iction.bw)
-        iction.artifactFrame:SetHeight(iction.bh)
-        iction.artifactFrame:SetBackdropColor(1,1,1,1);
-        if ictionFramePos['Artifact'] == nil then
-            --iction.artifactFrame:SetPoint("BOTTOM", iction.ictionMF, 0, 20)
-            iction.artifactFrame:SetPoint("CENTER", iction.ictionMF, -75, 20)
-            ictionFramePos['Artifact'] = {x = -75, y = 20}
-        else
-            iction.artifactFrame:SetPoint('CENTER', iction.ictionMF, ictionFramePos['Artifact']['x'], ictionFramePos['Artifact']['y'])
-        end
-        local arti01 = iction.artifactFrame:CreateTexture("artifact-01", "ARTWORK")
-              arti01:SetAllPoints(true)
-              local file_id = GetSpellTexture(artifact['id'])
-              arti01:SetTexture(file_id)--artifact['icon'])
-              arti01:SetVertexColor(1, 1, 1, 1)
-                -- Create the fontString for the button
-        local fnt = iction.artifactFrame:CreateFontString(nil, "OVERLAY")
-              fnt:SetFont(iction.font, 28, "OVERLAY", "THICKOUTLINE")
-              fnt:SetPoint("CENTER", iction.artifactFrame, 8, -10)
-              fnt:SetTextColor(.1, 1, .1, 1)
-              fnt:SetFontObject("GameFontWhite")
-        iction.artifactFrame.text = fnt
-        iction.artifactFrame.texture = arti01
+        local artifactData = iction.ictArtifactFrameData
+        artifactData["uiParentFrame"] = iction.ictionMF
+        artifactData["point"]["p"] = iction.ictionMF
+        iction.artifactFrameBldr = iction.UIElement
+        iction.artifactFrame = iction.artifactFrameBldr.create(iction.artifactFrameBldr, artifactData)
+        iction.artifactFrame.texture = iction.artifactFrameBldr.addTexture(iction.artifactFrame, "artifact-01", 15, 15, "ARTWORK", true, nil, nil, nil, GetSpellTexture(artifact['id']), 1, 1, 1, 1)
+        iction.artifactFrame.text = iction.artifactFrameBldr.addFontSring(iction.artifactFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 28, 1, 1, 1, 1)
         local function _onUpdate()
             local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", artifact['name'])
             local charges, _, _, _ = GetSpellCharges(artifact['name'])
             if count == nil and charges == nil then
-                iction.setButtonText(0, true, fnt)
+                iction.setButtonText(0, true, iction.artifactFrame.text)
             elseif count then
-                iction.setButtonText(count, false, fnt)
+                iction.setButtonText(count, false, iction.artifactFrame.text)
             else
                 if charges then
-                    iction.setButtonText(charges, false, fnt)
+                    iction.setButtonText(charges, false, iction.artifactFrame.text)
                 end
             end
         end
@@ -222,18 +201,14 @@ end
 
 function iction.createHighlightFrame()
     local fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
-    iction.highlightFrame = CreateFrame("Frame", "iction_highlightFrame", nil)
-    iction.highlightFrame:EnableMouse(false)
-    iction.highlightFrame:SetWidth(fw)
-    iction.highlightFrame:SetHeight(fh)
-    iction.highlightFrame:SetFrameStrata("HIGH")
-    local bghl = iction.highlightFrame:CreateTexture('ict_highlightTexture', "ARTWORK")
-          bghl:SetAllPoints(true)
-          bghl:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-          bghl:SetVertexColor(.1, .6, .1, 0)
-    iction.highlightFrame.texture = bghl
-    iction.highlightFrame:SetPoint("CENTER", 0, 0)
-    iction.highlightFrame:Show()
+    local highlightData = iction.ictHighLightFrameData
+    highlightData["uiParentFrame"] = iction.ictionMF
+    highlightData["w"] = fw
+    highlightData["h"] = fh
+    highlightData["point"]["p"] = iction.ictionMF
+    iction.highlightFrameBldr = iction.UIElement
+    iction.highlightFrame = iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
+    local bghl = iction.highlightFrameBldr.addTexture(iction.highlightFrame, "ict_highlightTexture", 15, 15, "ARTWORK", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
     return bghl
 end
 

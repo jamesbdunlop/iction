@@ -113,3 +113,17 @@ function iction.UIElement.addTexture(self, name, w, h, strata, allPoints, anchor
     self.texture = AddTextre
     return AddTextre
 end
+
+function iction.UIElement.addFontSring(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
+    local Addfnt = self:CreateFontString(nil, strata)
+        if allPoints then
+            Addfnt:SetAllPoints(true)
+        else
+            Addfnt:SetPoint(anchorPoint, x, y)
+        end
+        Addfnt:SetFont(iction.font, size, strata, outline)
+        Addfnt:SetFontObject("GameFontWhite")
+        Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
+    self.text = Addfnt
+    return Addfnt
+end
