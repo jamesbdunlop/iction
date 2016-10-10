@@ -3,16 +3,23 @@
 
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
--- When locking the ui again the atrifact frame needs to restore it's color correctly
 -- handle absolute corruption id change 146739
--- handle drainsoul talent switching to drain life 196098
 -- Look for any other talent stuff that might need to be tracked
--- Make it so the buff bar can be horizontal as well as vertical
--- Sniff out that emtpy button table issue coming from the watcher changes
--- Add buff to destro for damage reduction procs
+-- Add option for buffFrame to be horizontal or vertical.
 -- add hover info to buttons
 -- add Agony charge counter 1 2 3 - 20
 -- Add demo buttons?? boo hiss
+
+-- Changelog
+-- Fixed atrifact frame texture on locking ui again
+-- Added various spells from the talent trees
+    -- Burning Rush
+    -- PhantomSingularity
+    -- SoulHarvest
+    -- Unending Resolve
+    -- Dark Pact
+-- Handling drainLife switching to drain soul for affliction. Needs a reloadUI though.
+-- Frame creation overhaul (still in progress)
 
 --- version alpha0.0.3
 local iction = iction
@@ -299,12 +306,13 @@ function iction.unlockUIElements(isMovable)
     local cols = iction.debuffColumns
     if isMovable then
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, .3)
-        iction.artifactFrame.texture:SetVertexColor(.1, .1, .1, 0)
+        iction.artifactFrame.texture:SetVertexColor(.1, 1, .1, 1)
         iction.setMovable(iction.artifactFrame, isMovable)
         iction.setMovable(iction.buffFrame, isMovable)
     else
         iction.setMovable(iction.artifactFrame, isMovable)
         iction.setMovable(iction.buffFrame, isMovable)
+        iction.artifactFrame.texture:SetVertexColor(1, 1, 1, 1)
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
         iction.buffFrame.texture:SetVertexColor(.1, .1, .1, 0)
     end

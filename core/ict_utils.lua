@@ -179,12 +179,14 @@ function iction.hideFrame(guid, isDead, spName, spType)
             iction.targetFrames[guid]:SetBackdropColor(0,0,0, 1)
             -- set the buttons for this frame to invis
             -- {GUID = {buttonFrames = {spellName = ButtonFrame}, buttonText = {spellName = fontString}}}
-            for spellName, buttonFrame in pairs(iction.targetButtons[guid]['buttonFrames']) do
-                iction.setButtonState(false, true, buttonFrame)
-            end
-            -- set text
-            for spellName, buttonText in pairs(iction.targetButtons[guid]['buttonText']) do
-                buttonText:SetText("")
+            if iction.targetButtons[guid]['buttonFrames'] ~= nil then
+                for spellName, buttonFrame in pairs(iction.targetButtons[guid]['buttonFrames']) do
+                    iction.setButtonState(false, true, buttonFrame)
+                end
+                -- set text
+                for spellName, buttonText in pairs(iction.targetButtons[guid]['buttonText']) do
+                    buttonText:SetText("")
+                end
             end
         else
             -- set backdrop
