@@ -6,7 +6,6 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
     if freeSlot and not iction.targetFrames[guid] then
         local fw, fh
         fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
-
         local spellFrameData = iction.ictSpellFrameData
         spellFrameData["uiParentFrame"] = nil --"iction_"..colID
         spellFrameData["point"]['p'] = "iction_"..colID
@@ -39,15 +38,15 @@ function iction.createPlayerBuffFrame()
         else
             fh, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
         end
-        local butCount = iction.tablelength(iction.uiPlayerBuffButtons)
-        iction.targetFrames[iction.playerGUID] = CreateFrame("Frame", nil, iction.buffFrame)
-        iction.targetFrames[iction.playerGUID]:SetAttribute("name", 'ictionBuffFrame')
-        iction.targetFrames[iction.playerGUID]:EnableMouse(false)
-        iction.targetFrames[iction.playerGUID]:SetClampedToScreen(true)
-        iction.targetFrames[iction.playerGUID]:SetFrameStrata("MEDIUM")
-        iction.targetFrames[iction.playerGUID]:SetBackdropColor(1,1,1, 1)
-        iction.targetFrames[iction.playerGUID]:SetWidth(fw)
-        iction.targetFrames[iction.playerGUID]:SetHeight(iction.bh+5)
+        local buffFrameData = iction.ictSpellFrameData
+        buffFrameData["uiParentFrame"] = iction.buffFrame
+        buffFrameData["point"]['p'] = iction.buffFrame
+        buffFrameData["nameAttr"] = "ictionBuffFrame"
+        buffFrameData["strata"] = "MEDIUM"
+        buffFrameData['w'] = fw
+        buffFrameData['h'] = iction.bh+5
+        iction.buffFrameBldr = iction.UIElement
+        iction.targetFrames[iction.playerGUID] = iction.buffFrameBldr.create(iction.buffFrameBldr, buffFrameData)
         if iction.buffFrameHorizontal then
             iction.targetFrames[iction.playerGUID]:SetPoint("LEFT", iction.buffFrame, 0, 0)
         else

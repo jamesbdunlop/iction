@@ -22,8 +22,6 @@ local ictDefaultFrameData = {uiType = "Frame",
 
 function iction.UIElement.create(self, data)
     local attrName = data['nameAttr']
-    print("creating frame: " .. attrName)
-    print("parent: " .. tostring(data['uiParentFrame']))
     if not ictionFramePos[attrName] then
         ictionFramePos[attrName] = {}
         ictionFramePos[attrName]["point"] = {}
