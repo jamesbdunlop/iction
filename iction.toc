@@ -11,6 +11,7 @@
 ##SavedVariablesPerCharacter: iction_cby
 ##SavedVariablesPerCharacter: ictionGlobalScale
 ##SavedVariablesPerCharacter: ictionSkin
+##SavedVariablesPerCharacter: ictionLegacy
 ##
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml
@@ -32,5 +33,6 @@ frames\shardFrame.lua
 frames\conflagFrame.lua
 frames\artifactFrame.lua
 frames\highlightFrame.lua
+frames\spellFrame.lua
 frames\skins.lua
 iction.lua

@@ -5,24 +5,13 @@
 -- Make it so when felflame is on cooldown the button is red
 -- handle absolute corruption id change 146739
 -- Look for any other talent stuff that might need to be tracked
--- Add option for buffFrame to be horizontal or vertical.
--- add hover info to buttons
--- add Agony charge counter 1 2 3 - 20
--- Add demo buttons?? boo hiss
+-- add Agony/UA charge counter 1 2 3 - 20 ??
+-- Add demo buttons?
 
--- Changelog
--- Fixed atrifact frame texture on locking ui again
--- Added various spells from the talent trees
-    -- Burning Rush
-    -- PhantomSingularity
-    -- SoulHarvest
-    -- Unending Resolve
-    -- Dark Pact
--- Handling drainLife switching to drain soul for affliction. Needs a reloadUI though.
--- Frame creation overhaul (still in progress)
--- Added valid spell check to ignore any spells cast outside of playerBuffButtons or spellButtons tables
+-- Changelog alpha2.0.2
+--
 
---- version alpha0.0.3
+--- version alpha2.0.2
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon

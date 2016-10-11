@@ -41,10 +41,9 @@ local sframe = CreateFrame("Frame", 'ictionRoot')
 sframe:RegisterEvent("ADDON_LOADED")
 sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
-        --ictionFramePos = nil
+        if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
         if not ictionFramePos then ictionFramePos = {} end
         if not ictionSkin then iction.skin = 01 else iction.skin = ictionSkin end
-
         if not ictionTargetCount then
             iction.ict_maxTargets = 2
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2...", 65, 35, 35);

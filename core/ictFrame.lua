@@ -22,6 +22,8 @@ local ictDefaultFrameData = {uiType = "Frame",
 
 function iction.UIElement.create(self, data)
     local attrName = data['nameAttr']
+    print("creating frame: " .. attrName)
+    print("parent: " .. tostring(data['uiParentFrame']))
     if not ictionFramePos[attrName] then
         ictionFramePos[attrName] = {}
         ictionFramePos[attrName]["point"] = {}
@@ -50,6 +52,7 @@ function iction.UIElement.create(self, data)
     -- Texture
     self.texture = self.createTexture(self, self.data['texture'])
     self.frame.texture = self.texture
+    print('Success')
     return self.frame
 end
 
@@ -69,7 +72,6 @@ end
 
 function iction.UIElement.setPoints(self)
     local attrName = self.data['nameAttr']
-    print('Setting point for ' ..  attrName)
     self.frame:ClearAllPoints()
     self.frame:SetPoint(self.data["point"]['pos'], self.data["point"]['p'], self.data["point"]['x'], self.data["point"]['y'])
 end

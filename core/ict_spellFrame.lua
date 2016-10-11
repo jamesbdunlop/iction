@@ -4,30 +4,22 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
     if iction.debug then print("Dbg: iction.createSpellFrame for " .. tostring(creatureName)) end
     local freeSlot, colID = iction.findSlot(guid)
     if freeSlot and not iction.targetFrames[guid] then
-        iction.targetFrames[guid] = CreateFrame("Frame", nil)
-        iction.targetFrames[guid]:SetAttribute("name", 'ictionDeBuffFrame')
-        iction.targetFrames[guid]:EnableMouse(false)
-        iction.targetFrames[guid]:SetFrameStrata("HIGH")
-        iction.targetFrames[guid]:SetBackdropColor(0, 0, 0, 0)
-        -- Set draw for frame
-        local bg = iction.targetFrames[guid]:CreateTexture(nil, "ARTWORK")
-              bg:SetAllPoints(true)
-              bg:SetTexture(bgFile)
-              bg:SetVertexColor(0, 0, 0, 0)
-        iction.targetFrames[guid].texture = bg
-        -- Set the height of the frame based on the number of buttons
         local fw, fh
         fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
-        iction.targetFrames[guid]:SetWidth(fw)
-        iction.targetFrames[guid]:SetHeight(fh)
 
+        local spellFrameData = iction.ictSpellFrameData
+        spellFrameData["uiParentFrame"] = nil --"iction_"..colID
+        spellFrameData["point"]['p'] = "iction_"..colID
+        spellFrameData['w'] = fw
+        spellFrameData['h'] = fh
+        iction.spellFrameBldr = iction.UIElement
+        iction.targetFrames[guid] = iction.spellFrameBldr.create(iction.spellFrameBldr, spellFrameData)
+        iction.targetFrames[guid]:SetParent("iction_"..colID)
+        iction.spellFrameBldr.addTexture(iction.targetFrames[guid], "iction_"..colID, 32, 28, "ARTWORK", true, nil, nil, nil, bgFile, .2, .1, .1, 1)
         -- Set frame to be an active column in the debuff columns table
         iction.targetCols[colID]['guid'] = guid
         iction.targetCols[colID]['active'] = true
 
-        iction.targetFrames[guid]:SetPoint("CENTER", "iction_"..colID)
-        iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_"..colID)
-        iction.targetFrames[guid]:SetParent("iction_"..colID)
         return iction.targetFrames[guid]
     else
         return false
