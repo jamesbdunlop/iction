@@ -9,7 +9,7 @@
 -- Add demo buttons?
 
 -- Changelog alpha2.0.2
---
+-- spells and buffs to
 
 --- version alpha2.0.2
 local iction = iction

@@ -7,7 +7,7 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
         local fw, fh
         fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
         local spellFrameData = iction.ictSpellFrameData
-        spellFrameData["uiParentFrame"] = nil --"iction_"..colID
+        spellFrameData["uiParentFrame"] = nil
         spellFrameData["point"]['p'] = "iction_"..colID
         spellFrameData['w'] = fw
         spellFrameData['h'] = fh
@@ -18,13 +18,11 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
         -- Set frame to be an active column in the debuff columns table
         iction.targetCols[colID]['guid'] = guid
         iction.targetCols[colID]['active'] = true
-
         return iction.targetFrames[guid]
     else
         return false
     end
 end
-
 
 ----------------------------------------------------------------------------------------------
 --- CREATE PLAYER BUFF UI  ---

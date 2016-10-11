@@ -6,12 +6,8 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
     if guid ~= nil then
         if guid ~= iction.playerGUID then
             frm = iction.createSpellFrame(creatureName, guid, "Interface\\ChatFrame\\ChatFrameBackground")
-        elseif guid == iction.playerGUID then
-            frm = iction.createPlayerBuffFrame()
-        end
-        if frm then
-            iction.createButtons(frm, guid, spellType)
-        end
+        elseif guid == iction.playerGUID then frm = iction.createPlayerBuffFrame() end
+        if frm then iction.createButtons(frm, guid, spellType) end
         iction.createTargetData(guid, creatureName)
         iction.createTargetSpellData(guid, spellName, spellType)
         iction.createExpiresData(guid, spellName, spellType)

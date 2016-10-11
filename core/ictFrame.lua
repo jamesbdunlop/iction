@@ -30,11 +30,11 @@ function iction.UIElement.create(self, data)
         ictionFramePos[attrName]["point"]['y']   = data["point"]['y']
     else
         data["point"]['pos'] = ictionFramePos[attrName]["point"]['pos']
-        data["point"]['x']   = ictionFramePos[attrName]["point"]['x']
-        data["point"]['y']   = ictionFramePos[attrName]["point"]['y']
+        data["point"]['x'] = ictionFramePos[attrName]["point"]['x']
+        data["point"]['y'] = ictionFramePos[attrName]["point"]['y']
     end
     self.data = data
-    -- Create the frame
+    -- Create the frame --
     self.frame = CreateFrame(self.data['uiType'], self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
     self.setPoints(self)
     self.frame:SetResizable(true)
@@ -50,7 +50,6 @@ function iction.UIElement.create(self, data)
     -- Texture
     self.texture = self.createTexture(self, self.data['texture'])
     self.frame.texture = self.texture
-    print('Success')
     return self.frame
 end
 

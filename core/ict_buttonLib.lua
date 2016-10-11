@@ -4,14 +4,16 @@
 --- AFFLICTION -------------------------------------------------------------------------------
 local activeSpellBookSpells = {}
 local aff_SpellList = {
-                        UA = {name = "Unstable Affliction", isTalentSpell = false, vis = true, id = 30108, uration = 5, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/unstableAffliction"},
-                        Corruption = {name = "Corruption", isTalentSpell = false, vis = true, id = 172, duration = 15, maxTime = 17.9, icon = "Interface/AddOns/iction/media/icons/corruption"},
-                        DrainSoul = {name = "Drain Soul", isTalentSpell = true, vis = true, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
-                        DrainLife = {name = "Drain Life", isTalentSpell = false, vis = false, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
-                        Agony = {name = "Agony", isTalentSpell = false, vis = true, id = 980, duration = 17, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
-                        SiphonLife = {name = "Siphon Life", isTalentSpell = true, vis = true, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
-                        Seed = {name = "Seed of Corruption", isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 13.9, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"},
-                        PhantomSingularity = {name = "Phantom Singularity", isTalentSpell = true, vis = true, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
+                        UA = {name = "Unstable Affliction", insert = true, isTalentSpell = false, vis = true, id = 30108, uration = 5, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/unstableAffliction"},
+                        Corruption = {name = "Corruption", insert = true, isTalentSpell = false, vis = true, id = 172, duration = 15, maxTime = 17.9, icon = "Interface/AddOns/iction/media/icons/corruption"},
+                        DrainLife = {name = "Drain Life", insert = true, isTalentSpell = false, vis = true, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
+                        Seed = {name = "Seed of Corruption", insert = true, isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 13.9, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"},
+                        Agony = {name = "Agony", insert = true, isTalentSpell = false, vis = true, id = 980, duration = 17, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
+
+                        AbsoluteCorruption = {name = "Absolute Corruption", insert = false, isTalentSpell = true, vis = false, id = 146739, duration = 666, maxTime = 666, icon = "Interface/AddOns/iction/media/icons/corruption"},
+                        DrainSoul = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = false, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
+                        SiphonLife = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
+                        PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
                         }
 -- healthFunnel
 local aff_BuffList = {
@@ -58,23 +60,34 @@ local demo_artifact = {name = "Thal`kiel's Consumption", isArtifact = true, isTa
 
 --- UTILS ------------------------------------------------------------------------------------
 function iction.addButtonsToTable(buttonList, desttable)
-    for _, data in pairs(buttonList) do
-        local insert = true
+    local bList = buttonList
+    for _, data in pairs(bList) do
         if data["isTalentSpell"] then
-            insert = false
             for x=1, 7 do
                 for c=1, 3 do
                     local talentID, name, texture, selected, available = GetTalentInfo(x, c, 1)
                     if name == data['name'] and selected then
-                        insert = true
-                    elseif name == data['name'] and data['name'] == 'Drain Soul' then
-                        buttonList['DrainLife']['vis'] = true
+                        data['vis'] = true
+                        data['insert'] = true
+                        if name == data['name'] and data['name'] == "Drain Soul" and selected then
+                            bList['DrainLife']['insert'] = false
+                            bList['DrainSoul']['insert'] = true
+                        elseif name == data['name'] and data['name'] == "Absolute Corruption" and selected then
+                            bList['Corruption']['insert'] = false
+                            bList['AbsoluteCorruption']['insert'] = true
+                        end
                     end
                 end
             end
         end
+    end
 
-        if insert and data['vis'] then
+    for _, data in pairs(bList) do
+        print("#########")
+        print(data['name'])
+        print(data['vis'])
+        print(data['insert'])
+        if data['insert'] and data['vis'] then
             table.insert(desttable, {name = data['name'],
                                      h = iction.bh,
                                      w = iction.bw,
