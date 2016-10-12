@@ -3,15 +3,14 @@
 
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
--- handle absolute corruption id change 146739
 -- Look for any other talent stuff that might need to be tracked
 -- add Agony/UA charge counter 1 2 3 - 20 ??
 -- Add demo buttons?
 
--- Changelog alpha2.0.2
--- spells and buffs to
+-- Changelog beta1.0.0
 
---- version alpha2.0.2
+--- version beta1.0.0
+
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
