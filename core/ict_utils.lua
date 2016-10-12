@@ -176,7 +176,8 @@ function iction.hideFrame(guid, isDead, spName, spType)
     if iction.targetFrames[guid] ~= nil and iction.targetButtons[guid] ~= nil then
         if isDead == true then
             -- set the backdrop to invis
-            iction.targetFrames[guid]:SetBackdropColor(0,0,0, 1)
+            iction.targetFrames[guid]:SetBackdropColor(0,0,0, 0)
+            iction.targetFrames[guid].texture:SetVertexColor(0,0,0, 0)
             -- set the buttons for this frame to invis
             -- {GUID = {buttonFrames = {spellName = ButtonFrame}, buttonText = {spellName = fontString}}}
             if iction.targetButtons[guid]['buttonFrames'] ~= nil then
