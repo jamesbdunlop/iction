@@ -308,10 +308,14 @@ function iction.currentTargetDebuffExpires()
                 if spellNames[x] ~= nil then
                     local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
 
-                    if expirationTime ~= nil and unitCaster == 'player'  and spellId ~= 216145 then -- ritz follower immolate spell id
+                    if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
                         local getGUID = UnitGUID("Target")
                         if iction.targetTableExists() and iction.targetData[getGUID] ~= nil  and iction.spellActive(getGUID, spellNames[x]) then
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+                            if spellId ~= 146739 then
+                                iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+                            else
+                                iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = GetTime() + 666
+                            end
                         end
                     end
                 end

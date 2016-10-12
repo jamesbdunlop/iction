@@ -20,7 +20,7 @@ function iction.updateTimers()
                             end
                         elseif endTime > GetTime() then
                             local remainingT = tonumber(string.format("%.2d", (endTime - GetTime())))
-                            if iction.targetButtons[guid] then -- fucking target dummies
+                            if iction.targetButtons[guid] then -- fxcking target dummies
                                 iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName])
                                 iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
                             end

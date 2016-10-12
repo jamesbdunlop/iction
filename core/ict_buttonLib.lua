@@ -10,7 +10,7 @@ local aff_SpellList = {
                         Seed = {name = "Seed of Corruption", insert = true, isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 13.9, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"},
                         Agony = {name = "Agony", insert = true, isTalentSpell = false, vis = true, id = 980, duration = 17, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
 
-                        AbsoluteCorruption = {name = "Absolute Corruption", insert = false, isTalentSpell = true, vis = false, id = 146739, duration = 666, maxTime = 666, icon = "Interface/AddOns/iction/media/icons/corruption"},
+                        AbsoluteCorruption = {name = "Corruption", insert = false, isTalentSpell = true, vis = false, id = 146739, duration = 666, maxTime = 666, icon = "Interface/AddOns/iction/media/icons/corruption"},
                         DrainSoul = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = false, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
                         SiphonLife = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
                         PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
@@ -73,8 +73,7 @@ function iction.addButtonsToTable(buttonList, desttable)
                             bList['DrainLife']['insert'] = false
                             bList['DrainSoul']['insert'] = true
                         elseif name == data['name'] and data['name'] == "Absolute Corruption" and selected then
-                            bList['Corruption']['insert'] = false
-                            bList['AbsoluteCorruption']['insert'] = true
+                            bList['Corruption']['id'] = 146739
                         end
                     end
                 end
@@ -83,10 +82,6 @@ function iction.addButtonsToTable(buttonList, desttable)
     end
 
     for _, data in pairs(bList) do
-        print("#########")
-        print(data['name'])
-        print(data['vis'])
-        print(data['insert'])
         if data['insert'] and data['vis'] then
             table.insert(desttable, {name = data['name'],
                                      h = iction.bh,

@@ -223,7 +223,7 @@ function iction.ictionFrameWatcher()
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
                     if eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then --eventName == "SPELL_CAST_SUCCESS" or
-                        validSpell = false
+                    validSpell = false
                         for _, v in pairs(iction.uiPlayerSpellButtons) do
                             if v['name'] == sufx4 then
                                 validSpell = true
@@ -234,6 +234,7 @@ function iction.ictionFrameWatcher()
                                 validSpell = true
                             end
                         end
+
                         if validSpell then
                             -- Add Target
                             if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
@@ -247,6 +248,7 @@ function iction.ictionFrameWatcher()
                                 iction.createTarget(prefix2, prefix3, sufx4, sufx6)
                             end
                         end
+
                     elseif eventName == "SPELL_AURA_REMOVED" then
                         -- Set frame accordingly
                         iction.hideFrame(prefix2, false, sufx4, sufx6)
