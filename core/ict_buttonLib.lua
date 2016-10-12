@@ -17,31 +17,31 @@ local aff_SpellList = {
                         }
 -- healthFunnel
 local aff_BuffList = {
-                      manaTap = {name = "Mana Tap", isArtifact = false, isTalentSpell = true,  vis = true, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
-                      reapSouls = {name = "Deadwind Harvester", isArtifact = false, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
-                      Unending = {name = "Unending Resolve", isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
-                      SoulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
-                      BurningRush = {name = "Burning Rush", isTalentSpell = true, vis = true, id = 111400, duration = 999, maxTime = 999, icon = ""},
-                      DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
+                      manaTap = {name = "Mana Tap",  insert = true, isArtifact = false, isTalentSpell = true,  vis = true, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
+                      reapSouls = {name = "Deadwind Harvester",  insert = true, isArtifact = false, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
+                      Unending = {name = "Unending Resolve",  insert = true, isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
+                      SoulHarvest = {name = "Soul Harvest",  insert = true, isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
+                      BurningRush = {name = "Burning Rush",  insert = true, isTalentSpell = true, vis = true, id = 111400, duration = 999, maxTime = 999, icon = ""},
+                      DarkPact = {name = "Dark Pact",  insert = true, isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
 }
 local aff_artifact = {
-                      name = "Tormented Souls", isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
+                      name = "Tormented Souls",  insert = true, isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
                       }
 --- DESTRO -----------------------------------------------------------------------------------
 local destro_SpellList = {
-                        Immolate = {name = "Immolate", isTalentSpell = false, vis = true, id = 348, duration = 17.5, maxTime = 22, icon = "Interface/AddOns/iction/media/icons/immolate"},
-                        Eradication = {name = "Eradication", isTalentSpell = true, vis = true, id = nil, duration = 6, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/eradication"},
-                        Havoc = {name = "Havoc", isTalentSpell = false, vis = true, id = 80240, duration = 7, maxTime = 7, icon = "Interface/AddOns/iction/media/icons/baneofHavoc"},
-                        DrainLife = {name = "Drain Life", isTalentSpell = false, vis = true, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
-                        ChannelDemonfire = {name = "Channel Demonfire", isTalentSpell = true, vis = true, id = 196447, duration = 2.6, maxTime = 2.6, icon = "Interface/AddOns/iction/media/icons/felflame"},
+                        Immolate = {name = "Immolate",  insert = true, isTalentSpell = false, vis = true, id = 348, duration = 17.5, maxTime = 22, icon = "Interface/AddOns/iction/media/icons/immolate"},
+                        Eradication = {name = "Eradication",  insert = true, isTalentSpell = true, vis = true, id = nil, duration = 6, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/eradication"},
+                        Havoc = {name = "Havoc",  insert = true, isTalentSpell = false, vis = true, id = 80240, duration = 7, maxTime = 7, icon = "Interface/AddOns/iction/media/icons/baneofHavoc"},
+                        DrainLife = {name = "Drain Life",  insert = true, isTalentSpell = false, vis = false, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
+                        ChannelDemonfire = {name = "Channel Demonfire",  insert = false, isTalentSpell = true, vis = false, id = 196447, duration = 2.6, maxTime = 2.6, icon = "Interface/AddOns/iction/media/icons/felflame"},
 }
 local destro_BuffList = {
-                         backdraft = {name = "Backdraft", isTalentSpell = true, vis = true, id = nil, duration = 3, maxTime = 3, icon = "Interface/AddOns/iction/media/icons/backdraft"},
-                         manaTap = {name = "Mana Tap", isTalentSpell = true, vis = true, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
-                         soulHarvest = {name = "Soul Harvest", isTalentSpell = true, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
-                         DarkPact = {name = "Dark Pact", isTalentSpell = true, vis = true, id = 108416, duration = 20, maxTime = 20, icon = ""},
-                         Unending = {name = "Unending Resolve", isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
-                         BurningRush = {name = "Burning Rush", isTalentSpell = true, vis = true, id = 111400, duration = 999, maxTime = 999, icon = ""},
+                         Unending = {name = "Unending Resolve", insert = true, isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
+                         backdraft = {name = "Backdraft", insert = false, isTalentSpell = true, vis = false, id = nil, duration = 3, maxTime = 3, icon = "Interface/AddOns/iction/media/icons/backdraft"},
+                         manaTap = {name = "Mana Tap", insert = false, isTalentSpell = true, vis = false, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
+                         soulHarvest = {name = "Soul Harvest", insert = false, isTalentSpell = false, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
+                         DarkPact = {name = "Dark Pact", insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
+                         BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
 }
 
 local destro_artifact = {name = "Dimensional Rift", isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
