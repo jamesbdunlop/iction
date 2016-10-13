@@ -16,8 +16,8 @@ PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpel
 }
 -- healthFunnel
 local aff_BuffList = {
-manaTap = {name = "Mana Tap",  insert = true, isArtifact = false, isTalentSpell = true,  vis = true, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
-reapSouls = {name = "Deadwind Harvester",  insert = true, isArtifact = false, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
+manaTap = {name = "Mana Tap",  insert = false, isTalentSpell = true,  vis = false, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
+reapSouls = {name = "Deadwind Harvester",  insert = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
 Unending = {name = "Unending Resolve",  insert = true, isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
 SoulHarvest = {name = "Soul Harvest",  insert = false, isTalentSpell = true, vis = false, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
 BurningRush = {name = "Burning Rush",  insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
