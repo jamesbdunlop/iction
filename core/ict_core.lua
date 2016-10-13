@@ -19,7 +19,7 @@ iction.targetButtons = {}  -- {GUID = {buttonFrames = {spellName = ButtonFrame},
 iction.targetFrames = {}
 iction.highlightFrame = ''
 iction.highlightFrameTexture = ''
-iction.hlGuid = "burp"
+iction.hlGuid = ""
 iction.targetCols = {}
 iction.ict_frameOffset = 0
 iction.uiPlayerSpellButtons = {}

@@ -1,5 +1,5 @@
 iction.ictSpellFrameData = { uiType = "Frame",
-                            uiName = "ictionDeBuffFrame",
+                            uiName = nil,
                             nameAttr = "ictionDeBuffFrame",
                             uiInherits = nil,
                             userPlaced = true,

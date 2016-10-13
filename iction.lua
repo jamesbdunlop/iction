@@ -235,6 +235,7 @@ function iction.ictionFrameWatcher()
                         end
 
                         if validSpell then
+                            if iction.debug then print("ValidSpell: " .. sufx4) end
                             -- Add Target
                             if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
                                 iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")

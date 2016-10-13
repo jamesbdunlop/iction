@@ -7,6 +7,7 @@ function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
     for key, value in pairs(buttons) do
         if value['vis'] then
             -- Create the button frame
+            if iction.debug then print("Creating button for " .. value['name']) end
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
                   b:SetAttribute("name", value['name'])
                   b:SetFrameStrata("MEDIUM")

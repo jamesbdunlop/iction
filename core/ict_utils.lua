@@ -220,13 +220,13 @@ end
 ----------------------------------------------------------------------------------------------
 --- TIMERS UTILS -----------------------------------------------------------------------------
 function iction.oocCleanup()
-    --if iction.debug then print("Dbg iction.oocCleanup: ") end
     --- Clear target all data as we exited combat except buffs that might be running
     if not UnitAffectingCombat("player") then
         if iction.targetTableExists() then
             for guid, targets in pairs(iction.targetData) do
                 if guid ~= iction.playerGUID then
                     if iction.targetData[guid]['dead'] then
+                        if iction.debug then print("Removing iction.targetData[guid]" .. tostring(guid)) end
                         if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
                         iction.targetData[guid] = nil
                         iction.targetFrames[guid] = nil
@@ -248,6 +248,7 @@ function iction.oocCleanup()
                 for guid, targets in pairs(iction.targetFrames) do
                     if guid ~= iction.playerGUID then
                         if iction.targetFrames[guid] ~= nil then
+                            if iction.debug then print("Removing iction.targetFrames[guid]" .. tostring(guid)) end
                             iction.targetFrames[guid]:Hide()
                         end
                         if iction.targetFrames[guid] then
@@ -305,24 +306,14 @@ function iction.currentTargetDebuffExpires()
             table.insert(spellNames, info['name'])
         end
         if spellNames then
-            for x = 1, iction.tablelength(spellNames) do --5 do
-                if spellNames[x] ~= nil then
+            for x = 1, iction.tablelength(spellNames) do
+                if spellNames[x] ~= nil and iction.targetTableExists() and iction.spellActive(getGUID, spellNames[x]) and iction.targetData[getGUID] ~= nil then
                     local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
-
+                    -- handle infinite duration
                     if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
                         local getGUID = UnitGUID("Target")
-                        if iction.targetTableExists() and iction.targetData[getGUID] ~= nil  and iction.spellActive(getGUID, spellNames[x]) then
-                            if spellId ~= 146739 then
-                                iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
-                            else
-                                iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = GetTime() + 666
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
+                        iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+    end end end end end
 end
 
 function iction.currentTargetBuffExpires()
@@ -331,7 +322,6 @@ function iction.currentTargetBuffExpires()
     for x,  info in pairs(iction.uiPlayerBuffButtons) do
         table.insert(spellNames, info['name'])
     end
-
     if spellNames then
         if (UnitName("Player")) then
             for x = 1, iction.tablelength(spellNames) do --5 do
@@ -342,19 +332,13 @@ function iction.currentTargetBuffExpires()
                         local getGUID = UnitGUID("Player")
                         if iction.targetTableExists() and iction.targetData[getGUID] ~= nil  and iction.spellActive(getGUID, spellNames[x]) then
                             iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expires
-                        end
-                    end
-                end
-            end
-        end
-    end
+    end end end end end end
 end
 
 function iction.targetTableExists()
     if iction.targetData then
         if next(iction.targetData) ~= nil then return true else return false end
-    end
-end
+end end
 
 function iction.targetFramesTableExists()
     if next(iction.targetFrames) ~= nil then return true else return false end

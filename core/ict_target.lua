@@ -2,15 +2,21 @@ local next = next
 ----------------------------------------------------------------------------------------------
 --- CREATE AN ICTION TARGET ------------------------------------------------------------------
 function iction.createTarget(guid, creatureName, spellName, spellType)
+    if iction.debug then print("Dbg: iction.createTarget..") end
     local frm
     if guid ~= nil then
         if guid ~= iction.playerGUID then
             frm = iction.createSpellFrame(creatureName, guid, "Interface\\ChatFrame\\ChatFrameBackground")
         elseif guid == iction.playerGUID then frm = iction.createPlayerBuffFrame() end
+        if iction.debug then print("Creating buttons.") end
         if frm then iction.createButtons(frm, guid, spellType) end
+        if iction.debug then print("Target Data") end
         iction.createTargetData(guid, creatureName)
+        if iction.debug then print("Target SpellData") end
         iction.createTargetSpellData(guid, spellName, spellType)
+        if iction.debug then print("Target createTargetSpellData") end
         iction.createExpiresData(guid, spellName, spellType)
+        if iction.debug then print("Target created successfully") end
     end
 end
 
@@ -44,22 +50,23 @@ function iction.createExpiresData(guid, spellName, spellType)
         else
             --- UNITDEBUFF
             local _, _, _, _, _, _, expires, _, _, _, spellID = UnitDebuff("Target", spellName)
-            if not expires then
+            if iction.debug then print("Created endTime: " .. tostring(expires) .. ' for spell: ' .. spellName) end
+            if not expires then -- Handle for  demonfire
                 local name, subText, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo("Player")
                 if endTime ~= nil then
                     dur = endTime/1000.0 - GetTime()
                     expires =  GetTime() + dur
                 end
             end
-
-            if expires then
-                if expires ~= 0 then
-                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-                else
-                    expires = GetTime() + 666
-                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-                end
-            end
+            iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+--            if expires then
+--                if expires ~= 0 then
+--                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+--                elseif expires == 0 then
+--                    expires = 666
+--                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+--                end
+--            end
         end
     end
 end
