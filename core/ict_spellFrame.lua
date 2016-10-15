@@ -56,7 +56,8 @@ function iction.createPlayerBuffFrame()
         iction.buffFrameBldr = iction.UIElement
         iction.targetFrames[iction.playerGUID] = iction.buffFrameBldr.create(iction.buffFrameBldr, buffFrameData)
         if iction.buffFrameHorizontal then
-            iction.targetFrames[iction.playerGUID]:SetPoint("LEFT", iction.buffFrame, 0, 0)
+            iction.targetFrames[iction.playerGUID]:SetPoint("LEFT", iction.buffFrame, -iction.bw/2, 0)
+            iction.targetFrames[iction.playerGUID]:SetPoint("TOP", iction.buffFrame, 0, -iction.bh/2)
         else
             iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", iction.buffFrame, 0, 0)
         end

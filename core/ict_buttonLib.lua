@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------------------------------
 --- Define PLAYER SPELL & BUFF buttons -------------------------------------------------------
+local activeSpellBookSpells = {}
+
 ----------------------------------------------------------------------------------------------
 --- AFFLICTION -------------------------------------------------------------------------------
-local activeSpellBookSpells = {}
 local aff_SpellList = {
 UA = {name = "Unstable Affliction", insert = true, isTalentSpell = false, vis = true, id = 30108, uration = 5, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/unstableAffliction"},
 Corruption = {name = "Corruption", insert = true, isTalentSpell = false, vis = true, id = 172, duration = 15, maxTime = 17.9, icon = "Interface/AddOns/iction/media/icons/corruption"},
 DrainLife = {name = "Drain Life", insert = true, isTalentSpell = false, vis = true, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
 Seed = {name = "Seed of Corruption", insert = true, isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 13.9, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"},
 Agony = {name = "Agony", insert = true, isTalentSpell = false, vis = true, id = 980, duration = 17, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
-
 DrainSoul = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = false, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
 SiphonLife = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
 PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
@@ -26,6 +26,8 @@ DarkPact = {name = "Dark Pact",  insert = false, isTalentSpell = true, vis = fal
 local aff_artifact = {
 name = "Tormented Souls",  insert = true, isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
 }
+
+----------------------------------------------------------------------------------------------
 --- DESTRO -----------------------------------------------------------------------------------
 local destro_SpellList = {
 Immolate = {name = "Immolate",  insert = true, isTalentSpell = false, vis = true, id = 348, duration = 17.5, maxTime = 22, icon = "Interface/AddOns/iction/media/icons/immolate"},
@@ -42,22 +44,25 @@ soulHarvest = {name = "Soul Harvest", insert = false, isTalentSpell = false, vis
 DarkPact = {name = "Dark Pact", insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
 BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
 }
-
 local destro_artifact = {name = "Dimensional Rift", insert = true, isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
+
+----------------------------------------------------------------------------------------------
 --- DEMO -------------------------------------------------------------------------------------
 local demo_SpellList = {
-                        Doom = {name = "Doom", insert = true, isTalentSpell = false, vis = true, id = 603, duration = 17.5, maxTime = 17.5, icon = ""},
+Doom = {name = "Doom", insert = true, isTalentSpell = false, vis = true, id = 603, duration = 17.5, maxTime = 17.5, icon = ""},
 }
 local demo_BuffList = {
-                         BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
-                         soulHarvest = {name = "Soul Harvest", insert = false, isTalentSpell = true, vis = false, id = 196098, duration = 10, maxTime = 30, icon = ""},
-                         DarkPact = {name = "Dark Pact", insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
-                         ShadowyInspiration = {name = "Shadowy Inspiration", insert = false, isTalentSpell = true, vis = false, id = 196606, duration = 14, maxTime = 14, icon = ""},
+BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
+soulHarvest = {name = "Soul Harvest", insert = false, isTalentSpell = true, vis = false, id = 196098, duration = 10, maxTime = 30, icon = ""},
+DarkPact = {name = "Dark Pact", insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
+ShadowyInspiration = {name = "Shadowy Inspiration", insert = false, isTalentSpell = true, vis = false, id = 196606, duration = 14, maxTime = 14, icon = ""},
 }
 --Demonic Synergy 171982
 local demo_artifact = {name = "Thal`kiel's Consumption", isArtifact = true, isTalentSpell = false, vis = true, id = 211714, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
 
---- UTILS ------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------
+--- Process Buttons ------------------------------------------------------------------------------------
 function iction.addButtonsToTable(buttonList, desttable)
     local bList = buttonList
     for _, data in pairs(bList) do
@@ -80,7 +85,6 @@ function iction.addButtonsToTable(buttonList, desttable)
 
     for _, data in pairs(bList) do
         if data['insert'] and data['vis'] then
-            print(data['name'])
             table.insert(desttable, {name = data['name'],
                                      h = iction.bh,
                                      w = iction.bw,

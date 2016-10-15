@@ -82,10 +82,15 @@ function iction.initMainUI()
     iction.createBottomBarArtwork()
     iction.setMTapBorder()
     iction.createShardFrame()
+    if iction.debug then print('Shard frame created') end
     iction.createConflagFrame()
+    if iction.debug then print('Conflag frame created') end
     iction.createArtifactFrame()
+    if iction.debug then print('Artifact frame created') end
     iction.createBuffFrame()
+    if iction.debug then print('Buff frame created') end
     iction.createDebuffColumns()
+    if iction.debug then print('Debuff Column frames created') end
     iction.setcastbar()
 end
 
@@ -285,16 +290,21 @@ function iction.unlockUIElements(isMovable)
     ---Show the full iction frame---
     local cols = iction.debuffColumns
     if isMovable then
-        iction.ictionMF.texture:SetVertexColor(.1, .1, .1, .3)
-        iction.artifactFrame.texture:SetVertexColor(.1, 1, .1, 1)
-        iction.setMovable(iction.artifactFrame, isMovable)
-        iction.setMovable(iction.buffFrame, isMovable)
+        -- override colors for special frames
+        iction.ictionMF.texture:SetVertexColor(.5, .1, .1, .3)
+        -- set movable
+        iction.setMovable(iction.artifactFrame, isMovable, false)
+        iction.setMovable(iction.buffFrame, isMovable, false)
+        iction.setMovable(iction.shardFrame, isMovable, false)
+        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable) end
     else
-        iction.setMovable(iction.artifactFrame, isMovable)
-        iction.setMovable(iction.buffFrame, isMovable)
-        iction.artifactFrame.texture:SetVertexColor(1, 1, 1, 1)
+        -- override colors for special frames
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
-        iction.buffFrame.texture:SetVertexColor(.1, .1, .1, 0)
+        -- set movable
+        iction.setMovable(iction.artifactFrame, isMovable, false)
+        iction.setMovable(iction.buffFrame, isMovable, true)
+        iction.setMovable(iction.shardFrame, isMovable, true)
+        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable) end
     end
     for f in list_iter(cols) do
         iction.setMovable(f, isMovable)
@@ -304,7 +314,7 @@ function iction.unlockUIElements(isMovable)
     end
 end
 
-function iction.setMovable(f, isMovable)
+function iction.setMovable(f, isMovable, hideDefault)
     local frameName = f:GetAttribute("name")
     if isMovable then
         f:SetParent(iction.ictionMF)
@@ -312,7 +322,6 @@ function iction.setMovable(f, isMovable)
         f:EnableMouse(true)
         f:SetMovable(true)
         f:SetParent(iction.ictionMF)
-
         ---Scripts for moving---
         f:SetScript("OnMouseDown", function(self, button)
           if button == "LeftButton" and not f.isMoving then
@@ -328,14 +337,20 @@ function iction.setMovable(f, isMovable)
            f:SetParent(iction.ictionMF)
            local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
            local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
+           if iction.debug then print("point: " .. tostring(point)) end
+           if iction.debug then print("relativeTo: " .. tostring(relativeTo)) end
+           if iction.debug then print("xOffset: " .. tostring(xOffset)) end
+           if iction.debug then print("yOffset: " .. tostring(yOffset)) end
            ictionFramePos[frameName]['point']['x'] = xOffset-MFxOffset
            ictionFramePos[frameName]['point']['y'] = yOffset-MFyOffset
-           f:SetPoint("CENTER", iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
+           ictionFramePos[frameName]['point']['pos'] = point
+           f:SetPoint(point, iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
           end
         end)
     else
         f:EnableMouse(false)
         f:SetMovable(false)
+        if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0) else f.texture:SetVertexColor(1, 1, 1, 1) end
         f:SetScript("OnMouseDown", nil)
         f:SetScript("OnMouseUp", nil)
     end

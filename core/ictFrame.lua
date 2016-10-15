@@ -22,13 +22,16 @@ local ictDefaultFrameData = {uiType = "Frame",
 
 function iction.UIElement.create(self, data)
     local attrName = data['nameAttr']
+    if iction.debug then print('attrName: ' .. tostring(attrName)) end
     if not ictionFramePos[attrName] then
+        if iction.debug then print('attrName ' .. tostring(attrName) .. ' has no global position stored ' ) end
         ictionFramePos[attrName] = {}
         ictionFramePos[attrName]["point"] = {}
         ictionFramePos[attrName]["point"]['pos'] = data["point"]['pos']
         ictionFramePos[attrName]["point"]['x']   = data["point"]['x']
         ictionFramePos[attrName]["point"]['y']   = data["point"]['y']
     else
+        if iction.debug then print('attrName ' .. tostring(attrName) .. ' has global positions!' ) end
         data["point"]['pos'] = ictionFramePos[attrName]["point"]['pos']
         data["point"]['x'] = ictionFramePos[attrName]["point"]['x']
         data["point"]['y'] = ictionFramePos[attrName]["point"]['y']
