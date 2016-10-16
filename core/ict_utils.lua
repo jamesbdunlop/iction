@@ -301,6 +301,7 @@ end
 --- TARGET UTILS -----------------------------------------------------------------------------
 function iction.currentTargetDebuffExpires()
     if (UnitName("target")) then
+        local getGUID = UnitGUID("Target")
         local spellNames = {} -- get a clean list of spell names from the button
         for x, info in pairs(iction.uiPlayerSpellButtons) do
             table.insert(spellNames, info['name'])
@@ -311,9 +312,22 @@ function iction.currentTargetDebuffExpires()
                     local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
                     -- handle infinite duration
                     if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
-                        local getGUID = UnitGUID("Target")
                         iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+                    elseif spellId == 27243 then --- duplicate seed for talent handling
+                        iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
+                    else
+                        iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
     end end end end end
+end
+
+function iction.clearSeeds(guid)
+    if iction.targetTableExists() then
+        if iction.targetButtons[guid] and iction.targetButtons[guid]['buttonFrames'] and iction.targetButtons[guid]['buttonFrames']["Seed of Corruption"] and iction.targetData[guid]['spellData']["Seed of Corruption"] ~= nil then
+            iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames']["Seed of Corruption"])
+            iction.setButtonText("", false, iction.targetButtons[guid]['buttonText']["Seed of Corruption"])
+            iction.targetData[guid]['spellData']["Seed of Corruption"]['endTime'] = nil
+        end
+    end
 end
 
 function iction.currentTargetBuffExpires()

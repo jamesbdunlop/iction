@@ -6,9 +6,12 @@
 -- Check burning rush buff timer
 -- Add artifact power checker for Wrath of Consumption buff
 
--- Changelog beta1.0.1
+-- Changelog beta1.0.2
 
---- version beta1.0.1
+--- version beta1.0.2
+-- Fixed bug with laggy target highlight frame
+-- Fixed bug with seed of corruption etc where local getGUID = UnitGUID("Target") was in the wrong place in the code
+
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -218,6 +221,7 @@ function iction.ictionFrameWatcher()
                 -- Remove unit from the table if it died.
                 iction.tagDeadTarget(prefix2)
                 iction.targetData[prefix2] = nil
+                iction.highlightTargetSpellframe(UnitGUID("Target"))
             end
         end
 
@@ -240,10 +244,11 @@ function iction.ictionFrameWatcher()
                         if validSpell then
                             if iction.debug then print("ValidSpell: " .. sufx4) end
                             -- Add Target
-                            if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" then
+                            -- Irregular debuff handling due to crappy changes to prefix data etc based on spells. WHY!?
+                            if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" or sufx4 == 'Agony' then
                                 iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
-                            elseif sufx4 == 'Agony'  then -- seriously wtf Agony you SUCK
-                                iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
+
+                            -- Regular debuff/buff handling
                             elseif sufx6 == 'DEBUFF' then
                                 iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
                                 iction.highlightTargetSpellframe(prefix2)
@@ -256,16 +261,21 @@ function iction.ictionFrameWatcher()
                         -- Set frame accordingly
                         iction.hideFrame(prefix2, false, sufx4, sufx6)
                         iction.setMTapBorder()
+
                     elseif eventName == "SPELL_CAST_SUCCESS" then
                         if sufx4 == 'Channel Demonfire' then
-                            iction.createTarget(UnitGUID("Target"), 'burp', sufx4, "DEBUFF")
+                            iction.createTarget(UnitGUID("Target"), 'nil', sufx4, "DEBUFF")
                         end
+
+                    elseif eventName == "SPELL_DAMAGE" and sufx4 == "Seed of Corruption" then
+                        iction.clearSeeds(prefix2)
                     end
-                end
+
+            end
             end
         end
         if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup()end
-        if event == "PLAYER_TARGET_CHANGED" then iction.highlightTargetSpellframe(UnitGUID("Target")) end
+        if event == "PLAYER_TARGET_CHANGED" then iction.highlightTargetSpellframe(UnitGUID("Target")) iction.currentTargetDebuffExpires() end
     end
     iction.ictionMF:SetScript("OnEvent", eventHandler)
 
@@ -276,7 +286,7 @@ function iction.ictionFrameWatcher()
         iction.setSoulShards(shards)
         iction.setConflagCount()
         iction.setMTapBorder()
-        iction.currentTargetDebuffExpires()
+        --iction.currentTargetDebuffExpires()
         iction.updateTimers()
         iction.oocCleanup()
     end
