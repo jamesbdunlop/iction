@@ -40,7 +40,7 @@ function iction.createTargetData(guid, creatureName)
 end
 
 function iction.createTargetSpellData(guid, spellName, spellType)
-    if iction.spellActive(guid, spellName) ~= true then
+    if not iction.spellActive(guid, spellName) then
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
         iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
@@ -66,9 +66,9 @@ function iction.createExpiresData(guid, spellName, spellType)
                     expires =  GetTime() + dur
                 end
             end
-
             if iction.debug then print("expires: " .. tostring(expires) .. ' for spell: ' .. spellName) end
             iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+            iction.updateTimers()
         end
     end
 end

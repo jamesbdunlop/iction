@@ -45,7 +45,7 @@ function iction.updateTimers()
                             iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
                         end
                     end
-                    if spellName == 'Drain Soul' then
+                    if spellName == 'Drain Soul' or spellName == "Drain Life" then
                         local getGUID = UnitGUID("Target")
                         local name, _, _, count, _, duration, expirationTime, _, _, _, _ = UnitDebuff("Target", spellName, nil, "player")
                         if not expirationTime and iction.targetButtons[guid] then

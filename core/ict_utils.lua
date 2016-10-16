@@ -8,18 +8,19 @@ function iction.setMTapBorder()
     if iction.buffActive("Mana Tap") == true or iction.buffActive("Backdraft") == true then
         mt = true
     end
-    if mt == true then
+
+    if mt then
         for x=1, 4 do
             f = iction.uiBotBarArt[x]
             if f then
-                f:SetVertexColor(.1, 1, .1, 1)
+                f.texture:SetVertexColor(.1, 1, .1, 1)
             end
         end
     else
         for x=1, 4 do
             f = iction.uiBotBarArt[x]
             if f then
-                f:SetVertexColor(1, 1, 1, 1)
+                f.texture:SetVertexColor(1, 1, 1, 1)
             end
         end
     end
@@ -151,24 +152,6 @@ function iction.calcFrameSize(Tbl)
     cfh = fsize
     cfw = iction.bh + 5 -- frame edge padding
     return cfw, cfh
-end
-
-function iction.setFrameManaTapColor(frame)
-    if frame then
-        local bg = frame:CreateTexture(nil, "ARTWORK")
-        bg:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-        bg:SetAllPoints(true)
-        bg:SetVertexColor(.1, .1, .1, 1)
-        local bgBrdr = frame:CreateTexture(nil, "BACKGROUND")
-        bgBrdr:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-        bgBrdr:SetPoint("TOPLEFT", -5, 5)
-        bgBrdr:SetPoint("BOTTOMRIGHT", 5, -5)
-        if iction.isSpellActive("Mana Tap") == true then
-            bgBrdr:SetVertexColor(0, 1, 0, 1)
-        else
-            bgBrdr:SetVertexColor(1, 0, 0, .5)
-        end
-    end
 end
 
 function iction.hideFrame(guid, isDead, spName, spType)
@@ -327,6 +310,18 @@ function iction.clearSeeds(guid)
             iction.setButtonText("", false, iction.targetButtons[guid]['buttonText']["Seed of Corruption"])
             iction.targetData[guid]['spellData']["Seed of Corruption"]['endTime'] = nil
         end
+    end
+end
+
+function iction.addSeeds(guid, spellName, spellType)
+    if not iction.colGUIDExists(guid) then
+        iction.createTarget(guid, 'nil', spellName, spellType)
+    end
+
+    -- now check we have it in a column
+    if iction.colGUIDExists(guid) then
+        iction.createTargetSpellData(guid, spellName, spellType)
+        iction.createExpiresData(guid, spellName, spellType)
     end
 end
 

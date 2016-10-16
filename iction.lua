@@ -1,17 +1,19 @@
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
--- Look for any other talent stuff that might need to be tracked
 -- add Agony/UA charge counter 1 2 3 - 20 ??
--- Fix buff frame position when moving
 -- Check burning rush buff timer
 -- Add artifact power checker for Wrath of Consumption buff
 
 -- Changelog beta1.0.2
+-- Fixed bug with laggy target highlight frame
+-- Fixed bug where local getGUID = UnitGUID("Target") was in the wrong place in the code
+-- Fixed issue with seeds not being removed from all active frames with the sow the seed talent if they are showing as active timers
+-- Fixed issue with drain life timer not ending correctly when cancelled mid channel
+-- Moved the debuffExpires check to target changed not on update
+-- Fixed the artwork to change color on backDraft or manaTap active buff
+-- Added first pass for seed to be applied to all active frames for Sow The Seeds. This is flakey though, but they should show up on target changes correctly. WIP
 
 --- version beta1.0.2
--- Fixed bug with laggy target highlight frame
--- Fixed bug with seed of corruption etc where local getGUID = UnitGUID("Target") was in the wrong place in the code
-
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -98,6 +100,7 @@ end
 ----------------------------------------------------------------------------------------------
 --- UI STUFF ---------------------------------------------------------------------------------
 function iction.createBottomBarArtwork()
+    iction.uiBotBarArt = {}
     local skin = iction.skinData[iction.skin]
     for x = 1, 4 do
         local barData = skin[x]
@@ -106,6 +109,7 @@ function iction.createBottomBarArtwork()
         iction.skinFrameBldr = iction.UIElement
         iction.skinFrame = iction.skinFrameBldr.create(iction.skinFrameBldr, barData)
         iction.skinFrameBldr.setMoveScript(iction.skinFrame, iction.ictionMF, UIParent)
+        table.insert(iction.uiBotBarArt, iction.skinFrame)
     end
 end
 
@@ -245,9 +249,10 @@ function iction.ictionFrameWatcher()
                             if iction.debug then print("ValidSpell: " .. sufx4) end
                             -- Add Target
                             -- Irregular debuff handling due to crappy changes to prefix data etc based on spells. WHY!?
-                            if sufx4 == "Unstable Affliction" or sufx4 == "Seed of Corruption" or sufx4 == 'Agony' then
+                            if sufx4 == "Unstable Affliction" or sufx4 == 'Agony' then
                                 iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
-
+                            elseif sufx4 == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" then
+                                iction.addSeeds(prefix2, sufx4, "DEBUFF")
                             -- Regular debuff/buff handling
                             elseif sufx6 == 'DEBUFF' then
                                 iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
@@ -265,6 +270,7 @@ function iction.ictionFrameWatcher()
                     elseif eventName == "SPELL_CAST_SUCCESS" then
                         if sufx4 == 'Channel Demonfire' then
                             iction.createTarget(UnitGUID("Target"), 'nil', sufx4, "DEBUFF")
+
                         end
 
                     elseif eventName == "SPELL_DAMAGE" and sufx4 == "Seed of Corruption" then
@@ -278,15 +284,13 @@ function iction.ictionFrameWatcher()
         if event == "PLAYER_TARGET_CHANGED" then iction.highlightTargetSpellframe(UnitGUID("Target")) iction.currentTargetDebuffExpires() end
     end
     iction.ictionMF:SetScript("OnEvent", eventHandler)
-
     -- ON UPDATE CHECKS
     local function _onUpdate()
         local shards = UnitPower("Player", 7)
-        local spec = GetSpecialization()
+        --local spec = GetSpecialization()
         iction.setSoulShards(shards)
         iction.setConflagCount()
         iction.setMTapBorder()
-        --iction.currentTargetDebuffExpires()
         iction.updateTimers()
         iction.oocCleanup()
     end
