@@ -1,7 +1,7 @@
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
--- add Agony/UA charge counter 1 2 3 - 20 ??
--- Check burning rush buff timer
+-- Add Agony/UA charge counter 1 2 3 - 20 ??
+-- Fix burning rush buff timer when turned off. As this remains as INF.
 -- Add artifact power checker for Wrath of Consumption buff
 
 -- Changelog beta1.0.2
