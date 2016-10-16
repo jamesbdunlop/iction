@@ -1,16 +1,14 @@
--- IN PROGRESS
--- Cleanup - base frame class for all frames to inherit
-
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
 -- Look for any other talent stuff that might need to be tracked
 -- add Agony/UA charge counter 1 2 3 - 20 ??
--- Add demo buttons?
+-- Fix buff frame position when moving
+-- Check burning rush buff timer
+-- Add artifact power checker for Wrath of Consumption buff
 
--- Changelog beta1.0.0
+-- Changelog beta1.0.1
 
---- version beta1.0.0
-
+--- version beta1.0.1
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon

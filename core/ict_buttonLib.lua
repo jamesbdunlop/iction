@@ -131,3 +131,14 @@ function iction.setBuffButtonLib()
         iction.uiPlayerArtifact = destro_artifact
     end
 end
+
+
+--local powers = C_ArtifactUI.GetPowers()
+--for i = 1, #powers do
+--    local spellID, _, currentRank = C_ArtifactUI.GetPowerInfo(powers[i])
+--
+--    if currentRank > 0 then
+--        local name = GetSpellInfo(spellID)
+--        -- do stuff
+--    end
+--end
