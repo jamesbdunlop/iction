@@ -1,19 +1,16 @@
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
 -- Add Agony/UA charge counter 1 2 3 - 20 ??
--- Fix burning rush buff timer when turned off. As this remains as INF.
--- Add artifact power checker for Wrath of Consumption buff
 
--- Changelog beta1.0.2
--- Fixed bug with laggy target highlight frame
--- Fixed bug where local getGUID = UnitGUID("Target") was in the wrong place in the code
--- Fixed issue with seeds not being removed from all active frames with the sow the seed talent if they are showing as active timers
--- Fixed issue with drain life timer not ending correctly when cancelled mid channel
--- Moved the debuffExpires check to target changed not on update
--- Fixed the artwork to change color on backDraft or manaTap active buff
--- Added first pass for seed to be applied to all active frames for Sow The Seeds. This is flakey though, but they should show up on target changes correctly. WIP
+-- Changelog beta0.0.3
+-- Burning Rush now removes timer text.
+-- Replaced INF with infinity symbol :) Much cleaner
+-- Added msg for reminder to reload ui on spec change
+-- Fixed spell frame to clamp to screen correctly
+-- Added an agony dosage tracker due to some flakyness there seriously Blizz.. wth just want to handle ALL spells in one hit the same way! ARGH
 
---- version beta1.0.2
+
+--- version beta0.0.3
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -85,16 +82,22 @@ function iction.initMainUI()
     iction.createBottomBarArtwork()
     iction.setMTapBorder()
     iction.createShardFrame()
+
     if iction.debug then print('Shard frame created') end
     iction.createConflagFrame()
+
     if iction.debug then print('Conflag frame created') end
     iction.createArtifactFrame()
+
     if iction.debug then print('Artifact frame created') end
     iction.createBuffFrame()
+
     if iction.debug then print('Buff frame created') end
     iction.createDebuffColumns()
+
     if iction.debug then print('Debuff Column frames created') end
     iction.setcastbar()
+
 end
 
 ----------------------------------------------------------------------------------------------
@@ -214,7 +217,11 @@ function iction.ictionFrameWatcher()
     iction.ictionMF:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     iction.ictionMF:RegisterEvent("PLAYER_TARGET_CHANGED")
     iction.ictionMF:RegisterEvent("PLAYER_REGEN_ENABLED")
-
+    iction.ictionMF:RegisterEvent("SPELL_AURA_REMOVED")
+    iction.ictionMF:RegisterEvent("SPELL_AURA_APPLIED")
+    iction.ictionMF:RegisterEvent("SPELL_DAMAGE")
+    iction.ictionMF:RegisterEvent("SPELL_CAST_SUCCESS")
+    iction.ictionMF:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     -- ON EVENT CHECKS
     local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1, prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
         -- creatureGUID = prefix2, creatureName = prefix3
@@ -228,11 +235,17 @@ function iction.ictionFrameWatcher()
                 iction.highlightTargetSpellframe(UnitGUID("Target"))
             end
         end
+        if eventName == "SPELL_AURA_APPLIED_DOSE" and sufx4 == 'Agony' then iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF") end
 
+        if eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
+            iction.addSeeds(prefix2, sufx4, "DEBUFF")
+        end
+
+        -- STUFF
         if sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
-                    if eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then --eventName == "SPELL_CAST_SUCCESS" or
+                    if eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
                     validSpell = false
                         for _, v in pairs(iction.uiPlayerSpellButtons) do
                             if v['name'] == sufx4 then
@@ -251,8 +264,6 @@ function iction.ictionFrameWatcher()
                             -- Irregular debuff handling due to crappy changes to prefix data etc based on spells. WHY!?
                             if sufx4 == "Unstable Affliction" or sufx4 == 'Agony' then
                                 iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
-                            elseif sufx4 == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" then
-                                iction.addSeeds(prefix2, sufx4, "DEBUFF")
                             -- Regular debuff/buff handling
                             elseif sufx6 == 'DEBUFF' then
                                 iction.createTarget(prefix2, prefix3, sufx4, "DEBUFF")
@@ -266,22 +277,26 @@ function iction.ictionFrameWatcher()
                         -- Set frame accordingly
                         iction.hideFrame(prefix2, false, sufx4, sufx6)
                         iction.setMTapBorder()
-
                     elseif eventName == "SPELL_CAST_SUCCESS" then
                         if sufx4 == 'Channel Demonfire' then
                             iction.createTarget(UnitGUID("Target"), 'nil', sufx4, "DEBUFF")
-
                         end
-
                     elseif eventName == "SPELL_DAMAGE" and sufx4 == "Seed of Corruption" then
                         iction.clearSeeds(prefix2)
                     end
+                end
+            end
+        end
 
-            end
-            end
+        if eventName == "SPELL_AURA_REMOVED" and sufx4 == "Burning Rush" then
+            -- Added to handle burning rush. This may indicate a new place to handle all aura removals
+            iction.createTarget(prefix2, prefix3, sufx4, sufx6)
         end
         if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup()end
         if event == "PLAYER_TARGET_CHANGED" then iction.highlightTargetSpellframe(UnitGUID("Target")) iction.currentTargetDebuffExpires() end
+        if event == "PLAYER_SPECIALIZATION_CHANGED" and sourceGUID == iction.playerGUID then
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. You should reload ui now!", 15, 25, 35)
+        end
     end
     iction.ictionMF:SetScript("OnEvent", eventHandler)
     -- ON UPDATE CHECKS

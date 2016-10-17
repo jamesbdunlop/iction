@@ -314,14 +314,18 @@ function iction.clearSeeds(guid)
 end
 
 function iction.addSeeds(guid, spellName, spellType)
-    if not iction.colGUIDExists(guid) then
+    -- now check we have it in a column
+    if not iction.colGUIDExists(guid) then -- it isn't present as an active target column so try to make one now.
         iction.createTarget(guid, 'nil', spellName, spellType)
     end
-
-    -- now check we have it in a column
     if iction.colGUIDExists(guid) then
         iction.createTargetSpellData(guid, spellName, spellType)
-        iction.createExpiresData(guid, spellName, spellType)
+        for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
+            if iction.uiPlayerSpellButtons[i]['name'] == 'Seed of Corruption' then
+            local expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
+            iction.createExpiresData(guid, spellName, spellType, expires)
+            end
+        end
     end
 end
 
@@ -333,9 +337,8 @@ function iction.currentTargetBuffExpires()
     end
     if spellNames then
         if (UnitName("Player")) then
-            for x = 1, iction.tablelength(spellNames) do --5 do
+            for x = 1, iction.tablelength(spellNames) do
                 if spellNames[x] ~= nil then
-                    --_, _, _, _, _, duration, expires = UnitBuff("Player", spellNames[x])
                     local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", spellNames[x], nil, "player")
                     if expires ~= nil then
                         local getGUID = UnitGUID("Player")

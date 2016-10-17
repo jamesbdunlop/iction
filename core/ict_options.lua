@@ -89,19 +89,24 @@ function iction.setOptionsFrame()
                 end
         end)
 
+        iction.ict_TargetLabel = UIParent:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_TargetLabel:SetText('Max Target Columns:')
+        iction.ict_TargetLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
+        iction.ict_TargetLabel:SetPoint("TOP", iction.OptionsFrame, 0, -70)
+
         iction.TargetOptionsFrame = CreateFrame('Frame', 'TargetOptionsFrame', iction.OptionsFrame, "InsetFrameTemplate")
         iction.TargetOptionsFrame:SetFrameStrata("MEDIUM")
         iction.TargetOptionsFrame:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
         iction.TargetOptionsFrame:SetPoint("RIGHT", iction.OptionsFrame, -20, 0)
-        iction.TargetOptionsFrame:SetPoint("TOP", iction.OptionsFrame, -20, -65)
-        iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, 95)
+        iction.TargetOptionsFrame:SetPoint("TOP", iction.OptionsFrame, -20, -85)
+        iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, 175)
 
         ict_MaxTarget1Input = CreateFrame("CheckButton", "ict_maxCount1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget1Input.tooltip = "Set targets to track to 1. \nNote: Changing count will reload the UI on close."
-        ict_MaxTarget1Input:SetPoint("LEFT", iction.TargetOptionsFrame, 10, 0)
-        ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -5)
+        ict_MaxTarget1Input:SetPoint("LEFT", iction.TargetOptionsFrame, 20, 0)
+        ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -15)
         ict_MaxTarget1Inputtext = _G["ict_maxCount1Text"]
-        ict_MaxTarget1Inputtext:SetText("Max Targets 1")
+        ict_MaxTarget1Inputtext:SetText("1")
         if ictionTargetCount == 1 then ict_MaxTarget1Input:SetChecked(true) setCount = 1 end
         ict_MaxTarget1Input:SetScript("OnClick", function()
                                         ict_MaxTarget2Input:SetChecked(false)
@@ -113,10 +118,10 @@ function iction.setOptionsFrame()
 
         ict_MaxTarget2Input = CreateFrame("CheckButton", "ict_maxCount2", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget2Input.tooltip = "Set targets to track to 2. \nNote: Changing count will reload the UI on close."
-        ict_MaxTarget2Input:SetPoint("LEFT", iction.TargetOptionsFrame, 10, 0)
-        ict_MaxTarget2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -25)
+        ict_MaxTarget2Input:SetPoint("LEFT", iction.TargetOptionsFrame, 85, 0)
+        ict_MaxTarget2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -15)
         ict_MaxTarget2Inputtext = _G["ict_maxCount2Text"]
-        ict_MaxTarget2Inputtext:SetText("Max Targets 2")
+        ict_MaxTarget2Inputtext:SetText("2")
         ict_MaxTarget2Input:SetScript("OnClick", function()
                                         ict_MaxTarget1Input:SetChecked(false)
                                         ict_MaxTarget3Input:SetChecked(false)
@@ -128,10 +133,10 @@ function iction.setOptionsFrame()
 
         ict_MaxTarget3Input = CreateFrame("CheckButton", "ict_maxCount3", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget3Input.tooltip = "Set targets to track to 3. \nNote: Changing count will reload the UI on close."
-        ict_MaxTarget3Input:SetPoint("LEFT", iction.TargetOptionsFrame, 10, 0)
-        ict_MaxTarget3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -45)
+        ict_MaxTarget3Input:SetPoint("LEFT", iction.TargetOptionsFrame, 150, 0)
+        ict_MaxTarget3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -15)
         ict_MaxTarget3Inputtext = _G["ict_maxCount3Text"]
-        ict_MaxTarget3Inputtext:SetText("Max Targets 3")
+        ict_MaxTarget3Inputtext:SetText("3")
         ict_MaxTarget3Input:SetScript("OnClick", function()
                                         ict_MaxTarget1Input:SetChecked(false)
                                         ict_MaxTarget2Input:SetChecked(false)
@@ -143,10 +148,10 @@ function iction.setOptionsFrame()
 
         ict_MaxTarget4Input = CreateFrame("CheckButton", "ict_maxCount4", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget4Input.tooltip = "Set targets to track to 4. \nNote: Changing count will reload the UI on close."
-        ict_MaxTarget4Input:SetPoint("LEFT", iction.TargetOptionsFrame, 10, 0)
-        ict_MaxTarget4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -65)
+        ict_MaxTarget4Input:SetPoint("LEFT", iction.TargetOptionsFrame, 215, 0)
+        ict_MaxTarget4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -15)
         ict_MaxTarget4Inputtext = _G["ict_maxCount4Text"]
-        ict_MaxTarget4Inputtext:SetText("Max Targets 4")
+        ict_MaxTarget4Inputtext:SetText("4")
         ict_MaxTarget4Input:SetScript("OnClick", function()
                                         ict_MaxTarget1Input:SetChecked(false)
                                         ict_MaxTarget2Input:SetChecked(false)

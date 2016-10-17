@@ -9,6 +9,7 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
         iction.targetFrames[guid]:EnableMouse(false)
         iction.targetFrames[guid]:SetFrameStrata("HIGH")
         iction.targetFrames[guid]:SetBackdropColor(0, 0, 0, 0)
+        iction.targetFrames[guid]:SetClampedToScreen(true)
         -- Set draw for frame
         local bg = iction.targetFrames[guid]:CreateTexture(nil, "ARTWORK")
               bg:SetAllPoints(true)

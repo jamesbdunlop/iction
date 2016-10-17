@@ -13,7 +13,6 @@ DrainSoul = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = fa
 SiphonLife = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
 PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
 }
--- healthFunnel
 local aff_BuffList = {
 manaTap = {name = "Mana Tap",  insert = false, isTalentSpell = true,  vis = false, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
 reapSouls = {name = "Deadwind Harvester",  insert = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"},
@@ -21,6 +20,7 @@ Unending = {name = "Unending Resolve",  insert = true, isTalentSpell = false, vi
 SoulHarvest = {name = "Soul Harvest",  insert = false, isTalentSpell = true, vis = false, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
 BurningRush = {name = "Burning Rush",  insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
 DarkPact = {name = "Dark Pact",  insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
+WrathofConsumption = {name = "Wrath of Consumption",  insert = false, isTalentSpell = false, vis = false, id = 199472, duration = 20, maxTime = 20, icon = ""},
 }
 local aff_artifact = {
 name = "Tormented Souls",  insert = true, isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
@@ -130,14 +130,3 @@ function iction.setBuffButtonLib()
         iction.uiPlayerArtifact = destro_artifact
     end
 end
-
-
---local powers = C_ArtifactUI.GetPowers()
---for i = 1, #powers do
---    local spellID, _, currentRank = C_ArtifactUI.GetPowerInfo(powers[i])
---
---    if currentRank > 0 then
---        local name = GetSpellInfo(spellID)
---        -- do stuff
---    end
---end

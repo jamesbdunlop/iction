@@ -1,9 +1,10 @@
 ----------------------------------------------------------------------------------------------
 --- BUTTON GENERATOR -------------------------------------------------------------------------
-function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
+function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
     -- Create an empty button table
     local buttonFrames = {}
     local buttonText = {}
+
     for key, value in pairs(buttons) do
         if value['vis'] then
             -- Create the button frame
@@ -43,7 +44,6 @@ function iction.addButtons(pFrame, guid, buttons, paddingX, paddingY, buff)
                 paddingY = paddingY + iction.bh
                 paddingX = paddingX
             end
-
             -- Add the button the the creatures button table
             buttonFrames[value['name']] = b
             buttonText[value['name']] = fnt

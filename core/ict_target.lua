@@ -19,7 +19,7 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
         iction.createTargetSpellData(guid, spellName, spellType)
 
         if iction.debug then print("Target createTargetSpellData") end
-        iction.createExpiresData(guid, spellName, spellType)
+        iction.createExpiresData(guid, spellName, spellType, nil)
 
         if iction.debug then print("Target created successfully") end
     end
@@ -47,7 +47,7 @@ function iction.createTargetSpellData(guid, spellName, spellType)
     end
 end
 
-function iction.createExpiresData(guid, spellName, spellType)
+function iction.createExpiresData(guid, spellName, spellType, customExpires)
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
         if spellType == 'BUFF' then
             --- UNITBUFF
@@ -57,14 +57,18 @@ function iction.createExpiresData(guid, spellName, spellType)
         else
             --- UNITDEBUFF
             -- Get UnitDebuff info and cache it into the table
-            local _, _, _, _, _, _, expires, _, _, _, _ = UnitDebuff("Target", spellName)
+            if not customExpires then
+                local _, _, _, _, _, _, expires, _, _, _, _ = UnitDebuff("Target", spellName)
 
-            if not expires then -- Handle for  demonfire channeling
-                local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
-                if endTime ~= nil then
-                    dur = endTime/1000.0 - GetTime()
-                    expires =  GetTime() + dur
+                if not expires then -- Handle for  demonfire channeling
+                    local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+                    if endTime ~= nil then
+                        dur = endTime/1000.0 - GetTime()
+                        expires =  GetTime() + dur
+                    end
                 end
+            else
+                expires = customExpires
             end
             if iction.debug then print("expires: " .. tostring(expires) .. ' for spell: ' .. spellName) end
             iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
@@ -82,13 +86,13 @@ function iction.createButtons(frm, guid, spellType)
         padX = 0
         padY = iction.ictionButtonFramePad
         if frm:GetAttribute("name") == 'ictionDeBuffFrame' then
-            b, fnt = iction.addButtons(frm, guid, iction.uiPlayerSpellButtons, padX, padY, false)
+            b, fnt = iction.buttonBuild(frm, guid, iction.uiPlayerSpellButtons, padX, padY, false)
         end
     else
         padX = iction.ictionButtonFramePad
         padY = 0
         if frm:GetAttribute("name") == 'ictionBuffFrame' then
-            b, fnt = iction.addButtons(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
+            b, fnt = iction.buttonBuild(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
         end
     end
     iction.targetButtons[guid]["buttonFrames"] = b
