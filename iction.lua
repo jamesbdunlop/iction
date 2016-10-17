@@ -2,15 +2,10 @@
 -- Make it so when felflame is on cooldown the button is red
 -- Add Agony/UA charge counter 1 2 3 - 20 ??
 
--- Changelog beta0.0.3
--- Burning Rush now removes timer text.
--- Replaced INF with infinity symbol :) Much cleaner
--- Added msg for reminder to reload ui on spec change
--- Fixed spell frame to clamp to screen correctly
--- Added an agony dosage tracker due to some flakyness there seriously Blizz.. wth just want to handle ALL spells in one hit the same way! ARGH
+-- Changelog beta0.0.4
 
 
---- version beta0.0.3
+--- version beta0.0.4
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
