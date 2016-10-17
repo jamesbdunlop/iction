@@ -227,10 +227,6 @@ function iction.ictionFrameWatcher()
             iction.tagDeadTarget(prefix2)
             iction.targetData[prefix2] = nil
             iction.highlightTargetSpellframe(UnitGUID("Target"))
-        elseif eventName == "SPELL_AURA_APPLIED_DOSE" and sufx4 == 'Agony' then
-            iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
-        elseif eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
-            iction.addSeeds(prefix2, sufx4, "DEBUFF")
         elseif sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
@@ -275,6 +271,10 @@ function iction.ictionFrameWatcher()
                     end
                 end
             end
+        elseif eventName == "SPELL_AURA_APPLIED_DOSE" and sufx4 == 'Agony' then
+            iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
+        elseif eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
+            iction.addSeeds(prefix2, sufx4, "DEBUFF")
         elseif eventName == "SPELL_AURA_REMOVED" and sufx4 == "Burning Rush" then
             -- Added to handle burning rush. This may indicate a new place to handle all aura removals
             iction.createTarget(prefix2, prefix3, sufx4, sufx6)
