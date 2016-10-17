@@ -227,22 +227,16 @@ function iction.ictionFrameWatcher()
         -- creatureGUID = prefix2, creatureName = prefix3
         -- curSpellName = sufx4, creatureGUID = prefix2, creatureName = prefix3
         --- START DOING COMBAT LOG STUFF NOW
-        if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            if eventName == "UNIT_DIED" then
-                -- Remove unit from the table if it died.
-                iction.tagDeadTarget(prefix2)
-                iction.targetData[prefix2] = nil
-                iction.highlightTargetSpellframe(UnitGUID("Target"))
-            end
-        end
-        if eventName == "SPELL_AURA_APPLIED_DOSE" and sufx4 == 'Agony' then iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF") end
-
-        if eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED"then
+            -- Remove unit from the table if it died.
+            iction.tagDeadTarget(prefix2)
+            iction.targetData[prefix2] = nil
+            iction.highlightTargetSpellframe(UnitGUID("Target"))
+        elseif eventName == "SPELL_AURA_APPLIED_DOSE" and sufx4 == 'Agony' then
+            iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
+        elseif eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
             iction.addSeeds(prefix2, sufx4, "DEBUFF")
-        end
-
-        -- STUFF
-        if sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
+        elseif sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
                     if eventName == "SPELL_CAST_START" or eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
@@ -286,15 +280,12 @@ function iction.ictionFrameWatcher()
                     end
                 end
             end
-        end
-
-        if eventName == "SPELL_AURA_REMOVED" and sufx4 == "Burning Rush" then
+        elseif eventName == "SPELL_AURA_REMOVED" and sufx4 == "Burning Rush" then
             -- Added to handle burning rush. This may indicate a new place to handle all aura removals
             iction.createTarget(prefix2, prefix3, sufx4, sufx6)
-        end
-        if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup()end
-        if event == "PLAYER_TARGET_CHANGED" then iction.highlightTargetSpellframe(UnitGUID("Target")) iction.currentTargetDebuffExpires() end
-        if event == "PLAYER_SPECIALIZATION_CHANGED" and sourceGUID == iction.playerGUID then
+        elseif event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup()
+        elseif event == "PLAYER_TARGET_CHANGED" then iction.highlightTargetSpellframe(UnitGUID("Target")) iction.currentTargetDebuffExpires()
+        elseif event == "PLAYER_SPECIALIZATION_CHANGED" and sourceGUID == iction.playerGUID then
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. You should reload ui now!", 15, 25, 35)
         end
     end

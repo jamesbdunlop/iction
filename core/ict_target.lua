@@ -48,6 +48,8 @@ function iction.createTargetSpellData(guid, spellName, spellType)
 end
 
 function iction.createExpiresData(guid, spellName, spellType, customExpires)
+    local expires, finExpires
+    print("CustomExpires:" .. tostring(customExpires))
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
         if spellType == 'BUFF' then
             --- UNITBUFF
@@ -57,21 +59,23 @@ function iction.createExpiresData(guid, spellName, spellType, customExpires)
         else
             --- UNITDEBUFF
             -- Get UnitDebuff info and cache it into the table
-            if not customExpires then
-                local _, _, _, _, _, _, expires, _, _, _, _ = UnitDebuff("Target", spellName)
-
-                if not expires then -- Handle for  demonfire channeling
+            if customExpires == nil then
+                local _, _, _, _, _, _, expiresOnTarget, _, _, _, _ = UnitDebuff("Target", spellName)
+                print("expiresOnTarget: " .. tostring(expiresOnTarget))
+                if not expiresOnTarget then -- Handle for  demonfire channeling
                     local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
                     if endTime ~= nil then
                         dur = endTime/1000.0 - GetTime()
-                        expires =  GetTime() + dur
+                        finExpires =  GetTime() + dur
                     end
+                else
+                    finExpires = expiresOnTarget
                 end
             else
-                expires = customExpires
+                finExpires = customExpires
             end
             if iction.debug then print("expires: " .. tostring(expires) .. ' for spell: ' .. spellName) end
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+            iction.targetData[guid]['spellData'][spellName]['endTime'] = finExpires
             iction.updateTimers()
         end
     end
