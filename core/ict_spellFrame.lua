@@ -39,26 +39,27 @@ end
 --- CREATE PLAYER BUFF UI  ---
 function iction.createPlayerBuffFrame()
     if iction.debug then print("Dbg: iction.createPlayerBuffFrame") end
+    local fw, fh
     if not iction.targetFrames[iction.playerGUID] then
-        local fw, fh
         local offset
-        if iction.buffFrameHorizontal then
-            fw, _ = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        if ictionBuffBarBarH == true then
+            _, fw= iction.calcFrameSize(iction.uiPlayerBuffButtons)
+            fh  = iction.bh+5
         else
-            fh, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+            fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
         end
+
         local buffFrameData = iction.ictSpellFrameData
         buffFrameData["uiParentFrame"] = iction.buffFrame
         buffFrameData["point"]['p'] = iction.buffFrame
         buffFrameData["nameAttr"] = "ictionBuffFrame"
         buffFrameData["strata"] = "MEDIUM"
         buffFrameData['w'] = fw
-        buffFrameData['h'] = iction.bh+5
+        buffFrameData['h'] = fh
         iction.buffFrameBldr = iction.UIElement
         iction.targetFrames[iction.playerGUID] = iction.buffFrameBldr.create(iction.buffFrameBldr, buffFrameData)
-        if iction.buffFrameHorizontal then
-            iction.targetFrames[iction.playerGUID]:SetPoint("LEFT", iction.buffFrame, 5, 0)
-            iction.targetFrames[iction.playerGUID]:SetPoint("RIGHT", iction.buffFrame, -5, 0)
+        if ictionBuffBarBarH then
+            iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", iction.buffFrame, 0, 0)
         else
             iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", iction.buffFrame, 0, 0)
         end

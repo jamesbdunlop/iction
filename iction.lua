@@ -2,16 +2,12 @@
 -- Make it so when felflame is on cooldown the button is red
 -- Add Agony/UA charge counter 1 2 3 - 20 ??
 
--- Changelog beta0.0.5
--- Added frame names when moving frames around for easy identification
--- Changed timers to turn bright red when less than 3 seconds which should cover most cast times and garnish some player attention.
--- Fixed buff button locations in horizontal mode for default position to be a bit neater
--- Fixed buff frame location on first time load to not sit over the top of the artifact frame
--- Prevent conflagFrame from building when spec isn't destro
--- Fixed core frame class setting self.texture incorrectly when adding textures. This fixes showing the shard and conflag frames correctly when moving elements
+-- Changelog beta0.0.6
+-- Adjusted buffframe build for button line up to the base frame. Sigh thought this was fixed but turned out it wasn't
+-- Removed some legacy code getting in the way of ictionBuffBarBarH being set correctly. Horizontal / Vertical buff bar should be working as intended now.
+-- Some core code cleanup
 
-
---- version beta0.0.5
+--- version beta0.0.6
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -28,6 +24,14 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.highlightFrameTexture = iction.createHighlightFrame()
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Loaded Iction UI. Use /iction options for option ui ", 15, 25, 35);
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] args: /iction unlock /iction lock  /iction max 1, 2, 3 or 4 ", 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Targets: " .. tostring(ictionTargetCount), 15, 25, 35);
+            local bf
+            if ictionBuffBarBarH then
+                bf = 'Horizontal'
+            else
+                bf = 'Vertical'
+            end
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] BuffFrame: " .. bf, 15, 25, 35);
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
@@ -119,10 +123,20 @@ function iction.createBottomBarArtwork()
 end
 
 function iction.createBuffFrame()
-    iction.ictBuffFrameData['uiParentFrame'] = iction.ictionMF
-    iction.ictBuffFrameData['point']['p'] = iction.ictionMF
+    local fw, fh
+    if ictionBuffBarBarH == true then
+        _, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        fh = iction.bh+5
+    else
+        fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+    end
+    local buffData = iction.ictBuffFrameData
+    buffData['uiParentFrame'] = iction.ictionMF
+    buffData['point']['p'] = iction.ictionMF
+    buffData['w'] = fw
+    buffData['h'] = fh
     local buffFrame = iction.UIElement
-    iction.buffFrame = buffFrame.create(buffFrame, iction.ictBuffFrameData)
+    iction.buffFrame = buffFrame.create(buffFrame, buffData)
 end
 
 function iction.createDebuffColumns()

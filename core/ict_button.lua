@@ -35,7 +35,7 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
                   fnt:SetTextColor(.1, 1, .1, 1)
             b.text = fnt
 
-            if iction.buffFrameHorizontal and buff then
+            if ictionBuffBarBarH and buff then
                 b:SetPoint("LEFT", pFrame, paddingX, paddingY)
                 paddingY = paddingY
                 paddingX = paddingX + iction.bh

@@ -10,8 +10,6 @@ iction.bh = 36
 iction.ictionMFH = 64
 iction.ictionMFW = 128
 iction.ictionScale = 1
-iction.ictionHorizontal = false
-iction.buffFrameHorizontal = true
 iction.ictionSpellAnchorOffset = 65
 iction.ictionButtonFramePad = 5
 iction.targetData = {}     -- {GUID = {name = creatureName, spellData = {spellName = {name=spellName, endtime=float}}}}
@@ -44,12 +42,15 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
         if not ictionFramePos then ictionFramePos = {} end
         if not ictionSkin then iction.skin = 01 else iction.skin = ictionSkin end
+        if ictionBuffBarBarH == nil then
+            ictionBuffBarBarH = true end
+        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Buff frame:" .. tostring(ictionBuffBarBarH), 65, 35, 35);
         if not ictionTargetCount then
             iction.ict_maxTargets = 2
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2...", 65, 35, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2.", 65, 35, 35);
         else
             iction.ict_maxTargets = ictionTargetCount
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Set max count to ".. iction.ict_maxTargets, 100, 35, 35);
+            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Max tgt count is: ".. iction.ict_maxTargets, 100, 35, 35);
         end
         if ictionSetCastBar == nil then
             iction.setCastBar = false

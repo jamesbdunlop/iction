@@ -4,7 +4,7 @@ function iction.setOptionsFrame()
     local setCount
     if not iction.OptionsFrame then
         iction.OptionsFrame = CreateFrame('Frame', 'ictionOptions', UIParent, "OptionsBoxTemplate")
-        iction.OptionsFrame:SetPoint("CENTER", UIParent, 0, 0 )
+        iction.OptionsFrame:SetPoint("CENTER", UIParent, 0, 250)
         iction.OptionsFrame:SetFrameStrata("BACKGROUND")
         iction.OptionsFrame:EnableMouse(true)
         iction.OptionsFrame:SetMovable(true)
@@ -82,11 +82,12 @@ function iction.setOptionsFrame()
         bbhtext:SetText("Horizontal BuffBar?")
         ict_BBarHorizontalButton:SetScript("OnClick", function()
             if ict_BBarHorizontalButton:GetChecked() then
-                PlaySound("igMainMenuOptionCheckBoxOn")
                 ictionBuffBarBarH = true
+                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Set BuffBar to Horizontal", 100, 35, 35)
             else
                 ictionBuffBarBarH = false
-                end
+                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Set BuffBar to Vertical", 100, 35, 35)
+            end
         end)
 
         iction.ict_TargetLabel = UIParent:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
