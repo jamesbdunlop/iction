@@ -34,8 +34,13 @@ function iction.updateTimers()
                         elseif endTime > GetTime() then
                             local remainingT = tonumber(string.format("%.2d", (endTime - GetTime())))
                             if iction.targetButtons[guid] then -- fxcking target dummies
-                                iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName])
-                                iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+                                if remainingT < 3 then
+                                    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], true)
+                                    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+                                else
+                                    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], false)
+                                    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+                                end
                             end
                         end
                     end

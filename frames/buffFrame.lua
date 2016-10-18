@@ -13,5 +13,5 @@ iction.ictBuffFrameData = { uiType = "Frame",
                             texture = {name = nil, allPoints = true, level = "ARTWORK",
                                        texture= "Interface\\ChatFrame\\ChatFrameBackground",
                                        vr = 1, vg = 1, vb = 1, va = 0},
-                            point = {pos = "BOTTOM", x = 0, y = -20},
+                            point = {pos = "CENTER", x = 0, y = -50},
                             }

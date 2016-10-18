@@ -46,27 +46,32 @@ function iction.setSoulShards(shards)
 end
 
 function iction.setConflagCount()
-    local confCount = iction.getConflagCharges() or 0
-    for x = 1, 2 do
-        iction.conflags[x]:SetVertexColor(1, 1, 1, 0)
-    end
-    for x = 1, confCount do
-        iction.conflags[x]:SetVertexColor(1, 1, 1, 1)
+    if iction.spec == 3 then
+        local confCount = iction.getConflagCharges() or 0
+        for x = 1, 2 do
+            iction.conflags[x]:SetVertexColor(1, 1, 1, 0)
+        end
+        for x = 1, confCount do
+            iction.conflags[x]:SetVertexColor(1, 1, 1, 1)
+        end
     end
 end
 
 ----------------------------------------------------------------------------------------------
 --- BUTTON UTILS -----------------------------------------------------------------------------
-function iction.setButtonState(active, hidden, button)
+function iction.setButtonState(active, hidden, button, refresh)
     if button ~= nil then
-        if active then
+        if active and not refresh then
             button:SetBackdropColor(1, 1, 1, 1)
             button.texture:SetVertexColor(0.9,0.9,0.9, .9)
         elseif hidden then
             button:SetBackdropColor(0,0,0, 0)
             button.texture:SetVertexColor(0,0,0, 0)
+        elseif active and refresh then
+            button:SetBackdropColor(1, 1, 1, 1)
+            button.texture:SetVertexColor(1, 0, 0, 1)
         else
-            button.texture:SetVertexColor(0.9,0.3,0.3, .3)
+            button.texture:SetVertexColor(0.9,0.3,0.3, .5)
         end
     end
 end

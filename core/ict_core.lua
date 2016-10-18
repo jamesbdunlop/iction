@@ -41,7 +41,6 @@ local sframe = CreateFrame("Frame", 'ictionRoot')
 sframe:RegisterEvent("ADDON_LOADED")
 sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
-
         if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
         if not ictionFramePos then ictionFramePos = {} end
         if not ictionSkin then iction.skin = 01 else iction.skin = ictionSkin end

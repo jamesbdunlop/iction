@@ -2,10 +2,16 @@
 -- Make it so when felflame is on cooldown the button is red
 -- Add Agony/UA charge counter 1 2 3 - 20 ??
 
--- Changelog beta0.0.4
+-- Changelog beta0.0.5
+-- Added frame names when moving frames around for easy identification
+-- Changed timers to turn bright red when less than 3 seconds which should cover most cast times and garnish some player attention.
+-- Fixed buff button locations in horizontal mode for default position to be a bit neater
+-- Fixed buff frame location on first time load to not sit over the top of the artifact frame
+-- Prevent conflagFrame from building when spec isn't destro
+-- Fixed core frame class setting self.texture incorrectly when adding textures. This fixes showing the shard and conflag frames correctly when moving elements
 
 
---- version beta0.0.4
+--- version beta0.0.5
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -70,6 +76,7 @@ SlashCmdList["ICTION"] = ictionArgs
 --- BEGIN UI NOW ---
 function iction.initMainUI()
     --- Setup the mainFrame and Eventwatcher ---
+    iction.spec = GetSpecialization()
     local mainFrame = iction.UIElement
     iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
     iction.ictionFrameWatcher(iction.ictionMF)
@@ -79,7 +86,7 @@ function iction.initMainUI()
     iction.createShardFrame()
 
     if iction.debug then print('Shard frame created') end
-    iction.createConflagFrame()
+    if iction.spec == 3 then iction.createConflagFrame() end
 
     if iction.debug then print('Conflag frame created') end
     iction.createArtifactFrame()
@@ -227,6 +234,8 @@ function iction.ictionFrameWatcher()
             iction.tagDeadTarget(prefix2)
             iction.targetData[prefix2] = nil
             iction.highlightTargetSpellframe(UnitGUID("Target"))
+        elseif eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
+            iction.addSeeds(prefix2, sufx4, "DEBUFF")
         elseif sourceGUID == iction.playerGUID and eventName ~= "SPELL_HEAL" and eventName ~= "SPELL_PERIODIC_DAMAGE" and eventName ~= "SPELL_AURA_REMOVED" and eventName ~= "SPELL_AURA_APPLIED_DOSE" and eventName ~= "SPELL_AURA_REMOVED_DOSE" then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
@@ -273,8 +282,7 @@ function iction.ictionFrameWatcher()
             end
         elseif eventName == "SPELL_AURA_APPLIED_DOSE" and sufx4 == 'Agony' then
             iction.createTarget(UnitGUID("Target"), prefix3, sufx4, "DEBUFF")
-        elseif eventName == "SPELL_AURA_APPLIED" and sufx4 == 'Seed of Corruption' then
-            iction.addSeeds(prefix2, sufx4, "DEBUFF")
+
         elseif eventName == "SPELL_AURA_REMOVED" and sufx4 == "Burning Rush" then
             -- Added to handle burning rush. This may indicate a new place to handle all aura removals
             iction.createTarget(prefix2, prefix3, sufx4, sufx6)
@@ -300,7 +308,6 @@ function iction.ictionFrameWatcher()
 end
 
 function iction.unlockUIElements(isMovable)
-    ---Show the full iction frame---
     local cols = iction.debuffColumns
     if isMovable then
         -- override colors for special frames
@@ -335,6 +342,14 @@ function iction.setMovable(f, isMovable, hideDefault)
         f:EnableMouse(true)
         f:SetMovable(true)
         f:SetParent(iction.ictionMF)
+        ---Name font string ---
+        local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
+            -- Create the fontString for the button
+              fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
+              fntStr:SetPoint("CENTER", f, 0, 0)
+              fntStr:SetTextColor(.1, 1, .1, 1)
+              fntStr:SetText(string.gsub(frameName, "iction_", ""))
+            f.text = fntStr
         ---Scripts for moving---
         f:SetScript("OnMouseDown", function(self, button)
           if button == "LeftButton" and not f.isMoving then
@@ -366,6 +381,7 @@ function iction.setMovable(f, isMovable, hideDefault)
         if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0) else f.texture:SetVertexColor(1, 1, 1, 1) end
         f:SetScript("OnMouseDown", nil)
         f:SetScript("OnMouseUp", nil)
+        f.text:SetText("")
     end
 end
 

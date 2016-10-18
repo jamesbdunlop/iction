@@ -4,7 +4,6 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
     -- Create an empty button table
     local buttonFrames = {}
     local buttonText = {}
-
     for key, value in pairs(buttons) do
         if value['vis'] then
             -- Create the button frame

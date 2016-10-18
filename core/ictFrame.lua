@@ -112,7 +112,6 @@ function iction.UIElement.addTexture(self, name, w, h, strata, allPoints, anchor
         AddTextre:SetHeight(h)
         AddTextre:SetTexture(texturePath)
         AddTextre:SetVertexColor(vtxR, vtxG, vtxB, vtxA)
-    self.texture = AddTextre
     return AddTextre
 end
 
