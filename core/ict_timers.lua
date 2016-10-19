@@ -64,7 +64,7 @@ function iction.updateTimers()
                                     else
                                         local stackFrame = iction.stackFrames[guid][spellName]['frame']
                                         local stackFrametext = iction.stackFrames[guid][spellName]['font']
-
+                                        stackFrame.texture:SetVertexColor(0,0,0,1)
                                         stackFrame:SetPoint("BOTTOM", timerButtonFrame, 19, 2)
                                         iction.setButtonText(count, false, stackFrametext)
 

@@ -328,9 +328,10 @@ function iction.ictionFrameWatcher()
         if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "SPELL_AURA_REMOVED" then
             iction.hideFrame(mobGUID, false, spellName, spellType)
             -- check for stack frame
-            if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] and spellName == "Unstable Affliction" then
+            if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] then
                 iction.stackFrames[mobGUID][spellName]['font']:SetText("")
-                if iction.targetData[mobGUID]['spellData'][spellName] then
+                iction.stackFrames[mobGUID][spellName]['frame'].texture:SetVertexColor(0,0,0,0)
+                if iction.targetData[mobGUID]['spellData'][spellName] and spellName == "Unstable Affliction" then
                     iction.targetData[mobGUID]['spellData'][spellName]['count'] = 0
                 end
             end
