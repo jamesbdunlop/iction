@@ -30,7 +30,7 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
             b.texture = but
             -- Create the fontString for the button
             local fnt = b:CreateFontString(nil, "OVERLAY","GameFontGreen")
-                  fnt:SetFont(iction.font, 28, "OVERLAY", "THICKOUTLINE")
+                  fnt:SetFont(iction.font, 24, "OVERLAY", "THICKOUTLINE")
                   fnt:SetPoint("CENTER", b, 0, 0)
                   fnt:SetTextColor(.1, 1, .1, 1)
             b.text = fnt

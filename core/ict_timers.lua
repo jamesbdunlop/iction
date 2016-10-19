@@ -22,7 +22,6 @@ function iction.updateTimers()
                             iction.setButtonText("∞", false, iction.targetButtons[guid]['buttonText'][spellName])
                         end
                     end
-
                     --- All other timers
                     if endTime ~= nil and not iction.infinite then
                         if endTime < GetTime() or endTime == GetTime() then
@@ -32,12 +31,14 @@ function iction.updateTimers()
                                 iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
                             end
                         elseif endTime > GetTime() then
-                            local remainingT = tonumber(string.format("%.2d", (endTime - GetTime())))
                             if iction.targetButtons[guid] then -- fxcking target dummies
+                                local remainingT = tonumber(string.format("%.1f", (endTime - GetTime())))
                                 if remainingT < 3 then
+                                    remainingT = tonumber(string.format("%.1f", (endTime - GetTime())))
                                     iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], true)
                                     iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
                                 else
+                                    remainingT = tonumber(string.format("%.1d", (endTime - GetTime())))
                                     iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], false)
                                     iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
                                 end

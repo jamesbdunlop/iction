@@ -213,13 +213,13 @@ function iction.oocCleanup()
         if iction.targetTableExists() then
             for guid, targets in pairs(iction.targetData) do
                 if guid ~= iction.playerGUID then
-                    if iction.targetData[guid]['dead'] then
-                        if iction.debug then print("Removing iction.targetData[guid]" .. tostring(guid)) end
-                        if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
-                        iction.targetData[guid] = nil
-                        iction.targetFrames[guid] = nil
-                        iction.targetButtons[guid] = nil
-                    end
+                    --if iction.targetData[guid]['dead'] then
+                    if iction.debug then print("Removing iction.targetData[guid]" .. tostring(guid)) end
+                    if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
+                    iction.targetData[guid] = nil
+                    iction.targetFrames[guid] = nil
+                    iction.targetButtons[guid] = nil
+                    --end
                 end
             end
         end
@@ -265,21 +265,23 @@ function iction.spellActive(guid, spellName)
 end
 
 function iction.highlightTargetSpellframe(guid)
-    if guid == nil then
-        iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
-    elseif guid ~= iction.playerGUID then
-        local prev = iction.hlGuid
-        if prev ~= guid then
-            local f = iction.targetFrames[guid]
-            local pf = iction.targetFrames[iction.hlGuid]
-            if iction.targetData[guid] ~= nil then
-                if f ~= nil and iction.targetData[guid]["dead"] ~= true then
-                    iction.highlightFrameTexture:SetVertexColor(.1, .6, .1, .45)
-                    iction.highlightFrame:SetParent(f)
-                    iction.highlightFrame:SetPoint("CENTER", f, 0, 0)
-                    iction.hlGuid = guid
-                else
-                    iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
+    if UnitAffectingCombat("player") then
+        if guid == nil then
+            iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
+        elseif guid ~= iction.playerGUID then
+            local prev = iction.hlGuid
+            if prev ~= guid then
+                local f = iction.targetFrames[guid]
+                local pf = iction.targetFrames[iction.hlGuid]
+                if iction.targetData[guid] ~= nil then
+                    if f ~= nil and iction.targetData[guid]["dead"] ~= true then
+                        iction.highlightFrameTexture:SetVertexColor(.1, .6, .1, .45)
+                        iction.highlightFrame:SetParent(f)
+                        iction.highlightFrame:SetPoint("CENTER", f, 0, 0)
+                        iction.hlGuid = guid
+                    else
+                        iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
+                    end
                 end
             end
         end
@@ -325,12 +327,7 @@ function iction.addSeeds(guid, spellName, spellType)
     end
     if iction.colGUIDExists(guid) then
         iction.createTargetSpellData(guid, spellName, spellType)
-        for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
-            if iction.uiPlayerSpellButtons[i]['name'] == 'Seed of Corruption' then
-            local expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
-            iction.createExpiresData(guid, spellName, spellType, expires)
-            end
-        end
+        iction.createExpiresData(guid, spellName, spellType)
     end
 end
 

@@ -2,24 +2,21 @@ local next = next
 ----------------------------------------------------------------------------------------------
 --- CREATE AN ICTION TARGET ------------------------------------------------------------------
 function iction.createTarget(guid, creatureName, spellName, spellType)
-    if iction.debug then print("Dbg: iction.createTarget..") end
+    if iction.debug then print("Dbg: iction.createTarget: " .. tostring(creatureName)) end
+    if iction.debug then print("Dbg: spellName: " .. tostring(spellName)) end
     local frm
     if guid ~= nil then
         if guid ~= iction.playerGUID then
             frm = iction.createSpellFrame(creatureName, guid, "Interface\\ChatFrame\\ChatFrameBackground")
         elseif guid == iction.playerGUID then frm = iction.createPlayerBuffFrame() end
 
-        if iction.debug then print("Creating buttons.") end
         if frm then iction.createButtons(frm, guid, spellType) end
 
-        if iction.debug then print("Target Data") end
         iction.createTargetData(guid, creatureName)
 
-        if iction.debug then print("Target SpellData") end
         iction.createTargetSpellData(guid, spellName, spellType)
 
-        if iction.debug then print("Target createTargetSpellData") end
-        iction.createExpiresData(guid, spellName, spellType, nil)
+        iction.createExpiresData(guid, spellName, spellType)
 
         if iction.debug then print("Target created successfully") end
     end
@@ -40,40 +37,60 @@ function iction.createTargetData(guid, creatureName)
 end
 
 function iction.createTargetSpellData(guid, spellName, spellType)
-    if not iction.spellActive(guid, spellName) then
+    if iction.spellActive(guid, spellName) then
+        return
+    else iction.spellActive(guid, spellName)
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
         iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
     end
 end
 
-function iction.createExpiresData(guid, spellName, spellType, customExpires)
-    local expires, finExpires
+function iction.createExpiresData(guid, spellName, spellType)
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
         if spellType == 'BUFF' then
             --- UNITBUFF
             local _, _, _, _, _, _, expires, _, _, _, _ = UnitBuff("Player", spellName)
             iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-
         else
             --- UNITDEBUFF
-            -- Get UnitDebuff info and cache it into the table
-            if customExpires == nil then
-                local _, _, _, _, _, _, expiresOnTarget, _, _, _, _ = UnitDebuff("Target", spellName)
-                if not expiresOnTarget then -- Handle for  demonfire channeling
-                    local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
-                    if endTime ~= nil then
-                        dur = endTime/1000.0 - GetTime()
-                        finExpires =  GetTime() + dur
-                    end
+            local name, rank, icon, count, dispelType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitDebuff("Target", spellName, nil, "PLAYER")
+--            print("name: " .. tostring(name))
+--            print("rank: " .. tostring(rank))
+--            print("icon: " .. tostring(icon))
+--            print("count: " .. tostring(count))
+--            print("dispelType: " .. tostring(dispelType))
+--            print("duration: " ..  tostring(duration))
+--            print("expirationTime: " ..  tostring(expirationTime))
+--            print("caster: " ..  tostring(caster))
+--            print("isStealable: " ..  tostring(isStealable))
+--            print("nameplateShowPersonal: " ..  tostring(nameplateShowPersonal))
+--            print("spellID: " ..  tostring(spellID))
+--            print("canApplyAura: " ..  tostring(canApplyAura))
+--            print("isBossDebuff: " ..  tostring(isBossDebuff))
+--            print("nameplateShowAll: " ..  tostring(nameplateShowAll))
+--            print("timeMod: " ..  tostring(timeMod))
+--            print("value1: " ..  tostring(value1))
+--            print("value2: " ..  tostring(value2))
+--            print("value3: " ..  tostring(value3))
+            if not expirationTime then -- Handle for  demonfire channeling
+                local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+                if endTime ~= nil then
+                    dur = endTime/1000.0 - GetTime()
+                    expirationTime =  GetTime() + dur
                 else
-                    finExpires = expiresOnTarget
+                    -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds)
+                     for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
+                        if iction.uiPlayerSpellButtons[i]['name'] == spellName then
+                            expirationTime = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
+                        end
+                    end
                 end
-            else
-                finExpires = customExpires
             end
-            if iction.debug then print("expires: " .. tostring(expires) .. ' for spell: ' .. spellName) end
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = finExpires
+            iction.targetData[guid]['spellData'][spellName]['endTime'] = expirationTime
+            if count then
+                iction.targetData[guid]['spellData'][spellName]['count'] = count
+            end
             iction.updateTimers()
         end
     end

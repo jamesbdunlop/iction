@@ -8,7 +8,7 @@ UA = {name = "Unstable Affliction", insert = true, isTalentSpell = false, vis = 
 Corruption = {name = "Corruption", insert = true, isTalentSpell = false, vis = true, id = 172, duration = 15, maxTime = 17.9, icon = "Interface/AddOns/iction/media/icons/corruption"},
 DrainLife = {name = "Drain Life", insert = true, isTalentSpell = false, vis = true, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
 Seed = {name = "Seed of Corruption", insert = true, isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 28, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"},
-Agony = {name = "Agony", insert = true, isTalentSpell = false, vis = true, id = 980, duration = 17, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
+Agony = {name = "Agony", insert = true, isTalentSpell = false, vis = true, id = 980, duration = 18, maxTime = 24, icon = "Interface/AddOns/iction/media/icons/agony"},
 DrainSoul = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = false, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
 SiphonLife = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
 PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
