@@ -34,5 +34,6 @@ frames\conflagFrame.lua
 frames\artifactFrame.lua
 frames\highlightFrame.lua
 frames\spellFrame.lua
+frames\stackFrame.lua
 frames\skins.lua
 iction.lua

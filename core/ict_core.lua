@@ -15,6 +15,7 @@ iction.ictionButtonFramePad = 5
 iction.targetData = {}     -- {GUID = {name = creatureName, spellData = {spellName = {name=spellName, endtime=float}}}}
 iction.targetButtons = {}  -- {GUID = {buttonFrames = {spellName = ButtonFrame}, buttonText = {spellName = fontString}}}
 iction.targetFrames = {}
+iction.stackFrames = {}
 iction.highlightFrame = ''
 iction.highlightFrameTexture = ''
 iction.hlGuid = ""

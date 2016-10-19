@@ -43,6 +43,7 @@ function iction.createTargetSpellData(guid, spellName, spellType)
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
         iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
+        iction.targetData[guid]['spellData'][spellName]['count'] = 0
     end
 end
 
@@ -54,44 +55,35 @@ function iction.createExpiresData(guid, spellName, spellType)
             iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
         else
             --- UNITDEBUFF
-            local name, rank, icon, count, dispelType, duration, expirationTime, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitDebuff("Target", spellName, nil, "PLAYER")
---            print("name: " .. tostring(name))
---            print("rank: " .. tostring(rank))
---            print("icon: " .. tostring(icon))
---            print("count: " .. tostring(count))
---            print("dispelType: " .. tostring(dispelType))
---            print("duration: " ..  tostring(duration))
---            print("expirationTime: " ..  tostring(expirationTime))
---            print("caster: " ..  tostring(caster))
---            print("isStealable: " ..  tostring(isStealable))
---            print("nameplateShowPersonal: " ..  tostring(nameplateShowPersonal))
---            print("spellID: " ..  tostring(spellID))
---            print("canApplyAura: " ..  tostring(canApplyAura))
---            print("isBossDebuff: " ..  tostring(isBossDebuff))
---            print("nameplateShowAll: " ..  tostring(nameplateShowAll))
---            print("timeMod: " ..  tostring(timeMod))
---            print("value1: " ..  tostring(value1))
---            print("value2: " ..  tostring(value2))
---            print("value3: " ..  tostring(value3))
-            if not expirationTime then -- Handle for  demonfire channeling
-                local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
-                if endTime ~= nil then
-                    dur = endTime/1000.0 - GetTime()
-                    expirationTime =  GetTime() + dur
+            local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+            if endTime ~= nil then
+                local cexpires
+                local dur = endTime/1000.0 - GetTime()
+                local cexpires =  GetTime() + dur
+                iction.targetData[guid]['spellData'][spellName]['endTime'] = cexpires
+            else
+                local _, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, _ = UnitDebuff("Target", spellName, nil, "PLAYER")
+                if expires then
+                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
                 else
-                    -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds)
-                     for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
+                    -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds, rof)
+                    for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
                         if iction.uiPlayerSpellButtons[i]['name'] == spellName then
-                            expirationTime = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
+                            expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
+                            iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
                         end
                     end
                 end
+
+                if spellName == "Unstable Affliction" then
+                    count = iction.targetData[guid]['spellData'][spellName]['count'] + 1
+                end
+
+                if count and count ~= 0 then
+                    iction.targetData[guid]['spellData'][spellName]['count'] = count
+                end
             end
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = expirationTime
-            if count then
-                iction.targetData[guid]['spellData'][spellName]['count'] = count
-            end
-            iction.updateTimers()
+        iction.updateTimers()
         end
     end
 end

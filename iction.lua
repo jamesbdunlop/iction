@@ -1,11 +1,13 @@
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
--- Add Agony/UA charge counter 1 2 3 - 20 ??
 
 -- Changelog beta0.0.6
 -- Adjusted buffframe build for button line up to the base frame. Sigh thought this was fixed but turned out it wasn't
 -- Removed some legacy code getting in the way of ictionBuffBarBarH being set correctly. Horizontal / Vertical buff bar should be working as intended now.
--- Some core code cleanup
+-- Full eventWatcher overhaul cause it was annoying the crap out of me.
+-- Added Agony charge counter
+-- Added Unstable Affliction charge counter (well it's based off casts while active it's a little hack but might be helpful)
+
 
 --- version beta0.0.6
 local iction = iction
@@ -276,10 +278,23 @@ function iction.ictionFrameWatcher()
             iction.oocCleanup()
         end
 
-        if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED" then
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED" then
             -- Remove unit from the table if it died.
             iction.tagDeadTarget(mobGUID)
             iction.targetData[mobGUID] = nil
+            -- hide all button stack frames that were built
+            if iction.stackFrames[mobGUID] then
+                for k, v in pairs(iction.stackFrames[mobGUID]) do
+                    for p, q in pairs(v) do
+                        if p == 'frame' then
+                            q:SetBackdropColor(0,0,0,0)
+                            q.texture:SetVertexColor(0,0,0,0)
+                        elseif p == 'font' then
+                            q:SetText("")
+                        end
+                    end
+                end
+            end
         end
 
         ---------------
@@ -295,16 +310,14 @@ function iction.ictionFrameWatcher()
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             elseif eventName == "SPELL_CAST_SUCCESS" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
-            elseif eventName == "SPELL_AURA_APPLIED_DOSE" then
-                iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+            --elseif eventName == "SPELL_AURA_APPLIED_DOSE" then
+            --    iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             end
         end
         ---------------
         -- DemonFire
         if sourceGUID == iction.playerGUID and spellName == 'Channel Demonfire' and event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            print("eventName: " .. tostring(eventName))
-            print('Casting demonFire')
-            if eventName == "SPELL_AURA_APPLIED" then
+            if eventName == "SPELL_ENERGIZE" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             end
         end
@@ -314,6 +327,13 @@ function iction.ictionFrameWatcher()
         --- Dot dropped off mob...
         if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "SPELL_AURA_REMOVED" then
             iction.hideFrame(mobGUID, false, spellName, spellType)
+            -- check for stack frame
+            if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] and spellName == "Unstable Affliction" then
+                iction.stackFrames[mobGUID][spellName]['font']:SetText("")
+                if iction.targetData[mobGUID]['spellData'][spellName] then
+                    iction.targetData[mobGUID]['spellData'][spellName]['count'] = 0
+                end
+            end
             iction.setMTapBorder()
         end
 
@@ -327,14 +347,15 @@ function iction.ictionFrameWatcher()
             if validSpell then
                 local endCast
                 if eventName == "SPELL_CAST_START" then
-                    if sufx4 == "Unstable Affliction" or spellName == 'Immolate' then
+                    if spellName == "Unstable Affliction" or spellName == 'Immolate' then
                         iction.createTargetData(UnitGUID("Target"), mobName)
                         iction.createTargetSpellData(UnitGUID("Target"), spellName, "DEBUFF")
                         local _, _, _, castingTime, _, _, _ = GetSpellInfo(spellName)
                         endCast = castingTime + GetTime()
                     end
+
                 elseif eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
-                    if sufx4 ~= "Unstable Affliction" or spellName ~= 'Immolate' then
+                    if spellName ~= "Unstable Affliction" or spellName ~= 'Immolate' then
                         -- Regular debuff/buff handling
                         if spellType == 'DEBUFF' then
                             iction.createTarget(mobGUID, mobName, spellName, "DEBUFF")
@@ -342,8 +363,6 @@ function iction.ictionFrameWatcher()
                             iction.createTarget(mobGUID, mobName, spellName, spellType)
                         end
                     end
-                elseif eventName == "SPELL_CAST_SUCCESS" then
-                    iction.createTargetData(UnitGUID("Target"), mobName)
                 end
             end
         end

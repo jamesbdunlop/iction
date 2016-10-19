@@ -216,9 +216,19 @@ function iction.oocCleanup()
                     --if iction.targetData[guid]['dead'] then
                     if iction.debug then print("Removing iction.targetData[guid]" .. tostring(guid)) end
                     if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
+                    if iction.stackFrames[guid] then
+                        -- hide all button stack frames that were build
+                        for i = 1, iction.tablelength(iction.stackFrames[guid]) do
+                            if iction.stackFrames[guid][i] ~= nil then
+                                iction.stackFrames[guid][i]['frame']:Hide()
+                                iction.stackFrames[guid][i]= nil
+                            end
+                        end
+                    end
                     iction.targetData[guid] = nil
                     iction.targetFrames[guid] = nil
                     iction.targetButtons[guid] = nil
+                    iction.stackFrames[guid] = nil
                     --end
                 end
             end
@@ -300,14 +310,22 @@ function iction.currentTargetDebuffExpires()
             for x = 1, iction.tablelength(spellNames) do
                 if spellNames[x] ~= nil and iction.targetTableExists() and iction.spellActive(getGUID, spellNames[x]) and iction.targetData[getGUID] ~= nil then
                     local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
-                    -- handle infinite duration
                     if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
                         iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
                     elseif spellId == 27243 then --- duplicate seed for talent handling
                         iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
                     else
                         iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
-    end end end end end
+                    end
+
+                    if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
+                        count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
+                    end
+
+                    if count and count ~= 0 then
+                        iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
+                    end
+                end end end end
 end
 
 function iction.clearSeeds(guid)
@@ -375,7 +393,8 @@ function iction.tagDeadTarget(guid)
             iction.targetData[guid]['dead'] = true
             iction.targetData[guid]['spellData'] = nil
         end
-        -- Fix the display tables
+
+        -- Fix the display columns
         local found, id = iction.colGUIDExists(guid)
         if found == true then
             iction.targetCols[id]['active'] = false
