@@ -1,12 +1,7 @@
 -- TO DO
 -- Make it so when felflame is on cooldown the button is red
 
--- Changelog beta0.0.6
--- Adjusted buffframe build for button line up to the base frame. Sigh thought this was fixed but turned out it wasn't
--- Removed some legacy code getting in the way of ictionBuffBarBarH being set correctly. Horizontal / Vertical buff bar should be working as intended now.
--- Full eventWatcher overhaul cause it was annoying the crap out of me.
--- Added Agony charge counter
--- Added Unstable Affliction charge counter (well it's based off casts while active it's a little hack but might be helpful)
+-- Changelog beta0.0.7
 
 
 --- version beta0.0.6
@@ -317,7 +312,7 @@ function iction.ictionFrameWatcher()
         ---------------
         -- DemonFire
         if sourceGUID == iction.playerGUID and spellName == 'Channel Demonfire' and event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            if eventName == "SPELL_ENERGIZE" then
+            if eventName == "SPELL_CAST_SUCCESS" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             end
         end
@@ -372,7 +367,9 @@ function iction.ictionFrameWatcher()
             iction.highlightTargetSpellframe(UnitGUID("Target"))
         end
         -- Check expires for all spells as a standard check of timers to make sure they're all good.
-        iction.currentTargetDebuffExpires()
+        if spellName ~= 'Channel Demonfire' then
+            iction.currentTargetDebuffExpires()
+        end
     end
     iction.ictionMF:SetScript("OnEvent", eventHandler)
     -- ON UPDATE CHECKS

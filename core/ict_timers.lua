@@ -11,7 +11,6 @@ function iction.updateTimers()
                 for spellName, spellData in pairs(spells) do
                     local endTime = spellData['endTime']
                     local count = spellData['count']
-                    --print('SpellName: ' .. tostring(spellName) .. " endTime: " .. tostring(endTime))
                     --- Infinite spell timers
                     iction.infinite = false
                     if endTime == 0 then
@@ -43,7 +42,6 @@ function iction.updateTimers()
                                     end
 
                                     if not iction.stackFrames[guid][spellName] then
-                                        print('Creating new stackFrame')
                                         local stackFrameData = iction.ictStackFrameData
                                         stackFrameData['uiParentFrame'] = iction.targetButtons[guid]['buttonFrames'][spellName]
                                         stackFrameData['point']['p'] = iction.targetButtons[guid]['buttonFrames'][spellName]

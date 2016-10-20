@@ -57,9 +57,9 @@ function iction.createExpiresData(guid, spellName, spellType)
             --- UNITDEBUFF
             local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
             if endTime ~= nil then
-                local cexpires
-                local dur = endTime/1000.0 - GetTime()
-                local cexpires =  GetTime() + dur
+                local cexpires, dur
+                dur = endTime/1000.0 - GetTime()
+                cexpires =  GetTime() + dur
                 iction.targetData[guid]['spellData'][spellName]['endTime'] = cexpires
             else
                 local _, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, _ = UnitDebuff("Target", spellName, nil, "PLAYER")

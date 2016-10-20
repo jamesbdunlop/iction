@@ -306,26 +306,40 @@ function iction.currentTargetDebuffExpires()
         for x, info in pairs(iction.uiPlayerSpellButtons) do
             table.insert(spellNames, info['name'])
         end
-        if spellNames then
+        if spellNames and getGUID then
             for x = 1, iction.tablelength(spellNames) do
                 if spellNames[x] ~= nil and iction.targetTableExists() and iction.spellActive(getGUID, spellNames[x]) and iction.targetData[getGUID] ~= nil then
-                    local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
-                    if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
-                        iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
-                    elseif spellId == 27243 then --- duplicate seed for talent handling
-                        iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
+                    --- UNITDEBUFF
+                    local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+                    if endTime ~= nil then
+                        local cexpires, dur
+                        dur = endTime/1000.0 - GetTime()
+                        cexpires =  GetTime() + dur
+                        if iction.targetData[getGUID] and name == spellNames[x] then
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = cexpires
+                        end
                     else
-                        iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
-                    end
+                        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
+                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+                        elseif spellId == 27243 then --- duplicate seed for talent handling
+                            iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
+                        else
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
+                        end
 
-                    if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
-                        count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
-                    end
+                        if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
+                            count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
+                        end
 
-                    if count and count ~= 0 then
-                        iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
+                        if count and count ~= 0 then
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
+                        end
                     end
-                end end end end
+                end
+            end
+        end
+    end
 end
 
 function iction.clearSeeds(guid)
