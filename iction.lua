@@ -1,8 +1,5 @@
--- TO DO
--- Make it so when felflame is on cooldown the button is red
-
 -- Changelog beta0.0.7
-
+-- Fixed channel demonfire issue
 
 --- version beta0.0.6
 local iction = iction
