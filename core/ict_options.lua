@@ -72,7 +72,8 @@ function iction.setOptionsFrame()
                                     PlaySound("igMainMenuOptionCheckBoxOff")
                                 end
                             end)
-
+        ----------------------------------------------------------------------------------------------------------
+        --- HORIZONTAL BUFF BAR
         ict_BBarHorizontalButton = CreateFrame("CheckButton", "ict_BBarHorizontalButton", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_BBarHorizontalButton.tooltip = "Set buffBar to be horizontal or not."
         bbhtext = _G["ict_BBarHorizontalButtonText"]
@@ -90,6 +91,8 @@ function iction.setOptionsFrame()
             end
         end)
 
+        ----------------------------------------------------------------------------------------------------------
+        --- MAX TARGETS
         iction.ict_TargetLabel = UIParent:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
         iction.ict_TargetLabel:SetText('Max Target Columns:')
         iction.ict_TargetLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
@@ -162,6 +165,87 @@ function iction.setOptionsFrame()
                                         end)
         if ictionTargetCount == 4 then ict_MaxTarget4Input:SetChecked(true) setCount = 4 end
 
+        -------------------------------------------------------------------------------------------------------------
+        --- SKIN SELECTION
+        local skinNumber
+        iction.ict_skinsLabel = UIParent:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_skinsLabel:SetText('Skin:')
+        iction.ict_skinsLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
+        iction.ict_skinsLabel:SetPoint("TOP", iction.OptionsFrame, 0, -140)
+
+        iction.SkinOptionsFrame = CreateFrame('Frame', 'SkinOptionsFrame', iction.OptionsFrame, "InsetFrameTemplate")
+        iction.SkinOptionsFrame:SetFrameStrata("MEDIUM")
+        iction.SkinOptionsFrame:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
+        iction.SkinOptionsFrame:SetPoint("RIGHT", iction.OptionsFrame, -20, 0)
+        iction.SkinOptionsFrame:SetPoint("TOP", iction.OptionsFrame, -20, -155)
+        iction.SkinOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, 100)
+
+        ict_skin1Input = CreateFrame("CheckButton", "ict_skin1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
+        --ict_skin1Input.tooltip = "Select for skin 1"
+        ict_skin1Input:SetWidth(24)
+        ict_skin1Input:SetPoint("LEFT", iction.TargetOptionsFrame, 20, 0)
+        ict_skin1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -85)
+        ict_skin1InputText = _G["ict_skin1Text"]
+        ict_skin1InputText:SetText("1")
+        if ictionSkin == 1 then ict_skin1Input:SetChecked(true) end
+        ict_skin1Input:SetScript("OnClick", function()
+                                ict_skin2Input:SetChecked(false)
+                                ict_skin3Input:SetChecked(false)
+                                ict_skin4Input:SetChecked(false)
+                                ictionSkin = 1
+                                iction.skin = ictionSkin
+                                iction.createBottomBarArtwork()
+                                end)
+        ict_skin2Input = CreateFrame("CheckButton", "ict_skin2", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
+        --ict_skin2Input.tooltip = "Select for skin 2"
+        ict_skin2Input:SetWidth(24)
+        ict_skin2Input:SetPoint("LEFT", iction.TargetOptionsFrame, 85, 0)
+        ict_skin2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -85)
+        ict_skin2InputText = _G["ict_skin2Text"]
+        ict_skin2InputText:SetText("2")
+        if ictionSkin == 2 then ict_skin2Input:SetChecked(true) end
+        ict_skin2Input:SetScript("OnClick", function()
+                                ict_skin1Input:SetChecked(false)
+                                ict_skin3Input:SetChecked(false)
+                                ict_skin4Input:SetChecked(false)
+                                ictionSkin = 2
+                                iction.skin = ictionSkin
+                                iction.createBottomBarArtwork()
+                                end)
+        ict_skin3Input = CreateFrame("CheckButton", "ict_skin3", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
+        --ict_skin3Input.tooltip = "Select for skin 3"
+        ict_skin3Input:SetWidth(24)
+        ict_skin3Input:SetPoint("LEFT", iction.TargetOptionsFrame, 150, 0)
+        ict_skin3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -85)
+        ict_skin3InputText = _G["ict_skin3Text"]
+        ict_skin3InputText:SetText("3")
+        if ictionSkin == 3 then ict_skin3Input:SetChecked(true) end
+        ict_skin3Input:SetScript("OnClick", function()
+                                ict_skin1Input:SetChecked(false)
+                                ict_skin2Input:SetChecked(false)
+                                ict_skin4Input:SetChecked(false)
+                                ictionSkin = 3
+                                iction.skin = ictionSkin
+                                iction.createBottomBarArtwork()
+                                end)
+        ict_skin4Input = CreateFrame("CheckButton", "ict_skin4", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
+        --ict_skin4Input.tooltip = "Select for skin 4"
+        ict_skin4Input:SetWidth(24)
+        ict_skin4Input:SetPoint("LEFT", iction.TargetOptionsFrame, 215, 0)
+        ict_skin4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -85)
+        ict_skin4InputText = _G["ict_skin4Text"]
+        ict_skin4InputText:SetText("4")
+        if ictionSkin == 4 then ict_skin4Input:SetChecked(true) end
+        ict_skin4Input:SetScript("OnClick", function()
+                                ict_skin1Input:SetChecked(false)
+                                ict_skin2Input:SetChecked(false)
+                                ict_skin3Input:SetChecked(false)
+                                ictionSkin = 4
+                                iction.skin = ictionSkin
+                                iction.createBottomBarArtwork()
+                                end)
+        ----------------------------------------------------------------------------------------------------------
+        --- UNLOCK
         ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_UnlockCBx.tooltip = "Unlock moveable ui elements. Uncheck to lock again."
         ict_UnlockCBx:SetPoint("LEFT", iction.OptionsFrame, 10, 0)

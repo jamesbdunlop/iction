@@ -42,7 +42,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
         if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
         if not ictionFramePos then ictionFramePos = {} end
-        if not ictionSkin then iction.skin = 01 else iction.skin = ictionSkin end
+        if not ictionSkin then iction.skin = 03 else iction.skin = ictionSkin end
         if ictionBuffBarBarH == nil then
             ictionBuffBarBarH = true end
         DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Buff frame:" .. tostring(ictionBuffBarBarH), 65, 35, 35);

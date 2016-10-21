@@ -1,5 +1,6 @@
--- Changelog beta0.0.7
--- Fixed channel demonfire issue
+-- Changelog release1.0.0
+-- Fixed conflag frame not reverting back to right color when unlocking/locking ui
+-- Added 3 skins for use. See the options panel
 
 --- version beta0.0.6
 local iction = iction
@@ -103,9 +104,18 @@ end
 ----------------------------------------------------------------------------------------------
 --- UI STUFF ---------------------------------------------------------------------------------
 function iction.createBottomBarArtwork()
+    -- clear previous
+    if iction.uiBotBarArt then
+        for i = 1, iction.tablelength(iction.uiBotBarArt) do
+            if iction.uiBotBarArt[i] ~= nil then
+                iction.uiBotBarArt[i]:Hide()
+            end
+        end
+    end
     iction.uiBotBarArt = {}
+
     local skin = iction.skinData[iction.skin]
-    for x = 1, 4 do
+    for x = 1, iction.tablelength(skin) do
         local barData = skin[x]
         barData["uiParentFrame"] = iction.ictionMF
         barData["point"]['p'] = iction.ictionMF
@@ -391,7 +401,7 @@ function iction.unlockUIElements(isMovable)
         iction.setMovable(iction.artifactFrame, isMovable, false)
         iction.setMovable(iction.buffFrame, isMovable, false)
         iction.setMovable(iction.shardFrame, isMovable, false)
-        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable) end
+        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
     else
         -- override colors for special frames
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
@@ -399,7 +409,7 @@ function iction.unlockUIElements(isMovable)
         iction.setMovable(iction.artifactFrame, isMovable, false)
         iction.setMovable(iction.buffFrame, isMovable, true)
         iction.setMovable(iction.shardFrame, isMovable, true)
-        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable) end
+        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
     end
     for f in list_iter(cols) do
         iction.setMovable(f, isMovable)
