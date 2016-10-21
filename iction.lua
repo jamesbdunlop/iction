@@ -1,8 +1,12 @@
--- Changelog release1.0.0
+-- Changelog betav0.0.8
 -- Fixed conflag frame not reverting back to right color when unlocking/locking ui
 -- Added 3 skins for use. See the options panel
 
---- version beta0.0.6
+--Issues
+-- When unlocking and locking the UI the artifact frame keeps a stray number over the top that needs to be removed.
+-- Checkboxes in the options panel do not reflect the mouse location. The mouse has to be moved some way off the checkbox to highlight / select it.
+
+--- version beta0.0.8
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
