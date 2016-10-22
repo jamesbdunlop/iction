@@ -284,6 +284,7 @@ end
 function iction.currentTargetDebuffExpires()
     if (UnitName("target")) then
         local getGUID = UnitGUID("Target")
+        iction.highlightTargetSpellframe(getGUID)
         local spellNames = {} -- get a clean list of spell names from the button
         for x, info in pairs(iction.uiPlayerSpellButtons) do
             table.insert(spellNames, info['name'])
