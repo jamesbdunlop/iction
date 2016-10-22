@@ -96,6 +96,8 @@ function iction.initMainUI()
 
     if iction.debug then print('Artifact frame created') end
     iction.createBuffFrame()
+    local frm  = iction.createPlayerBuffFrame()
+    if frm then iction.createButtons(frm, iction.playerGUID, "BUFF") end
 
     if iction.debug then print('Buff frame created') end
     iction.createDebuffColumns()
@@ -316,8 +318,6 @@ function iction.ictionFrameWatcher()
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             elseif eventName == "SPELL_CAST_SUCCESS" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
-            --elseif eventName == "SPELL_AURA_APPLIED_DOSE" then
-            --    iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             end
         end
         ---------------
@@ -332,7 +332,7 @@ function iction.ictionFrameWatcher()
 
         --- Dot dropped off mob...
         if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "SPELL_AURA_REMOVED" then
-            iction.hideFrame(mobGUID, false, spellName, spellType)
+            --iction.hideFrame(mobGUID, false, spellName, spellType)
             -- check for stack frame
             if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] then
                 iction.stackFrames[mobGUID][spellName]['font']:SetText("")
@@ -377,20 +377,21 @@ function iction.ictionFrameWatcher()
         if event == "PLAYER_TARGET_CHANGED" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
         end
-        -- Check expires for all spells as a standard check of timers to make sure they're all good.
+
         if spellName ~= 'Channel Demonfire' then
             iction.currentTargetDebuffExpires()
         end
+
     end
     iction.ictionMF:SetScript("OnEvent", eventHandler)
     -- ON UPDATE CHECKS
     local function _onUpdate()
         local shards = UnitPower("Player", 7)
+        iction.oocCleanup()
         iction.setSoulShards(shards)
         iction.setConflagCount()
         iction.setMTapBorder()
         iction.updateTimers()
-        iction.oocCleanup()
     end
     iction.ictionMF:SetScript("OnUpdate", _onUpdate)
     iction.ictionMF:UnregisterEvent("ADDON_LOADED")
