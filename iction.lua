@@ -1,5 +1,6 @@
 -- Changelog betav0.0.9
 -- Set target from current when casting Artifact as first ablity in Destro
+-- Added cooldown timers for various spells such as channel demonfire
 
 --Issues
 -- When unlocking and locking the UI the artifact frame keeps a stray number over the top that needs to be removed.

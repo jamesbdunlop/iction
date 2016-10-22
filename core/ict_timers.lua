@@ -4,12 +4,17 @@
 function iction.spellActiveCooldown(guid, spellName, remainingT)
     local remainingT = tonumber(string.format("%.1d", remainingT))
     iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], true)
-    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName], true, {1,0,0,1})
+    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName], true, {1,.8,.8, 1})
 end
 
-function iction.spellInfinite(guid, spellName)
-    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName])
-    iction.setButtonText("∞", false, iction.targetButtons[guid]['buttonText'][spellName])
+function iction.spellInfinite(guid, spellName, infinite)
+    if infinite then
+        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName])
+        iction.setButtonText("∞", false, iction.targetButtons[guid]['buttonText'][spellName])
+    else
+        iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
+        iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
+    end
 end
 
 function iction.spellActiveTimer(guid, spellName, remainingT)
@@ -116,13 +121,17 @@ function iction.updateTimers()
 
                     --- Infinite spell timers
                     iction.infinite = false
-                    if endTime == 0 then iction.infinite = true end
+                    if endTime == 0 then iction.infinite = true else iction.infinite = false end
                     --- Set infinite and return
-                    if iction.infinite and iction.isValidButtonFrame(guid) then iction.spellInfinite(guid, spellName) return end
+                    if iction.infinite and iction.isValidButtonFrame(guid) then
+                        iction.spellInfinite(guid, spellName, true)
+                    elseif not iction.infinite then
+                        iction.spellInfinite(guid, spellName, false)
+                    end
 
                     --- Currently active states
-                    if endTime ~= nil then
-                        if  not iction.infinite and coolDown == nil then
+                    if endTime ~= nil and not iction.infinite then
+                        if coolDown == nil then
                             if endTime < GetTime() or endTime == GetTime() then
                                 --- Spell has ended
                                 iction.spellHasEnded(guid, spellName)
@@ -149,7 +158,7 @@ function iction.updateTimers()
                             end
                         end
                     --- Timers that have ended
-                    elseif endTime == nil and coolDown ~= nil then
+                    elseif endTime == nil and coolDown ~= nil and not iction.infinite then
                         --- Spell On Cooldown. We have an active cooldown set in the tables already
                         if coolDown > GetTime() then
                             local remainingT = coolDown - GetTime()
@@ -157,7 +166,7 @@ function iction.updateTimers()
                         else
                             iction.spellHasEnded(guid, spellName)
                         end
-                    elseif endTime == nil and iction.isSpellOnCooldown(spellName) then
+                    elseif endTime == nil and iction.isSpellOnCooldown(spellName) and not iction.infinite then
                         local _, duration, _ = GetSpellCooldown(spellName)
                         if duration > 1.5 then
                             local remainingT = iction.fetchCooldownET(spellName)
