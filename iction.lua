@@ -1,11 +1,6 @@
--- Changelog betav0.0.9
--- Set target from current when casting Artifact as first ablity in Destro
--- Added cooldown timers for various spells such as channel demonfire etc all spellframes created should so the correct cooldown if the spell is currently unavail
--- Target highlight set on first target
-
---Issues
--- When unlocking and locking the UI the artifact frame keeps a stray number over the top that needs to be removed.
--- Checkboxes in the options panel do not reflect the mouse location. The mouse has to be moved some way off the checkbox to highlight / select it.
+-- Changelog Release 1.0.1
+-- Quick path for opening with conflag to set target correctly
+-- Path for labels in options panel being set to UIParent (do not know how I missed that)
 
 --- version beta0.0.9
 local iction = iction
@@ -311,6 +306,12 @@ function iction.ictionFrameWatcher()
         -- Seed of corruption
         if sourceGUID == iction.playerGUID and spellName == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
             iction.addSeeds(mobGUID, spellName, "DEBUFF")
+        end
+
+        --if sourceGUID == iction.playerGUID then print("eventName: " .. tostring(eventName) .. " spellName: " .. tostring(spellName)) end
+
+        if sourceGUID == iction.playerGUID and eventName == 'SPELL_ENERGIZE' and spellName == 'Conflagrate' then
+            iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
         end
 
         if sourceGUID == iction.playerGUID and eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then

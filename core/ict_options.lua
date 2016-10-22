@@ -93,7 +93,7 @@ function iction.setOptionsFrame()
 
         ----------------------------------------------------------------------------------------------------------
         --- MAX TARGETS
-        iction.ict_TargetLabel = UIParent:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_TargetLabel = iction.OptionsFrame:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
         iction.ict_TargetLabel:SetText('Max Target Columns:')
         iction.ict_TargetLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
         iction.ict_TargetLabel:SetPoint("TOP", iction.OptionsFrame, 0, -70)
@@ -168,7 +168,7 @@ function iction.setOptionsFrame()
         -------------------------------------------------------------------------------------------------------------
         --- SKIN SELECTION
         local skinNumber
-        iction.ict_skinsLabel = UIParent:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_skinsLabel = iction.OptionsFrame:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
         iction.ict_skinsLabel:SetText('Skin:')
         iction.ict_skinsLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
         iction.ict_skinsLabel:SetPoint("TOP", iction.OptionsFrame, 0, -140)
