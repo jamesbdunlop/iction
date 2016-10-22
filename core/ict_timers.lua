@@ -47,10 +47,11 @@ function iction.fetchCooldownET(spellName)
     local start, duration, _ = GetSpellCooldown(spellName)
     local actualFinish = start+duration
     local et = (actualFinish - GetTime()) + GetTime()
+
     if start == 0 then
         return false
     else
-        return (et)
+        return et
     end
 end
 
@@ -157,11 +158,13 @@ function iction.updateTimers()
                             iction.spellHasEnded(guid, spellName)
                         end
                     elseif endTime == nil and iction.isSpellOnCooldown(spellName) then
-                        local remainingT = iction.fetchCooldownET(spellName)
-                        iction.targetData[guid]['spellData'][spellName]['coolDown'] = remainingT
-                        iction.spellActiveCooldown(guid, spellName, remainingT)
+                        local _, duration, _ = GetSpellCooldown(spellName)
+                        if duration > 1.5 then
+                            local remainingT = iction.fetchCooldownET(spellName)
+                            iction.targetData[guid]['spellData'][spellName]['coolDown'] = remainingT
+                            iction.spellActiveCooldown(guid, spellName, remainingT)
+                        end
                     end
-
                     --- Drain life and drain soul that have ended on current target.
                     if spellName == 'Drain Soul' or spellName == "Drain Life" then
                         local _, _, _, _, _, _, expirationTime, _, _, _, _ = UnitDebuff("Target", spellName, nil, "player")

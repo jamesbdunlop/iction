@@ -1,12 +1,11 @@
--- Changelog betav0.0.8
--- Fixed conflag frame not reverting back to right color when unlocking/locking ui
--- Added 3 skins for use. See the options panel
+-- Changelog betav0.0.9
+-- Set target from current when casting Artifact as first ablity in Destro
 
 --Issues
 -- When unlocking and locking the UI the artifact frame keeps a stray number over the top that needs to be removed.
 -- Checkboxes in the options panel do not reflect the mouse location. The mouse has to be moved some way off the checkbox to highlight / select it.
 
---- version beta0.0.8
+--- version beta0.0.9
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -308,9 +307,33 @@ function iction.ictionFrameWatcher()
         ---------------
         ---- Specials
         -- Seed of corruption
-        if sourceGUID == iction.playerGUID and spellName == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" then
+        if sourceGUID == iction.playerGUID and spellName == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
             iction.addSeeds(mobGUID, spellName, "DEBUFF")
         end
+
+        if sourceGUID == iction.playerGUID and eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
+--            print("event: " .. tostring(event))
+--            print("currentTime: " .. tostring(currentTime))
+--            print("eventName: " .. tostring(eventName))
+--            print("sourceFlags: " .. tostring(sourceFlags))
+--            print("sourceGUID: " .. tostring(sourceGUID))
+--            print("sourceName: " .. tostring(sourceName))
+--            print("flags: " .. tostring(flags))
+--            print("prefix1: " .. tostring(prefix1))
+--            print("prefix2: " .. tostring(prefix2))
+--            print("prefix3: " .. tostring(prefix3))
+--            print("sufx1: " .. tostring(sufx1))
+--            print("sufx2: " .. tostring(sufx2))
+--            print("sufx3: " .. tostring(sufx3))
+--            print("sufx4: " .. tostring(sufx4))
+--            print("sufx5: " .. tostring(sufx5))
+--            print("sufx6: " .. tostring(sufx6))
+--            print("sufx7: " .. tostring(sufx7))
+--            print("sufx8: " .. tostring(sufx8))
+--            print("sufx9: " .. tostring(sufx9))
+            iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF") -- wow thte GUID for this isn't the freaking targeted mob.. wtf
+        end
+
         ---------------
         -- AGONY
         if sourceGUID == iction.playerGUID and spellName == 'Agony' and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName ~= "SPELL_ENERGIZE" and eventName ~= "SPELL_PERIODIC_DAMAGE"  then
@@ -320,6 +343,7 @@ function iction.ictionFrameWatcher()
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
             end
         end
+
         ---------------
         -- DemonFire
         if sourceGUID == iction.playerGUID and spellName == 'Channel Demonfire' and event == "COMBAT_LOG_EVENT_UNFILTERED" then
@@ -332,7 +356,6 @@ function iction.ictionFrameWatcher()
 
         --- Dot dropped off mob...
         if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "SPELL_AURA_REMOVED" then
-            --iction.hideFrame(mobGUID, false, spellName, spellType)
             -- check for stack frame
             if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] then
                 iction.stackFrames[mobGUID][spellName]['font']:SetText("")
@@ -376,6 +399,7 @@ function iction.ictionFrameWatcher()
 
         if event == "PLAYER_TARGET_CHANGED" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
+            iction.currentTargetDebuffExpires()
         end
 
         if spellName ~= 'Channel Demonfire' then
@@ -388,6 +412,7 @@ function iction.ictionFrameWatcher()
     local function _onUpdate()
         local shards = UnitPower("Player", 7)
         iction.oocCleanup()
+        iction.currentTargetDebuffExpires()
         iction.setSoulShards(shards)
         iction.setConflagCount()
         iction.setMTapBorder()

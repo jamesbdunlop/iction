@@ -3,6 +3,7 @@ local next = next
 --- CREATE AN ICTION TARGET ------------------------------------------------------------------
 function iction.createTarget(guid, creatureName, spellName, spellType)
     if iction.debug then print("Dbg: iction.createTarget: " .. tostring(creatureName)) end
+    if iction.debug then print("Dbg: guid: " .. tostring(guid)) end
     if iction.debug then print("Dbg: spellName: " .. tostring(spellName)) end
     local frm
     if guid ~= nil then
@@ -41,7 +42,7 @@ function iction.createTargetSpellData(guid, spellName, spellType)
     --- Create the base target spell timer tables for the spell cast if they don't exist
     if iction.spellActive(guid, spellName) then
         return
-    else iction.spellActive(guid, spellName)
+    else
         iction.targetData[guid]['spellData'][spellName] = {}
         iction.targetData[guid]['spellData'][spellName]['spellType'] = spellType
         iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
@@ -53,6 +54,7 @@ end
 function iction.createExpiresData(guid, spellName, spellType)
     --- This is the inital setup for the spell data heading into the timers. Once this has fired
     --- the rest is taken care of by iction_utils.currentTargetDebuffExpires on update.
+
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
         if spellType == 'BUFF' then
             --- UNITBUFF
@@ -88,6 +90,7 @@ function iction.createExpiresData(guid, spellName, spellType)
                     iction.targetData[guid]['spellData'][spellName]['count'] = count
                 end
             end
+        iction.updateTimers()
         end
     end
 end

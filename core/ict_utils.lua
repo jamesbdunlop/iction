@@ -288,42 +288,55 @@ function iction.currentTargetDebuffExpires()
         for x, info in pairs(iction.uiPlayerSpellButtons) do
             table.insert(spellNames, info['name'])
         end
-
         if spellNames and getGUID then
             for x = 1, iction.tablelength(spellNames) do
-                if spellNames[x] ~= nil  then --and iction.targetTableExists() and and iction.targetData[getGUID] ~= nil then
-                    local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+                if spellNames[x] ~= nil and iction.targetTableExists() and iction.spellActive(getGUID, spellNames[x]) and iction.targetData[getGUID] ~= nil then
                     --- UNITDEBUFF
-                    if endTime ~= nil then --- CHANNELING
+                    local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+                    if endTime ~= nil then
                         local cexpires, dur
                         dur = endTime/1000.0 - GetTime()
                         cexpires =  GetTime() + dur
-                        if iction.targetData[getGUID] and name == spellNames[x] and iction.spellActive(getGUID, spellNames[x]) then
+                        if iction.targetData[getGUID] and name == spellNames[x] then
                             iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = cexpires
                         end
                     else
-                        if not iction.isSpellOnCooldown(spellNames[x]) and iction.spellActive(getGUID, spellNames[x]) then
-                            -- Deal with finding the spell now
-                            local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
-                            if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
-                                iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
-                            elseif spellId == 27243 then --- duplicate seed for talent handling
-                                iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
-                            else
-                                iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
-                            end
-
-                            if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
-                                count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
-                            end
-
-                            if count and count ~= 0 then
-                                iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
-                            end
-                        elseif iction.isSpellOnCooldown(spellNames[x]) and iction.spellActive(getGUID, spellNames[x]) then
-                            --- deal with the cooldown
+                        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
+                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+                        elseif spellId == 27243 then --- duplicate seed for talent handling
+                            iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
+                        else
                             iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['coolDown'] = iction.fetchCooldownET(spellNames[x])
+                        end
+
+                        if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
+                            count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
+                        end
+
+                        if count and count ~= 0 then
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
+                        end
+                    end
+                elseif spellNames[x] ~= nil and iction.isSpellOnCooldown(spellNames[x])  then
+                    if iction.targetData[getGUID] then
+                        local data = iction.targetData[getGUID]
+                        if data['spellData'] ~= nil then
+                            local isDead = data['dead']
+                            local spells = data['spellData']
+                            if not isDead then
+                                local start, duration, _ = GetSpellCooldown(spellNames[x])
+                                if duration > 1.5 then
+                                    local cdET = iction.fetchCooldownET(spellNames[x])
+                                    if iction.targetTableExists() and iction.spellActive(getGUID, spellNames[x]) and iction.targetData[getGUID] ~= nil then
+                                        iction.targetData[getGUID]['spellData'][spellNames[x]]['coolDown'] = cdET
+                                    else -- create an entry for the spell that is on cooldown
+                                        iction.createTargetData(getGUID, "AMob")
+                                        iction.createTargetSpellData(getGUID, spellNames[x], "DEBUFF")
+                                        iction.targetData[getGUID]['spellData'][spellNames[x]]['coolDown'] = cdET
+                                    end
+                                end
+                            end
                         end
                     end
                 end
