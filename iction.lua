@@ -1,8 +1,11 @@
--- Changelog Release 1.0.1
--- Quick path for opening with conflag to set target correctly
--- Path for labels in options panel being set to UIParent (do not know how I missed that)
+-- Changelog Release 1.0.2
+-- Removed the flash of the wrong timer number going through to the cooldown on the cooldown activation.
 
---- version beta0.0.9
+
+-- fix phantom not timing properly
+-- fix a laggy target highlight again on death.
+
+--- version Release 1.0.2
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -299,6 +302,7 @@ function iction.ictionFrameWatcher()
                     end
                 end
             end
+            return
         end
 
         ---------------

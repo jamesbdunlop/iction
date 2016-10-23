@@ -52,7 +52,6 @@ function iction.fetchCooldownET(spellName)
     local start, duration, _ = GetSpellCooldown(spellName)
     local actualFinish = start+duration
     local et = (actualFinish - GetTime()) + GetTime()
-
     if start == 0 then
         return false
     else
@@ -171,7 +170,7 @@ function iction.updateTimers()
                         if duration > 1.5 then
                             local remainingT = iction.fetchCooldownET(spellName)
                             iction.targetData[guid]['spellData'][spellName]['coolDown'] = remainingT
-                            iction.spellActiveCooldown(guid, spellName, remainingT)
+                            iction.spellActiveCooldown(guid, spellName, remainingT - GetTime())
                         end
                     end
                     --- Drain life and drain soul that have ended on current target.

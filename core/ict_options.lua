@@ -111,7 +111,7 @@ function iction.setOptionsFrame()
         ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -15)
         ict_MaxTarget1Inputtext = _G["ict_maxCount1Text"]
         ict_MaxTarget1Inputtext:SetText("1")
-        if ictionTargetCount == 1 then ict_MaxTarget1Input:SetChecked(true) setCount = 1 end
+
         ict_MaxTarget1Input:SetScript("OnClick", function()
                                         ict_MaxTarget2Input:SetChecked(false)
                                         ict_MaxTarget3Input:SetChecked(false)
@@ -133,7 +133,6 @@ function iction.setOptionsFrame()
                                         ictionTargetCount = 2
                                         setCount = 2
                                         end)
-        if ictionTargetCount == 2 then ict_MaxTarget2Input:SetChecked(true) setCount = 2 end
 
         ict_MaxTarget3Input = CreateFrame("CheckButton", "ict_maxCount3", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget3Input.tooltip = "Set targets to track to 3. \nNote: Changing count will reload the UI on close."
@@ -148,7 +147,6 @@ function iction.setOptionsFrame()
                                         ictionTargetCount = 3
                                         setCount = 3
                                         end)
-        if ictionTargetCount == 3 then ict_MaxTarget3Input:SetChecked(true) setCount = 3 end
 
         ict_MaxTarget4Input = CreateFrame("CheckButton", "ict_maxCount4", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
         ict_MaxTarget4Input.tooltip = "Set targets to track to 4. \nNote: Changing count will reload the UI on close."
@@ -163,6 +161,10 @@ function iction.setOptionsFrame()
                                         ictionTargetCount = 4
                                         setCount = 4
                                         end)
+
+        if ictionTargetCount == 1 then ict_MaxTarget1Input:SetChecked(true) setCount = 1 end
+        if ictionTargetCount == 2 then ict_MaxTarget2Input:SetChecked(true) setCount = 2 end
+        if ictionTargetCount == 3 then ict_MaxTarget3Input:SetChecked(true) setCount = 3 end
         if ictionTargetCount == 4 then ict_MaxTarget4Input:SetChecked(true) setCount = 4 end
 
         -------------------------------------------------------------------------------------------------------------
@@ -256,7 +258,6 @@ function iction.setOptionsFrame()
                                 if ict_UnlockCBx:GetChecked() then iction.unlockUIElements(true)
                                 else iction.unlockUIElements(false) end
                                 end)
-        if ictionTargetCount == 4 then ict_MaxTarget4Input:SetChecked(true) setCount = 4 end
 
         ---------------------
         --- Close button ----
