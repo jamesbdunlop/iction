@@ -1,8 +1,7 @@
 -- Changelog Release 1.0.2
 -- Removed the flash of the wrong timer number going through to the cooldown on the cooldown activation.
+-- clean up to the options panel
 
-
--- fix phantom not timing properly
 -- fix a laggy target highlight again on death.
 
 --- version Release 1.0.2
@@ -278,11 +277,13 @@ function iction.ictionFrameWatcher()
         if sourceGUID == iction.playerGUID and eventName == "SPELL_AURA_REMOVED" and spellName == "Burning Rush" then
             -- Added to handle burning rush. This may indicate a new place to handle all aura removals
             iction.createTarget(mobGUID, mobName, spellName, spellType)
+            return
         end
 
         -- OOCombat cleanup when player regen kicks in
         if event == "PLAYER_REGEN_ENABLED" then
             iction.oocCleanup()
+            return
         end
 
         if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED" then
@@ -302,6 +303,7 @@ function iction.ictionFrameWatcher()
                     end
                 end
             end
+            iction.highlightTargetSpellframe(UnitGUID("Target"))
             return
         end
 
@@ -310,12 +312,14 @@ function iction.ictionFrameWatcher()
         -- Seed of corruption
         if sourceGUID == iction.playerGUID and spellName == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
             iction.addSeeds(mobGUID, spellName, "DEBUFF")
+            return
         end
 
         --if sourceGUID == iction.playerGUID then print("eventName: " .. tostring(eventName) .. " spellName: " .. tostring(spellName)) end
 
         if sourceGUID == iction.playerGUID and eventName == 'SPELL_ENERGIZE' and spellName == 'Conflagrate' then
             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+            return
         end
 
         if sourceGUID == iction.playerGUID and eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
@@ -346,8 +350,10 @@ function iction.ictionFrameWatcher()
         if sourceGUID == iction.playerGUID and spellName == 'Agony' and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName ~= "SPELL_ENERGIZE" and eventName ~= "SPELL_PERIODIC_DAMAGE"  then
             if eventName == "SPELL_AURA_APPLIED" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+                return
             elseif eventName == "SPELL_CAST_SUCCESS" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+                return
             end
         end
 
@@ -356,6 +362,7 @@ function iction.ictionFrameWatcher()
         if sourceGUID == iction.playerGUID and spellName == 'Channel Demonfire' and event == "COMBAT_LOG_EVENT_UNFILTERED" then
             if eventName == "SPELL_CAST_SUCCESS" then
                 iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+                return
             end
         end
         --- END SPECIALS
@@ -372,11 +379,13 @@ function iction.ictionFrameWatcher()
                 end
             end
             iction.setMTapBorder()
+            return
         end
 
         -- Clear all seed timers
         if sourceGUID == iction.playerGUID and eventName == "SPELL_DAMAGE" and spellName == "Seed of Corruption" then
             iction.clearSeeds(mobGUID)
+            return
         end
 
         --- ALL OTHER SPELLS
@@ -402,15 +411,18 @@ function iction.ictionFrameWatcher()
                     end
                 end
             end
+            return
         end
 
         if event == "PLAYER_TARGET_CHANGED" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
             iction.currentTargetDebuffExpires()
+            return
         end
 
         if spellName ~= 'Channel Demonfire' then
             iction.currentTargetDebuffExpires()
+            return
         end
 
     end
