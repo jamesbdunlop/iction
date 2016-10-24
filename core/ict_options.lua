@@ -247,6 +247,41 @@ function iction.setOptionsFrame()
                                 iction.skin = ictionSkin
                                 iction.createBottomBarArtwork()
                                 end)
+
+        ----------------------------------------------------------------------------------------------------------
+        --- SCALE
+        iction.ict_scaleLabel = iction.OptionsFrame:CreateFontString("ScaleLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_scaleLabel:SetText('Scale:')
+        iction.ict_scaleLabel:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
+        iction.ict_scaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, 60)
+
+        iction.ict_scaleLabel = iction.OptionsFrame:CreateFontString("ScaleLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_scaleLabel:SetText(ictionGlobalScale)
+        iction.ict_scaleLabel:SetPoint("LEFT", iction.OptionsFrame, 200, 0)
+        iction.ict_scaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, 60)
+
+        iction.ict_Scale = CreateFrame("Slider", "ict_scaleSlider", iction.OptionsFrame, "OptionsSliderTemplate")
+        iction.ict_Scale.tooltip = "Set overall ui scale"
+        iction.ict_Scale:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
+        iction.ict_Scale:SetPoint("BOTTOM", iction.OptionsFrame, 0, 45)
+        iction.ict_Scale:SetMinMaxValues(.5,2)
+        iction.ict_Scale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
+        iction.ict_Scale:SetValue(1)
+        iction.ict_Scale:SetWidth(200)
+        iction.ict_Scale:SetValueStep(.1)
+        iction.ict_Scale:SetOrientation("HORIZONTAL")
+        iction.ict_Scale:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+        iction.ict_Scale:SetBackdrop({
+                  bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+                  edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+                  tile = true, tileSize = 8, edgeSize = 8,
+                  insets = { left = 3, right = 3, top = 6, bottom = 6 }})
+        iction.ict_Scale:SetScript("OnValueChanged", function(self, event, arg1)
+                            ictionGlobalScale = tonumber(string.format("%.1f", event))
+                            iction.ictionMF:SetScale(tonumber(string.format("%.1f", event)))
+                            iction.ict_scaleLabel:SetText(string.format("%.1f", ictionGlobalScale))
+                            end)
+
         ----------------------------------------------------------------------------------------------------------
         --- UNLOCK
         ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")

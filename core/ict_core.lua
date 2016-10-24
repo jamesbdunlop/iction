@@ -46,7 +46,9 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         if not ictionFramePos then ictionFramePos = {} end
         if not ictionSkin then iction.skin = 03 else iction.skin = ictionSkin end
         if ictionBuffBarBarH == nil then
-            ictionBuffBarBarH = true end
+            ictionBuffBarBarH = true
+        end
+        if ictionGlobalScale == nil then iction.ictionScale = 1 else iction.ictionScale = ictionGlobalScale end
         DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Buff frame:" .. tostring(ictionBuffBarBarH), 65, 35, 35);
         if not ictionTargetCount then
             iction.ict_maxTargets = 2

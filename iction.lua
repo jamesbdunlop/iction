@@ -80,6 +80,7 @@ function iction.initMainUI()
     local mainFrame = iction.UIElement
     iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
     iction.ictionFrameWatcher(iction.ictionMF)
+    iction.ictionMF:SetScale(iction.ictionScale)
     --- Now fire off all the other build functions ---
     iction.createBottomBarArtwork()
     iction.setMTapBorder()
@@ -410,7 +411,6 @@ function iction.ictionFrameWatcher()
                     end
                 end
             end
-            return
         end
 
         if event == "PLAYER_TARGET_CHANGED" then
@@ -476,13 +476,15 @@ function iction.setMovable(f, isMovable, hideDefault)
         f:SetMovable(true)
         f:SetParent(iction.ictionMF)
         ---Name font string ---
-        local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
-            -- Create the fontString for the button
-              fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
-              fntStr:SetPoint("CENTER", f, 0, 0)
-              fntStr:SetTextColor(.1, 1, .1, 1)
-              fntStr:SetText(string.gsub(frameName, "iction_", ""))
-            f.text = fntStr
+        if frameName ~= "Artifact" then
+            local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
+                -- Create the fontString for the button
+                  fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
+                  fntStr:SetPoint("CENTER", f, 0, 0)
+                  fntStr:SetTextColor(.1, 1, .1, 1)
+                  fntStr:SetText(string.gsub(frameName, "iction_", ""))
+                f.text = fntStr
+        end
         ---Scripts for moving---
         f:SetScript("OnMouseDown", function(self, button)
           if button == "LeftButton" and not f.isMoving then
