@@ -1,8 +1,7 @@
 -- Changelog Release 1.0.2
 -- Removed the flash of the wrong timer number going through to the cooldown on the cooldown activation.
--- clean up to the options panel
-
--- fix a laggy target highlight again on death.
+-- Clean up to the options panel. Strata medium / Vertical checkboxes to remove issues with selections
+-- Possible fix for a laggy target highlight on death.
 
 --- version Release 1.0.2
 local iction = iction
