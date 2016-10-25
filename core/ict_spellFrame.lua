@@ -65,6 +65,6 @@ function iction.createPlayerBuffFrame()
         end
         return iction.targetFrames[iction.playerGUID]
     else
-        return false
+        return iction.targetFrames[iction.playerGUID]
     end
 end

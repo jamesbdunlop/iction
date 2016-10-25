@@ -1,9 +1,9 @@
--- Changelog Release 1.0.2
--- Removed the flash of the wrong timer number going through to the cooldown on the cooldown activation.
--- Clean up to the options panel. Strata medium / Vertical checkboxes to remove issues with selections
--- Possible fix for a laggy target highlight on death.
+-- Changelog Release 1.0.3
+-- removed return from unstable cast so it lands correctly
+-- added scale to options
+-- fixed the 3 in the unlock over the artifact frame
 
---- version Release 1.0.2
+--- version Release 1.0.3
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -94,8 +94,8 @@ function iction.initMainUI()
 
     if iction.debug then print('Artifact frame created') end
     iction.createBuffFrame()
-    local frm  = iction.createPlayerBuffFrame()
-    if frm then iction.createButtons(frm, iction.playerGUID, "BUFF") end
+    iction.playerBuffsF  = iction.createPlayerBuffFrame()
+    if iction.playerBuffsF then iction.createButtons(iction.playerBuffsF, iction.playerGUID, "BUFF") end
 
     if iction.debug then print('Buff frame created') end
     iction.createDebuffColumns()
@@ -131,20 +131,24 @@ function iction.createBottomBarArtwork()
 end
 
 function iction.createBuffFrame()
-    local fw, fh
-    if ictionBuffBarBarH == true then
-        _, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
-        fh = iction.bh+5
+    if iction.buffFrame == nil then
+        local fw, fh
+        if ictionBuffBarBarH == true then
+            _, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+            fh = iction.bh+5
+        else
+            fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        end
+        local buffData = iction.ictBuffFrameData
+        buffData['uiParentFrame'] = iction.ictionMF
+        buffData['point']['p'] = iction.ictionMF
+        buffData['w'] = fw
+        buffData['h'] = fh
+        local buffFrame = iction.UIElement
+        iction.buffFrame = buffFrame.create(buffFrame, buffData)
     else
-        fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        return iction.buffFrame
     end
-    local buffData = iction.ictBuffFrameData
-    buffData['uiParentFrame'] = iction.ictionMF
-    buffData['point']['p'] = iction.ictionMF
-    buffData['w'] = fw
-    buffData['h'] = fh
-    local buffFrame = iction.UIElement
-    iction.buffFrame = buffFrame.create(buffFrame, buffData)
 end
 
 function iction.createDebuffColumns()
@@ -196,6 +200,11 @@ function iction.createConflagFrame()
 end
 
 function iction.createArtifactFrame()
+    if iction.artifactFrame~= nil then
+        iction.artifactFrame:Hide()
+        iction.artifactFrame = nil
+    end
+
     local next = next
     local icon
     local artifact = iction.uiPlayerArtifact
@@ -269,8 +278,42 @@ function iction.ictionFrameWatcher()
         end
 
         -- Talent spec reload warning
-        if sourceGUID == iction.playerGUID and event == "PLAYER_SPECIALIZATION_CHANGED" then
+        if event == "PLAYER_SPECIALIZATION_CHANGED" then
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. You should reload ui now!", 15, 25, 35)
+            iction.targetFrames[iction.playerGUID]:Hide()
+            iction.targetFrames[iction.playerGUID] = nil
+            iction.shardFrame = nil
+            if iction.playerBuffsF ~= nil then iction.playerBuffsF:Hide() end
+            iction.playerBuffsF = nil
+            iction.highlightFrameTexture = nil
+            local spec = GetSpecialization()
+            iction.spec = spec
+            iction.uiPlayerSpellButtons = {}
+            iction.uiPlayerBuffButtons = {}
+
+            iction.setDebuffButtonLib()
+            iction.setBuffButtonLib()
+
+            if iction.spec == 3 then iction.createConflagFrame()
+            else
+                if iction.conflagFrame~= nil then
+                    iction.conflagFrame:Hide()
+                end
+            end
+            for i = 1, iction.tablelength(iction.soulShards) do
+                if iction.soulShards[i] ~= nil then
+                    iction.soulShards[i]:Hide()
+                end
+            end
+            iction.createShardFrame()
+            local shards = UnitPower("Player", 7)
+            iction.setSoulShards(shards)
+            iction.createArtifactFrame()
+            iction.createDebuffColumns()
+            iction.highlightFrameTexture = iction.createHighlightFrame()
+            iction.playerBuffsF  = iction.createPlayerBuffFrame()
+            if iction.playerBuffsF then iction.createButtons(iction.playerBuffsF, iction.playerGUID, "BUFF") end
+
         end
 
         -- Burning Rush handler
@@ -420,6 +463,11 @@ function iction.ictionFrameWatcher()
         end
 
         if spellName ~= 'Channel Demonfire' then
+            iction.currentTargetDebuffExpires()
+            return
+        end
+
+        if event == "SPELL_CAST_FAILED" then
             iction.currentTargetDebuffExpires()
             return
         end
