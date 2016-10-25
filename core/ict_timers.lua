@@ -19,8 +19,11 @@ end
 
 function iction.spellActiveTimer(guid, spellName, remainingT)
     local remainingT = tonumber(string.format("%.1d", remainingT))
-    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], false)
-    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+    if iction.targetButtons[guid]['buttonText'][spellName] then -- check for spec change with active buff timer
+        iction.targetButtons[guid]['buttonText'][spellName]:SetText("")
+        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], false)
+        iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+    end
 end
 
 function iction.spellFadingTimer(guid, spellName, remainingT)

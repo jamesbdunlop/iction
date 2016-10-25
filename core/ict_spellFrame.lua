@@ -41,6 +41,7 @@ function iction.createPlayerBuffFrame()
     if iction.debug then print("Dbg: iction.createPlayerBuffFrame") end
     local fw, fh
     if not iction.targetFrames[iction.playerGUID] then
+        print('Building new frm')
         local offset
         if ictionBuffBarBarH == true then
             _, fw= iction.calcFrameSize(iction.uiPlayerBuffButtons)
@@ -63,8 +64,9 @@ function iction.createPlayerBuffFrame()
         else
             iction.targetFrames[iction.playerGUID]:SetPoint("CENTER", iction.buffFrame, 0, 0)
         end
+        iction.targetFrames[iction.playerGUID]:Show()
         return iction.targetFrames[iction.playerGUID]
     else
-        return iction.targetFrames[iction.playerGUID]
+        return false -- iction.targetFrames[iction.playerGUID]
     end
 end

@@ -136,7 +136,7 @@ function iction.findSlot(guid)
 
             if not guidIsActiveFrame then
                 for col = 1, iction.ict_maxTargets do
-                    colID = orderCol[col]
+                    local colID = orderCol[col]
                     if not iction.targetCols[colID]["active"] then
                         iction.targetCols[colID]["active"] = true
                         iction.targetCols[colID]["guid"] = guid
@@ -210,7 +210,6 @@ function iction.oocCleanup()
                     iction.targetFrames[guid] = nil
                     iction.targetButtons[guid] = nil
                     iction.stackFrames[guid] = nil
-                    --end
                 end
             end
         end
@@ -338,6 +337,30 @@ function iction.currentTargetDebuffExpires()
                                     end
                                 end
                             end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function iction.currentBuffExpires()
+    -- get a list of spell names from the button
+    local spellNames = {}
+    for x,  info in pairs(iction.uiPlayerBuffButtons) do
+        table.insert(spellNames, info['name'])
+    end
+
+    if spellNames then
+        if (UnitName("Player")) then
+            for x = 1, iction.tablelength(spellNames) do --5 do
+                if spellNames[x] ~= nil then
+                    local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", spellNames[x], nil, "player")
+                    if expires ~= nil then
+                        local getGUID = UnitGUID("Player")
+                        if iction.targetTableExists() and iction.targetData[getGUID] ~= nil  and iction.spellActive(getGUID, spellNames[x]) then
+                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expires
                         end
                     end
                 end
