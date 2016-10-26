@@ -90,7 +90,6 @@ function iction.createExpiresData(guid, spellName, spellType)
                     iction.targetData[guid]['spellData'][spellName]['count'] = count
                 end
             end
-        iction.updateTimers()
         end
     end
 end

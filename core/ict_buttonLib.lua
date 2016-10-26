@@ -106,6 +106,7 @@ end
 
 function iction.setDebuffButtonLib()
     local buttonLib
+    iction.uiPlayerSpellButtons = {}
     local spec = GetSpecialization()
     if spec == 1 then
         iction.addButtonsToTable(aff_SpellList, iction.uiPlayerSpellButtons)
@@ -118,6 +119,7 @@ end
 
 function iction.setBuffButtonLib()
     local buttonLib
+    iction.uiPlayerBuffButtons = {}
     local spec = GetSpecialization()
     if spec == 1 then
         iction.addButtonsToTable(aff_BuffList, iction.uiPlayerBuffButtons)

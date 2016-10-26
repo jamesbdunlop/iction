@@ -262,8 +262,8 @@ function iction.highlightTargetSpellframe(guid)
         elseif guid ~= iction.playerGUID then
             local prev = iction.hlGuid
             if prev ~= guid then
-                local f = iction.targetFrames[guid]
-                local pf = iction.targetFrames[iction.hlGuid]
+                local f = iction.targetFrames[guid] or nil
+                local pf = iction.targetFrames[iction.hlGuid] or nil
                 if iction.targetData[guid] ~= nil then
                     if f ~= nil and iction.targetData[guid]["dead"] ~= true then
                         iction.highlightFrameTexture:SetVertexColor(.1, .6, .1, .45)
@@ -290,7 +290,7 @@ function iction.currentTargetDebuffExpires()
         end
         if spellNames and getGUID then
             for x = 1, iction.tablelength(spellNames) do
-                if spellNames[x] ~= nil and iction.targetTableExists() and iction.spellActive(getGUID, spellNames[x]) and iction.targetData[getGUID] ~= nil then
+                if spellNames[x] ~= nil and iction.spellActive(getGUID, spellNames[x]) then
                     --- UNITDEBUFF
                     local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
                     if endTime ~= nil then
@@ -358,9 +358,8 @@ function iction.currentBuffExpires()
                 if spellNames[x] ~= nil then
                     local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", spellNames[x], nil, "player")
                     if expires ~= nil then
-                        local getGUID = UnitGUID("Player")
-                        if iction.targetTableExists() and iction.targetData[getGUID] ~= nil  and iction.spellActive(getGUID, spellNames[x]) then
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expires
+                        if iction.targetTableExists() and iction.targetData[iction.playerGUI] ~= nil  and iction.spellActive(iction.playerGUI, spellNames[x]) then
+                            iction.targetData[iction.playerGUI]['spellData'][spellNames[x]]['endTime'] = expires
                         end
                     end
                 end
