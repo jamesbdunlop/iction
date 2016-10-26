@@ -1,9 +1,6 @@
--- Changelog Release 1.0.3
--- Patch for buff timers getting stuck when player dies
--- Dynamic on specialization change ui update
+-- Changelog Release 1.1.1
 
-
---- version Release 1.0.3
+--- version Release 1.1.1
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
