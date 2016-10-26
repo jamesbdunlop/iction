@@ -12,12 +12,11 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
         elseif guid == iction.playerGUID then
             frm = iction.createPlayerBuffFrame() end
 
+        if iction.debug then print("\tfrm: "  .. tostring(frm)) end
         if frm then iction.createButtons(frm, guid, spellType) end
         iction.createTargetData(guid, creatureName)
         iction.createTargetSpellData(guid, spellName, spellType)
-        if frm then
-            iction.createExpiresData(guid, spellName, spellType)
-        end
+        iction.createExpiresData(guid, spellName, spellType)
         if iction.debug then print("Target created successfully") end
     end
 end
@@ -58,7 +57,7 @@ function iction.createExpiresData(guid, spellName, spellType)
         if spellType == 'BUFF' then
             --- UNITBUFF
             local _, _, _, _, _, _, expires, _, _, _, _ = UnitBuff("Player", spellName)
-            iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+            iction.targetData[iction.playerGUID]['spellData'][spellName]['endTime'] = expires
 
         elseif spellType == 'DEBUFF' then
             --- UNITDEBUFF

@@ -354,18 +354,14 @@ function iction.currentBuffExpires()
 
     if spellNames then
         if (UnitName("Player")) then
-            for x = 1, iction.tablelength(spellNames) do --5 do
+            for x = 1, iction.tablelength(spellNames) do
                 if spellNames[x] ~= nil then
                     local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", spellNames[x], nil, "player")
-                    if expires ~= nil then
-                        if iction.targetTableExists() and iction.targetData[iction.playerGUI] ~= nil  and iction.spellActive(iction.playerGUI, spellNames[x]) then
+                    if expires ~= nil and iction.targetData[iction.playerGUI] ~= nil then
+                        if iction.targetData[iction.playerGUI]['spellData'][spellNames[x]] ~= nil  then
                             iction.targetData[iction.playerGUI]['spellData'][spellNames[x]]['endTime'] = expires
                         end
-                    end
-                end
-            end
-        end
-    end
+    end end end end end
 end
 
 function iction.clearSeeds(guid)

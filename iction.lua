@@ -277,61 +277,61 @@ function iction.ictionFrameWatcher()
 
         if event == "PLAYER_TARGET_CHANGED" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
+            iction.currentTargetDebuffExpires()
         end
 
-        -- Talent spec reload warning
---        if event == "PLAYER_SPECIALIZATION_CHANGED" then
---            local spec = GetSpecialization()
---            if iction.spec ~= spec then
---                iction.spec = spec
---                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!", 15, 25, 35)
---                -- Cleanup various elements now.
---                if iction.targetFrames[iction.playerGUID] ~= nil then
---                    for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
---                        if iction.targetButtons[iction.playerGUID]["buttonFrames"][i] ~= nil then
---                            iction.targetButtons[iction.playerGUID]["buttonFrames"][i]:Hide()
---                            iction.targetButtons[iction.playerGUID]["buttonFrames"][i] = nil
---                        end
---                    end
---                    for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonText"]) do
---                        if iction.targetButtons[iction.playerGUID]["buttonText"][i] ~= nil then
---                            iction.targetButtons[iction.playerGUID]["buttonText"][i]:Hide()
---                            iction.targetButtons[iction.playerGUID]["buttonText"][i] = nil
---                        end
---                    end
---                    iction.targetFrames[iction.playerGUID]:Hide()
---                    iction.targetFrames[iction.playerGUID] = nil
---                end
---
---                iction.shardFrame = nil
---                iction.highlightFrameTexture = nil
---
---                -- Now recreate the button libs
---                iction.setDebuffButtonLib()
---                iction.setBuffButtonLib()
---                -- Conflag frame for destro spec
---                if iction.spec == 3 then
---                    iction.createConflagFrame()
---                else
---                    if iction.conflagFrame ~= nil then
---                        iction.conflagFrame:Hide()
---                    end
---                end
---                -- Reset all soul shard images to 0 as the shard count resets on spec change
---                for i = 1, iction.tablelength(iction.soulShards) do
---                    if iction.soulShards[i] ~= nil then
---                        iction.soulShards[i]:Hide()
---                    end
---                end
---                iction.createShardFrame()
---                local shards = UnitPower("Player", 7)
---                iction.setSoulShards(shards)
---                -- Change the artifact frame
---                iction.createArtifactFrame()
---                -- Reset highlightframe size for buttons changes
---                iction.highlightFrameTexture = iction.createHighlightFrame()
---            end
---        end
+        if event == "PLAYER_SPECIALIZATION_CHANGED" then
+            local spec = GetSpecialization()
+            if iction.spec ~= spec then
+                iction.spec = spec
+                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!", 15, 25, 35)
+                -- Cleanup various elements now.
+                if iction.targetFrames[iction.playerGUID] ~= nil then
+                    for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
+                        if iction.targetButtons[iction.playerGUID]["buttonFrames"][i] ~= nil then
+                            iction.targetButtons[iction.playerGUID]["buttonFrames"][i]:Hide()
+                            iction.targetButtons[iction.playerGUID]["buttonFrames"][i] = nil
+                        end
+                    end
+                    for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonText"]) do
+                        if iction.targetButtons[iction.playerGUID]["buttonText"][i] ~= nil then
+                            iction.targetButtons[iction.playerGUID]["buttonText"][i]:Hide()
+                            iction.targetButtons[iction.playerGUID]["buttonText"][i] = nil
+                        end
+                    end
+                    iction.targetFrames[iction.playerGUID]:Hide()
+                    iction.targetFrames[iction.playerGUID] = nil
+                end
+
+                iction.shardFrame = nil
+                iction.highlightFrameTexture = nil
+
+                -- Now recreate the button libs
+                iction.setDebuffButtonLib()
+                iction.setBuffButtonLib()
+                -- Conflag frame for destro spec
+                if iction.spec == 3 then
+                    iction.createConflagFrame()
+                else
+                    if iction.conflagFrame ~= nil then
+                        iction.conflagFrame:Hide()
+                    end
+                end
+                -- Reset all soul shard images to 0 as the shard count resets on spec change
+                for i = 1, iction.tablelength(iction.soulShards) do
+                    if iction.soulShards[i] ~= nil then
+                        iction.soulShards[i]:Hide()
+                    end
+                end
+                iction.createShardFrame()
+                local shards = UnitPower("Player", 7)
+                iction.setSoulShards(shards)
+                -- Change the artifact frame
+                iction.createArtifactFrame()
+                -- Reset highlightframe size for buttons changes
+                iction.highlightFrameTexture = iction.createHighlightFrame()
+            end
+        end
 
         -- Burning Rush handler
         if sourceGUID == iction.playerGUID and eventName == "SPELL_AURA_REMOVED" and spellName == "Burning Rush" then
@@ -344,37 +344,37 @@ function iction.ictionFrameWatcher()
             iction.oocCleanup()
         end
 
---        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED" then
---            -- Remove unit from the table if it died.
---            if mobGUID ~= iction.playerGIUD then
---                iction.tagDeadTarget(mobGUID)
---                iction.targetData[mobGUID] = nil
---                -- hide all button stack frames that were built
---                if iction.stackFrames[mobGUID] then
---                    for k, v in pairs(iction.stackFrames[mobGUID]) do
---                        for p, q in pairs(v) do
---                            if p == 'frame' then
---                                q:SetBackdropColor(0,0,0,0)
---                                q.texture:SetVertexColor(0,0,0,0)
---                            elseif p == 'font' then
---                                q:SetText("")
---                            end
---                        end
---                    end
---                end
---                iction.highlightTargetSpellframe(UnitGUID("Target"))
---                return
---            end
---        end
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED" then
+            -- Remove unit from the table if it died.
+            if mobGUID ~= iction.playerGIUD then
+                iction.tagDeadTarget(mobGUID)
+                iction.targetData[mobGUID] = nil
+                -- hide all button stack frames that were built
+                if iction.stackFrames[mobGUID] then
+                    for k, v in pairs(iction.stackFrames[mobGUID]) do
+                        for p, q in pairs(v) do
+                            if p == 'frame' then
+                                q:SetBackdropColor(0,0,0,0)
+                                q.texture:SetVertexColor(0,0,0,0)
+                            elseif p == 'font' then
+                                q:SetText("")
+                            end
+                        end
+                    end
+                end
+                iction.highlightTargetSpellframe(UnitGUID("Target"))
+                return
+            end
+        end
 
---        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "PLAYER_DEAD" then
---            local buttonTexts = iction.targetButtons[guid]["buttonText"]
---            for i = 1, iction.tablelength(buttonTexts) do
---                if buttonTexts[i] ~= nil then
---                    buttonTexts[i]:SetText("")
---                end
---            end
---        end
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "PLAYER_DEAD" then
+            local buttonTexts = iction.targetButtons[guid]["buttonText"]
+            for i = 1, iction.tablelength(buttonTexts) do
+                if buttonTexts[i] ~= nil then
+                    buttonTexts[i]:SetText("")
+                end
+            end
+        end
 
         ---------------
         ---- Specials
@@ -390,25 +390,6 @@ function iction.ictionFrameWatcher()
         if sourceGUID == iction.playerGUID and eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF") -- wow thte GUID for this isn't the freaking targeted mob.. wtf
         end
---            print("event: " .. tostring(event))
---            print("currentTime: " .. tostring(currentTime))
---            print("eventName: " .. tostring(eventName))
---            print("sourceFlags: " .. tostring(sourceFlags))
---            print("sourceGUID: " .. tostring(sourceGUID))
---            print("sourceName: " .. tostring(sourceName))
---            print("flags: " .. tostring(flags))
---            print("prefix1: " .. tostring(prefix1))
---            print("prefix2: " .. tostring(prefix2))
---            print("prefix3: " .. tostring(prefix3))
---            print("sufx1: " .. tostring(sufx1))
---            print("sufx2: " .. tostring(sufx2))
---            print("sufx3: " .. tostring(sufx3))
---            print("sufx4: " .. tostring(sufx4))
---            print("sufx5: " .. tostring(sufx5))
---            print("sufx6: " .. tostring(sufx6))
---            print("sufx7: " .. tostring(sufx7))
---            print("sufx8: " .. tostring(sufx8))
---            print("sufx9: " .. tostring(sufx9))
 
         ---------------
         -- AGONY
@@ -455,22 +436,14 @@ function iction.ictionFrameWatcher()
         if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and spellName ~= 'Agony' and spellName ~= 'Channel Demonfire' and spellName ~= 'Seed of Corruption' then
             if validSpell then
                 local endCast
-                if eventName == "SPELL_CAST_START" then
-                    if spellName == "Unstable Affliction" or spellName == 'Immolate' then
-                        local freeSlot, colID = iction.findSlot(UnitGUID("Target"))
-                        if freeSlot then
-                            iction.createTarget(mobGUID, mobName, spellName, spellType)
-                        end
-                    end
-
-                elseif eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
-                    if spellName ~= "Unstable Affliction" or spellName ~= 'Immolate' then
-                        -- Regular debuff/buff handling
-                        if spellType == 'DEBUFF' then
-                            iction.createTarget(mobGUID, mobName, spellName, spellType)
-                        elseif spellType == 'BUFF' then
-                            iction.createTarget(mobGUID, mobName, spellName, spellType)
-                        end
+                if eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
+                    -- Regular debuff/buff handling
+                    if spellType == 'DEBUFF' then
+                        iction.createTarget(mobGUID, mobName, spellName, spellType)
+                        iction.currentTargetDebuffExpires()
+                    elseif spellType == 'BUFF' then
+                        iction.createTarget(mobGUID, mobName, spellName, spellType)
+                        iction.currentBuffExpires()
                     end
                 end
             end
@@ -481,7 +454,6 @@ function iction.ictionFrameWatcher()
         end
 
         if event == "SPELL_CAST_FAILED" then
-            print("Spell failed: " .. tostring(spellName))
             iction.currentTargetDebuffExpires()
         end
 
@@ -494,8 +466,7 @@ function iction.ictionFrameWatcher()
         iction.setSoulShards(shards)
         iction.setConflagCount()
         iction.oocCleanup()
-        iction.currentTargetDebuffExpires()
-        iction.currentBuffExpires()
+
         iction.setMTapBorder()
     end
     iction.ictionMF:SetScript("OnUpdate", _onUpdate)

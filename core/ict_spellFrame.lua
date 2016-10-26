@@ -3,6 +3,8 @@
 function iction.createSpellFrame(creatureName, guid, bgFile)
     if iction.debug then print("Dbg: iction.createSpellFrame for " .. tostring(creatureName)) end
     local freeSlot, colID = iction.findSlot(guid)
+    if iction.debug then print("freeSlot " .. tostring(freeSlot)) end
+    if iction.debug then print("colID " .. tostring(colID)) end
     if freeSlot and not iction.targetFrames[guid] then
         iction.targetFrames[guid] = CreateFrame("Frame", nil)
         iction.targetFrames[guid]:SetAttribute("name", 'ictionDeBuffFrame')
@@ -41,7 +43,6 @@ function iction.createPlayerBuffFrame()
     if iction.debug then print("Dbg: iction.createPlayerBuffFrame") end
     local fw, fh
     if not iction.targetFrames[iction.playerGUID] then
-        print('Building new frm')
         local offset
         if ictionBuffBarBarH == true then
             _, fw= iction.calcFrameSize(iction.uiPlayerBuffButtons)
@@ -67,6 +68,6 @@ function iction.createPlayerBuffFrame()
         iction.targetFrames[iction.playerGUID]:Show()
         return iction.targetFrames[iction.playerGUID]
     else
-        return false -- iction.targetFrames[iction.playerGUID]
+        return false
     end
 end
