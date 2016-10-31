@@ -1,4 +1,9 @@
 -- Changelog Release 1.1.1
+-- Added soul leech buff to destro and affliction default buff list
+-- Changed drain life and drain soul mechanics to hold focus on currently drained target regardless if target is switched.
+    -- This should drop on casting new spell correctly, and switch to new targets if swapping dain targets
+-- Stack counts now reset correctly when spells drop.
+-- Corrutpion applications after seed explosions should now apply correctly across all active targets or create new ones if columns are free
 
 --- version Release 1.1.1
 local iction = iction
@@ -260,7 +265,6 @@ function iction.ictionFrameWatcher()
         mobName = prefix3
         spellName = sufx4
         spellType = sufx6
-
         for _, v in pairs(iction.uiPlayerSpellButtons) do
             if v['name'] == spellName then
                 validSpell = true
@@ -275,6 +279,10 @@ function iction.ictionFrameWatcher()
         if event == "PLAYER_TARGET_CHANGED" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
             iction.currentTargetDebuffExpires()
+        end
+
+        if sourceGUID == iction.playerGUID and eventName == "SPELL_CAST_START" then
+            iction.clearChannelData()
         end
 
         if event == "PLAYER_SPECIALIZATION_CHANGED" then
@@ -330,6 +338,20 @@ function iction.ictionFrameWatcher()
             end
         end
 
+        if sourceGUID == iction.playerGUID and eventName == "SPELL_AURA_APPLIED_DOSE" and sufx6 == "DEBUFF" then
+            local count = sufx7
+            if iction.spellActive(spellName) then
+                iction.targetData[mobGUID]['spellData'][spellName]['count'] = count
+            end
+            return
+        end
+        ---------------
+        ---- Specials
+
+--        if sourceGUID == iction.playerGUID and eventName == "SPELL_AURA_REMOVED" and spellName ~= "Burning Rush"then
+--            iction.createTarget(mobGUID, mobName, spellName, sufx6)
+--        end
+
         -- Burning Rush handler
         if sourceGUID == iction.playerGUID and eventName == "SPELL_AURA_REMOVED" and spellName == "Burning Rush" then
             -- Added to handle burning rush. This may indicate a new place to handle all aura removals
@@ -341,86 +363,25 @@ function iction.ictionFrameWatcher()
             iction.oocCleanup()
         end
 
-        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "UNIT_DIED" then
-            -- Remove unit from the table if it died.
-            if mobGUID ~= iction.playerGIUD then
-                iction.tagDeadTarget(mobGUID)
-                iction.targetData[mobGUID] = nil
-                -- hide all button stack frames that were built
-                if iction.stackFrames[mobGUID] then
-                    for k, v in pairs(iction.stackFrames[mobGUID]) do
-                        for p, q in pairs(v) do
-                            if p == 'frame' then
-                                q:SetBackdropColor(0,0,0,0)
-                                q.texture:SetVertexColor(0,0,0,0)
-                            elseif p == 'font' then
-                                q:SetText("")
-                            end
-                        end
-                    end
-                end
-                iction.highlightTargetSpellframe(UnitGUID("Target"))
-                return
-            end
-        end
-
-        if event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "PLAYER_DEAD" then
-            local buttonTexts = iction.targetButtons[guid]["buttonText"]
-            for i = 1, iction.tablelength(buttonTexts) do
-                if buttonTexts[i] ~= nil then
-                    buttonTexts[i]:SetText("")
-                end
-            end
-        end
-
-        ---------------
-        ---- Specials
         -- Seed of corruption
         if sourceGUID == iction.playerGUID and spellName == 'Seed of Corruption' and eventName == "SPELL_AURA_APPLIED" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            iction.clearChannelData()
             iction.addSeeds(mobGUID, spellName, "DEBUFF")
         end
-
+        if sourceGUID == iction.playerGUID and spellName == 'Corruption' and eventName == "SPELL_AURA_APPLIED" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            iction.clearChannelData()
+            iction.addSeeds(mobGUID, spellName, "DEBUFF")
+        end
+        -- Conflag opening
         if sourceGUID == iction.playerGUID and eventName == 'SPELL_ENERGIZE' and spellName == 'Conflagrate' then
+            iction.clearChannelData()
             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
         end
 
-        if sourceGUID == iction.playerGUID and eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        -- Destro Artifact Opening
+        if sourceGUID == iction.playerGUID and eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Summon Darkglare" or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            iction.clearChannelData()
             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF") -- wow thte GUID for this isn't the freaking targeted mob.. wtf
-        end
-
-        ---------------
-        -- AGONY
-        if sourceGUID == iction.playerGUID and spellName == 'Agony' and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName ~= "SPELL_ENERGIZE" and eventName ~= "SPELL_PERIODIC_DAMAGE"  then
-            if eventName == "SPELL_AURA_APPLIED" then
-                iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
-            elseif eventName == "SPELL_CAST_SUCCESS" then
-                iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
-            end
-        end
-
-        ---------------
-        -- DemonFire
-        if sourceGUID == iction.playerGUID and spellName == 'Channel Demonfire' and event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            if eventName == "SPELL_CAST_SUCCESS" then
-                iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
-            end
-        end
-        --- END SPECIALS
-        ---------------
-
-        --- Dot dropped off mob...
-        if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "SPELL_AURA_REMOVED" then
-            -- check for stack frame
-            if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] then
-                iction.stackFrames[mobGUID][spellName]['font']:SetText("")
-                iction.stackFrames[mobGUID][spellName]['frame'].texture:SetVertexColor(0,0,0,0)
-                if iction.targetData[mobGUID]['spellData'] then
-                    if iction.targetData[mobGUID]['spellData'][spellName] and spellName == "Unstable Affliction" then
-                        iction.targetData[mobGUID]['spellData'][spellName]['count'] = 0
-                    end
-                end
-            end
-            iction.setMTapBorder()
         end
 
         -- Clear all seed timers
@@ -429,18 +390,78 @@ function iction.ictionFrameWatcher()
             return
         end
 
-        --- ALL OTHER SPELLS
-        if sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and spellName ~= 'Agony' and spellName ~= 'Channel Demonfire' and spellName ~= 'Seed of Corruption' then
-            if validSpell then
-                local endCast
-                if eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
-                    -- Regular debuff/buff handling
-                    if spellType == 'DEBUFF' then
-                        iction.createTarget(mobGUID, mobName, spellName, spellType)
-                        iction.currentTargetDebuffExpires()
-                    elseif spellType == 'BUFF' then
-                        iction.createTarget(mobGUID, mobName, spellName, spellType)
-                        iction.currentBuffExpires()
+        -- All other COMBAT_LOG_EVENT_UNFILTERED events
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            --- UNIT DIED
+            if eventName == "UNIT_DIED" then
+                -- Remove unit from the table if it died.
+                if mobGUID ~= iction.playerGIUD then
+                    iction.tagDeadTarget(mobGUID)
+                    iction.targetData[mobGUID] = nil
+                    -- hide all button stack frames that were built
+                    if iction.stackFrames[mobGUID] then
+                        for k, v in pairs(iction.stackFrames[mobGUID]) do
+                            for p, q in pairs(v) do
+                                if p == 'frame' then
+                                    q:SetBackdropColor(0,0,0,0)
+                                    q.texture:SetVertexColor(0,0,0,0)
+                                elseif p == 'font' then
+                                    q:SetText("")
+                                end
+                            end
+                        end
+                    end
+                    iction.highlightTargetSpellframe(UnitGUID("Target"))
+                    return
+                end
+            --- PLAYER DIED
+            elseif eventName == "PLAYER_DEAD" then
+                local buttonTexts = iction.targetButtons[guid]["buttonText"]
+                for i = 1, iction.tablelength(buttonTexts) do
+                    if buttonTexts[i] ~= nil then
+                        buttonTexts[i]:SetText("")
+                    end
+                end
+            ---------------
+            -- AGONY
+            elseif sourceGUID == iction.playerGUID and spellName == 'Agony' and eventName ~= "SPELL_ENERGIZE" and eventName ~= "SPELL_PERIODIC_DAMAGE"  then
+                if eventName == "SPELL_AURA_APPLIED" then
+                    iction.clearChannelData()
+                    iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+                elseif eventName == "SPELL_CAST_SUCCESS" then
+                    iction.clearChannelData()
+                    iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+                end
+            ---------------
+            -- DemonFire
+            elseif sourceGUID == iction.playerGUID and spellName == 'Channel Demonfire' and eventName == "SPELL_CAST_SUCCESS" then
+                iction.clearChannelData()
+                iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF")
+            --- Dot dropped off mob...
+            elseif sourceGUID == iction.playerGUID and event == "COMBAT_LOG_EVENT_UNFILTERED" and eventName == "SPELL_AURA_REMOVED" then
+                -- check for stack frame
+                if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellName] then
+                    iction.stackFrames[mobGUID][spellName]['font']:SetText("")
+                    iction.stackFrames[mobGUID][spellName]['frame'].texture:SetVertexColor(0,0,0,0)
+                    if iction.targetData[mobGUID]['spellData'] then
+                        if iction.targetData[mobGUID]['spellData'][spellName] and spellName == "Unstable Affliction" then
+                            iction.targetData[mobGUID]['spellData'][spellName]['count'] = 0
+                        end
+                    end
+                end
+                iction.setMTapBorder()
+            --- ALL OTHER SPELLS
+            elseif sourceGUID == iction.playerGUID and spellName ~= 'Agony' and spellName ~= 'Channel Demonfire' and spellName ~= 'Seed of Corruption' then
+                if validSpell then
+                    local endCast
+                    if eventName == "SPELL_AURA_APPLIED" or eventName == "SPELL_AURA_REFRESH" then
+                        -- Regular debuff/buff handling
+                        if spellType == 'DEBUFF' then
+                            iction.clearChannelData()
+                            iction.createTarget(mobGUID, mobName, spellName, spellType)
+                        elseif spellType == 'BUFF' then
+                            iction.createTarget(mobGUID, mobName, spellName, spellType)
+                        end
                     end
                 end
             end
@@ -453,7 +474,6 @@ function iction.ictionFrameWatcher()
         if event == "SPELL_CAST_FAILED" then
             iction.currentTargetDebuffExpires()
         end
-
     end
     iction.ictionMF:SetScript("OnEvent", eventHandler)
     -- ON UPDATE CHECKS

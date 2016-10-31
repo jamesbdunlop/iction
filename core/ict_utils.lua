@@ -278,47 +278,93 @@ function iction.highlightTargetSpellframe(guid)
         end
     end
 end
+
 ----------------------------------------------------------------------------------------------
 --- TARGET UTILS -----------------------------------------------------------------------------
+function iction.getChannelSpell()
+    local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
+    if endTime ~= nil then
+        local cexpires, dur
+        dur = endTime/1000.0 - GetTime()
+        cexpires =  GetTime() + dur
+        return name, cexpires
+    else
+        return nil, nil
+    end
+end
+
+function iction.channelActive(spellName)
+    for guid, data in pairs(iction.targetData) do
+        local spellData = data['spellData']
+        if spellData[spellName] ~= nil then
+            if iction.targetData[guid]['spellData'][spellName]['endTime'] ~=  nil then
+                return true, guid
+            else
+                return false, nil
+            end
+        else
+            return false, nil
+        end
+    end
+end
+
+function iction.clearChannelData()
+    local channels = {"Drain Life", "Drain Soul" }
+    for x=1, 2 do
+        for guid, data in pairs(iction.targetData) do
+            if iction.isValidButtonFrame(guid) then
+                if iction.spellActive(guid, channels[x]) then
+                    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][channels[x]])
+                    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][channels[x]])
+                    iction.targetData[guid]['spellData'][channels[x]]['endTime'] = nil
+                    iction.targetData[guid]['spellData'][channels[x]]['coolDown'] = nil
+                end
+            end
+        end
+    end
+end
+
 function iction.currentTargetDebuffExpires()
     if (UnitName("target")) then
         local getGUID = UnitGUID("Target")
         iction.highlightTargetSpellframe(getGUID)
+
         local spellNames = {} -- get a clean list of spell names from the button
         for x, info in pairs(iction.uiPlayerSpellButtons) do
             table.insert(spellNames, info['name'])
         end
+
+        --- Do a channelling check first as we may have flicked targets while channelling ready to cast on fresh target.
+        local name, cexpires = iction.getChannelSpell()
+        if cexpires ~= nil then
+            local isChannelActive, tguid = iction.channelActive(name)
+            if isChannelActive then
+                iction.targetData[tguid]['spellData'][name]['endTime'] = cexpires
+                return
+            end
+        end
+
         if spellNames and getGUID then
             for x = 1, iction.tablelength(spellNames) do
                 if spellNames[x] ~= nil and iction.spellActive(getGUID, spellNames[x]) then
                     --- UNITDEBUFF
-                    local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
-                    if endTime ~= nil then
-                        local cexpires, dur
-                        dur = endTime/1000.0 - GetTime()
-                        cexpires =  GetTime() + dur
-                        if iction.targetData[getGUID] and name == spellNames[x] then
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = cexpires
-                        end
+                    local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
+                    if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
+                        iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
+                    elseif spellId == 27243 then --- duplicate seed for talent handling
+                        iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
                     else
-                        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("Target", spellNames[x], nil, "player")
-                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = expirationTime
-                        elseif spellId == 27243 then --- duplicate seed for talent handling
-                            iction.targetData[getGUID]['spellData']["Seed of Corruption"]['endTime'] = expirationTime
-                        else
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
-                        end
-
-                        if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
-                            count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
-                        end
-
-                        if count and count ~= 0 then
-                            iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
-                        end
+                        iction.targetData[getGUID]['spellData'][spellNames[x]]['endTime'] = nil
                     end
-                elseif spellNames[x] ~= nil and iction.isSpellOnCooldown(spellNames[x])  then
+
+                    if iction.targetData[getGUID]['spellData'][spellNames[x]] == "Unstable Affliction" then
+                        count = iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] + 1
+                    end
+
+                    if count and count ~= 0 then
+                        iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
+                    end
+                elseif spellNames[x] ~= nil and iction.isSpellOnCooldown(spellNames[x]) then
                     if iction.targetData[getGUID] then
                         local data = iction.targetData[getGUID]
                         if data['spellData'] ~= nil then
@@ -385,22 +431,6 @@ function iction.addSeeds(guid, spellName, spellType)
     end
 end
 
-function iction.fetchPlayerBuffNames()
-    if iction.uiPlayerBuffs == nil then
-        iction.uiPlayerBuffs = {}
-        for x, info in pairs(iction.uiPlayerBuffButtons) do
-            table.insert(iction.uiPlayerBuffs, info['name'])
-        end
-        if iction.uiPlayerBuffs then
-            return iction.uiPlayerBuffs
-        else
-            return nil
-        end
-    else
-        return iction.uiPlayerBuffs
-    end
-end
-
 function iction.targetTableExists()
     if iction.targetData then
         if next(iction.targetData) ~= nil then return true else return false end
@@ -415,10 +445,6 @@ function iction.getConflagCharges()
     return currentCharges, maxCharges
 end
 
-function iction.getTargetData()
-    return iction.targetData
-end
-
 function iction.tagDeadTarget(guid)
     -- Fix the current tracked targets state
     if guid ~= iction.playerGUI then
@@ -426,8 +452,8 @@ function iction.tagDeadTarget(guid)
             iction.hideFrame(guid, true)
             iction.targetData[guid]['dead'] = true
             iction.targetData[guid]['spellData'] = nil
+            iction.highlightTargetSpellframe(guid)
         end
-
         -- Fix the display columns
         local found, id = iction.colGUIDExists(guid)
         if found == true then
@@ -436,6 +462,3 @@ function iction.tagDeadTarget(guid)
         end
     end
 end
-
-----------------------------------------------------------------------------------------------
---- ARTIFACT UTILS -----------------------------------------------------------------------------

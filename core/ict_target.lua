@@ -18,6 +18,11 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
         iction.createTargetSpellData(guid, spellName, spellType)
         iction.createExpiresData(guid, spellName, spellType)
         if iction.debug then print("Target created successfully") end
+        if spellType == 'DEBUFF' then
+            iction.currentTargetDebuffExpires()
+        else
+            iction.currentBuffExpires()
+        end
     end
 end
 
@@ -55,38 +60,45 @@ function iction.createExpiresData(guid, spellName, spellType)
 
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
         if spellType == 'BUFF' then
-            --- UNITBUFF
             local _, _, _, _, _, _, expires, _, _, _, _ = UnitBuff("Player", spellName)
             iction.targetData[iction.playerGUID]['spellData'][spellName]['endTime'] = expires
 
         elseif spellType == 'DEBUFF' then
-            --- UNITDEBUFF
-            local _, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
-            if endTime ~= nil then
-                local cexpires, dur
-                dur = endTime/1000.0 - GetTime()
-                cexpires =  GetTime() + dur
-                iction.targetData[guid]['spellData'][spellName]['endTime'] = cexpires
-            else
-                local _, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, _ = UnitDebuff("Target", spellName, nil, "PLAYER")
-                if expires then
-                    iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-                else
-                    -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds, rof)
-                    for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
-                        if iction.uiPlayerSpellButtons[i]['name'] == spellName then
-                            expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
-                            iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
-                        end
+            local name, cexpires = iction.getChannelSpell()
+            if cexpires then
+                if iction.isValidButtonFrame(guid) then
+                    if iction.targetData[guid]['spellData'][name] then
+                        iction.targetData[guid]['spellData'][name]['endTime'] = cexpires
                     end
                 end
-
-                if spellName == "Unstable Affliction" then
-                    count = iction.targetData[guid]['spellData'][spellName]['count'] + 1
+            end
+            -- Adding this as a clean run through due to casting drain soul which seeding which will ignite into corruptions.
+            local name, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, _ = UnitDebuff("Target", spellName, nil, "PLAYER")
+            if expires then
+                iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+            else
+                -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds, rof)
+                for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
+                    if iction.uiPlayerSpellButtons[i]['name'] == spellName then
+                        expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
+                        iction.targetData[guid]['spellData'][spellName]['endTime'] = expires
+                    end
                 end
+            end
 
-                if count and count ~= 0 then
-                    iction.targetData[guid]['spellData'][spellName]['count'] = count
+            if spellName == "Unstable Affliction" then
+                if iction.isValidButtonFrame(guid) then
+                    if iction.targetData[guid]['spellData'][spellName]['count'] ~= nil then
+                        count = iction.targetData[guid]['spellData'][spellName]['count'] + 1
+                    end
+                end
+            end
+
+            if count and count ~= 0 then
+                if iction.isValidButtonFrame(guid) then
+                    if iction.targetData[guid]['spellData'][spellName]['count'] ~= nil then
+                        iction.targetData[guid]['spellData'][spellName]['count'] = count
+                    end
                 end
             end
         end

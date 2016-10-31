@@ -21,6 +21,7 @@ SoulHarvest = {name = "Soul Harvest",  insert = false, isTalentSpell = true, vis
 BurningRush = {name = "Burning Rush",  insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
 DarkPact = {name = "Dark Pact",  insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
 WrathofConsumption = {name = "Wrath of Consumption",  insert = false, isTalentSpell = false, vis = false, id = 199472, duration = 20, maxTime = 20, icon = ""},
+SoulLeech = {name = "Soul Leech", insert = true, isTalentSpell = false, vis = true, id = 108370, duration = 15, maxTime = 15, icon = ""},
 }
 local aff_artifact = {
 name = "Tormented Souls",  insert = true, isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
@@ -42,6 +43,7 @@ manaTap = {name = "Mana Tap", insert = false, isTalentSpell = true, vis = false,
 soulHarvest = {name = "Soul Harvest", insert = false, isTalentSpell = false, vis = true, id = 196098, duration = 10, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/soulHarvest"},
 DarkPact = {name = "Dark Pact", insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
 BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
+SoulLeech = {name = "Soul Leech", insert = true, isTalentSpell = false, vis = true, id = 108370, duration = 15, maxTime = 15, icon = ""},
 }
 local destro_artifact = {name = "Dimensional Rift", insert = true, isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
 
@@ -49,12 +51,14 @@ local destro_artifact = {name = "Dimensional Rift", insert = true, isArtifact = 
 --- DEMO -------------------------------------------------------------------------------------
 local demo_SpellList = {
 Doom = {name = "Doom", insert = true, isTalentSpell = false, vis = true, id = 603, duration = 17.5, maxTime = 17.5, icon = ""},
+SummonDarkglare = {name = "Summon Darkglare", insert = false, isTalentSpell = true, vis = false, id = 205180, duration = 12, maxTime = 12, icon = ""},
 }
 local demo_BuffList = {
 BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
 soulHarvest = {name = "Soul Harvest", insert = false, isTalentSpell = true, vis = false, id = 196098, duration = 10, maxTime = 30, icon = ""},
 DarkPact = {name = "Dark Pact", insert = false, isTalentSpell = true, vis = false, id = 108416, duration = 20, maxTime = 20, icon = ""},
 ShadowyInspiration = {name = "Shadowy Inspiration", insert = false, isTalentSpell = true, vis = false, id = 196606, duration = 14, maxTime = 14, icon = ""},
+SoulLeech = {name = "Soul Leech", insert = true, isTalentSpell = false, vis = true, id = 108370, duration = 15, maxTime = 15, icon = ""},
 }
 --Demonic Synergy 171982
 local demo_artifact = {name = "Thal`kiel's Consumption", isArtifact = true, isTalentSpell = false, vis = true, id = 211714, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
