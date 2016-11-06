@@ -18,11 +18,11 @@ function iction.createTarget(guid, creatureName, spellName, spellType)
         iction.createTargetSpellData(guid, spellName, spellType)
         iction.createExpiresData(guid, spellName, spellType)
         if iction.debug then print("Target created successfully") end
-        if spellType == 'DEBUFF' then
-            iction.currentTargetDebuffExpires()
-        else
-            iction.currentBuffExpires()
-        end
+--        if spellType == 'DEBUFF' then
+--            iction.currentTargetDebuffExpires()
+--        else
+--            iction.currentBuffExpires()
+--        end
     end
 end
 
@@ -51,6 +51,7 @@ function iction.createTargetSpellData(guid, spellName, spellType)
         iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
         iction.targetData[guid]['spellData'][spellName]['coolDown'] = nil
         iction.targetData[guid]['spellData'][spellName]['count'] = 0
+        iction.targetData[guid]['spellData'][spellName]['isChanneled'] = false
     end
 end
 
@@ -69,6 +70,7 @@ function iction.createExpiresData(guid, spellName, spellType)
                 if iction.isValidButtonFrame(guid) then
                     if iction.targetData[guid]['spellData'][name] then
                         iction.targetData[guid]['spellData'][name]['endTime'] = cexpires
+                        iction.targetData[guid]['spellData'][name]['isChanneled'] = true
                     end
                 end
             end

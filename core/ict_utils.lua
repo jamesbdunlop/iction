@@ -297,7 +297,7 @@ function iction.channelActive(spellName)
     for guid, data in pairs(iction.targetData) do
         local spellData = data['spellData']
         if spellData[spellName] ~= nil then
-            if iction.targetData[guid]['spellData'][spellName]['endTime'] ~=  nil then
+            if iction.targetData[guid]['spellData'][spellName]['isChanneled'] then
                 return true, guid
             else
                 return false, nil
@@ -308,16 +308,34 @@ function iction.channelActive(spellName)
     end
 end
 
+--function iction.clearChannelData()
+--    local channels = {"Drain Life", "Drain Soul" }
+--    for x=1, 2 do
+--        for guid, data in pairs(iction.targetData) do
+--            if iction.isValidButtonFrame(guid) then
+--                if iction.spellActive(guid, channels[x]) then
+--                    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][channels[x]])
+--                    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][channels[x]])
+--                    iction.targetData[guid]['spellData'][channels[x]]['endTime'] = nil
+--                    iction.targetData[guid]['spellData'][channels[x]]['coolDown'] = nil
+--                end
+--            end
+--        end
+--    end
+--end
 function iction.clearChannelData()
-    local channels = {"Drain Life", "Drain Soul" }
-    for x=1, 2 do
-        for guid, data in pairs(iction.targetData) do
-            if iction.isValidButtonFrame(guid) then
-                if iction.spellActive(guid, channels[x]) then
-                    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][channels[x]])
-                    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][channels[x]])
-                    iction.targetData[guid]['spellData'][channels[x]]['endTime'] = nil
-                    iction.targetData[guid]['spellData'][channels[x]]['coolDown'] = nil
+    for guid, data in pairs(iction.targetData) do
+        if iction.isValidButtonFrame(guid) then
+            local spellData = data['spellData']
+            for spellName, spellInfo in pairs(spellData) do
+                if iction.spellActive(guid, spellName) then
+                    if spellInfo['isChanneled'] then
+                        iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
+                        iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
+                        iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
+                        iction.targetData[guid]['spellData'][spellName]['coolDown'] = nil
+                        iction.targetData[guid]['spellData'][spellName]['isChanneled'] = false
+                    end
                 end
             end
         end
@@ -340,6 +358,7 @@ function iction.currentTargetDebuffExpires()
             local isChannelActive, tguid = iction.channelActive(name)
             if isChannelActive then
                 iction.targetData[tguid]['spellData'][name]['endTime'] = cexpires
+                iction.targetData[tguid]['spellData'][name]['isChanneled'] = true
                 return
             end
         end
@@ -364,7 +383,7 @@ function iction.currentTargetDebuffExpires()
                     if count and count ~= 0 then
                         iction.targetData[getGUID]['spellData'][spellNames[x]]['count'] = count
                     end
-                elseif spellNames[x] ~= nil and iction.isSpellOnCooldown(spellNames[x]) then
+                elseif spellNames[x] ~= nil and iction.isSpellOnCooldown(spellNames[x])  then
                     if iction.targetData[getGUID] then
                         local data = iction.targetData[getGUID]
                         if data['spellData'] ~= nil then
@@ -410,7 +429,7 @@ function iction.currentBuffExpires()
     end end end end end
 end
 
-function iction.clearSeeds(guid)
+function iction.clearAllSeeds(guid)
     if iction.targetTableExists() then
         if iction.targetButtons[guid] and iction.targetButtons[guid]['buttonFrames'] and iction.targetButtons[guid]['buttonFrames']["Seed of Corruption"] and iction.targetData[guid]['spellData']["Seed of Corruption"] ~= nil then
             iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames']["Seed of Corruption"])
