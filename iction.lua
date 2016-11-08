@@ -1,11 +1,6 @@
--- Changelog Release 1.1.1
--- Added soul leech buff to destro and affliction default buff list
--- Changed drain life and drain soul mechanics to hold focus on currently drained target regardless if target is switched.
-    -- This should drop on casting new spell correctly, and switch to new targets if swapping dain targets
--- Stack counts now reset correctly when spells drop.
--- Corrutpion applications after seed explosions should now apply correctly across all active targets or create new ones if columns are free
+-- Changelog Release 1.1.2
 
---- version Release 1.1.1
+--- version Release 1.1.2
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon

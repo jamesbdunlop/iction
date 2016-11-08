@@ -6,10 +6,11 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
     local buttonText = {}
     for key, value in pairs(buttons) do
         if value['vis'] then
+            local spellID = value['id']
             -- Create the button frame
             if iction.debug then print("Creating button for " .. value['name']) end
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
-                  b:SetAttribute("name", value['name'])
+                  b:SetAttribute("name", value['id'])
                   b:SetFrameStrata("MEDIUM")
                   b:SetDisabledFontObject("GameFontDisable")
                   b:SetNormalFontObject("GameFontNormalSmall");
@@ -44,8 +45,8 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
                 paddingX = paddingX
             end
             -- Add the button the the creatures button table
-            buttonFrames[value['name']] = b
-            buttonText[value['name']] = fnt
+            buttonFrames[spellID] = b
+            buttonText[spellID] = fnt
         end
     end
     return buttonFrames, buttonText

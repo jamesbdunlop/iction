@@ -1,35 +1,35 @@
 ----------------------------------------------------------------------------------------------
 --- MAIN TIMER UPDATE ------------------------------------------------------------------------
 
-function iction.spellActiveCooldown(guid, spellName, remainingT)
+function iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
     local remainingT = tonumber(string.format("%.1d", remainingT))
-    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], true)
-    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName], true, {1,.8,.8, 1})
+    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], true)
+    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID], true, {1,.8,.8, 1})
 end
 
-function iction.spellInfinite(guid, spellName, infinite)
+function iction.spellInfinite(guid, spellName, infinite, spellID)
     if infinite then
-        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName])
-        iction.setButtonText("∞", false, iction.targetButtons[guid]['buttonText'][spellName])
+        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID])
+        iction.setButtonText("∞", false, iction.targetButtons[guid]['buttonText'][spellID])
     else
-        iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
-        iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
+        iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellID])
+        iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellID])
     end
 end
 
-function iction.spellActiveTimer(guid, spellName, remainingT)
+function iction.spellActiveTimer(guid, spellName, remainingT, spellID)
     local remainingT = tonumber(string.format("%.1d", remainingT))
-    if iction.targetButtons[guid]['buttonText'][spellName] then -- check for spec change with active buff timer
-        iction.targetButtons[guid]['buttonText'][spellName]:SetText("")
-        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], false)
-        iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+    if iction.targetButtons[guid]['buttonText'][spellID] then -- check for spec change with active buff timer
+        iction.targetButtons[guid]['buttonText'][spellID]:SetText("")
+        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], false)
+        iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID])
     end
 end
 
-function iction.spellFadingTimer(guid, spellName, remainingT)
+function iction.spellFadingTimer(guid, spellName, remainingT, spellID)
     local remainingT = tonumber(string.format("%.1f", remainingT))
-    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellName], true)
-    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellName])
+    iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], true)
+    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID])
 end
 
 function iction.isValidButtonFrame(guid)
@@ -66,26 +66,26 @@ function iction.fetchCooldownET(spellName)
     end
 end
 
-function iction.spellHasEnded(guid, spellName)
-    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
-    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
-    iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
-    iction.targetData[guid]['spellData'][spellName]['count'] = nil
+function iction.spellHasEnded(guid, spellName, spellID)
+    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellID])
+    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellID])
+    iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
+    iction.targetData[guid]['spellData'][spellID]['count'] = nil
     -- Set the cooldown
     if not iction.isSpellOnCooldown(spellName) then
-        iction.targetData[guid]['spellData'][spellName]['coolDown'] = nil
+        iction.targetData[guid]['spellData'][spellID]['coolDown'] = nil
     end
 end
 
-function iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame)
+function iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID)
     if not iction.stackFrames[guid] then
         iction.stackFrames[guid] = {}
     end
 
-    if not iction.stackFrames[guid][spellName] then
+    if not iction.stackFrames[guid][spellID] then
         local stackFrameData = iction.ictStackFrameData
-        stackFrameData['uiParentFrame'] = iction.targetButtons[guid]['buttonFrames'][spellName]
-        stackFrameData['point']['p'] = iction.targetButtons[guid]['buttonFrames'][spellName]
+        stackFrameData['uiParentFrame'] = iction.targetButtons[guid]['buttonFrames'][spellID]
+        stackFrameData['point']['p'] = iction.targetButtons[guid]['buttonFrames'][spellID]
         stackFrameData['point']['x'] = 19
         stackFrameData['point']['y'] = 2
         stackFrameData['w'] = 20
@@ -94,14 +94,14 @@ function iction.createStackFrame(guid, spellName, count, timerText, timerButtonF
         local stackFrame = stackFrameBldr.create(stackFrameBldr, stackFrameData)
         stackFrame.text = stackFrameBldr.addFontSring(stackFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 12, 1, 1, 1, 1)
 
-        iction.stackFrames[guid][spellName] = {frame = stackFrame, font = stackFrame.text}
+        iction.stackFrames[guid][spellID] = {frame = stackFrame, font = stackFrame.text}
         iction.setButtonText(count, false, stackFrame.text)
         if timerText ~= nil and timerButtonFrame ~= nil then
             timerText:SetPoint("TOP", timerButtonFrame, 0, -3)
         end
     else
-        local stackFrame = iction.stackFrames[guid][spellName]['frame']
-        local stackFrametext = iction.stackFrames[guid][spellName]['font']
+        local stackFrame = iction.stackFrames[guid][spellID]['frame']
+        local stackFrametext = iction.stackFrames[guid][spellID]['font']
         stackFrame.texture:SetVertexColor(0,0,0,1)
         stackFrame:SetPoint("BOTTOM", timerButtonFrame, 19, 2)
         iction.setButtonText(count, false, stackFrametext)
@@ -113,28 +113,30 @@ function iction.createStackFrame(guid, spellName, count, timerText, timerButtonF
 end
 
 function iction.updateTimers()
-    local next = next
     -- {GUID = {name = creatureName, dead = false, spellData = {spellName = {name=spellName, endtime=float}}}}
     for guid, data in pairs(iction.targetData) do
         if data['spellData'] ~= nil then
             local isDead = data['dead']
             local spells = data['spellData']
             if not isDead then
-                for spellName, spellData in pairs(spells) do
+                for spellID, spellData in pairs(spells) do
                     if iction.isValidButtonFrame(guid) then
                         local endTime = spellData['endTime']
                         local coolDown = spellData['coolDown']
                         local count = spellData['count']
-                        local timerText = iction.targetButtons[guid]["buttonText"][spellName]
-                        local timerButtonFrame = iction.targetButtons[guid]["buttonFrames"][spellName]
+                        local spellName = spellData['spellName']
+                        local timerText = iction.targetButtons[guid]["buttonText"][spellID]
+                        local timerButtonFrame = iction.targetButtons[guid]["buttonFrames"][spellID]
+
                         --- Infinite spell timers
                         iction.infinite = false
                         if endTime == 0 then iction.infinite = true else iction.infinite = false end
+
                         --- Set infinite and return
                         if iction.infinite and iction.isValidButtonFrame(guid) then
-                            iction.spellInfinite(guid, spellName, true)
+                            iction.spellInfinite(guid, spellName, true, spellID)
                         elseif not iction.infinite then
-                            iction.spellInfinite(guid, spellName, false)
+                            iction.spellInfinite(guid, spellName, false, spellID)
                         end
 
                         --- Currently active states
@@ -142,25 +144,25 @@ function iction.updateTimers()
                             if coolDown == nil then
                                 if endTime < GetTime() or endTime == GetTime() then
                                     --- Spell has ended
-                                    iction.spellHasEnded(guid, spellName)
-                                    iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame)
+                                    iction.spellHasEnded(guid, spellName, spellID)
+                                    iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID)
                                 elseif endTime > GetTime() then
                                     --- Spell is still active
                                     --- Fetch the remaining time for the spell now
                                     local remainingT = tonumber(string.format("%.1f", (endTime - GetTime())))
                                     if count and count ~= 0 then
                                         --- Set the current stack count for active
-                                        iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame)
+                                        iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID)
                                     end
 
                                     if remainingT <= 3 then
                                         --- Set to decimal and red color as a refresh warning
                                         remainingT = endTime - GetTime()
-                                        iction.spellFadingTimer(guid, spellName, remainingT)
+                                        iction.spellFadingTimer(guid, spellName, remainingT, spellID)
                                     else
                                         --- Set to regular count style
                                         remainingT = endTime - GetTime()
-                                        iction.spellActiveTimer(guid, spellName, remainingT)
+                                        iction.spellActiveTimer(guid, spellName, remainingT, spellID)
                                     end
                                 end
                             end
@@ -169,37 +171,37 @@ function iction.updateTimers()
                             --- Spell On Cooldown. We have an active cooldown set in the tables already
                             if coolDown > GetTime() then
                                 local remainingT = coolDown - GetTime()
-                                iction.spellActiveCooldown(guid, spellName, remainingT)
+                                iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
                             else
-                                iction.spellHasEnded(guid, spellName)
+                                iction.spellHasEnded(guid, spellName, spellID)
                             end
                         elseif endTime == nil and iction.isSpellOnCooldown(spellName) and not iction.infinite then
                             local _, duration, _ = GetSpellCooldown(spellName)
                             if duration > 1.5 then
                                 local remainingT = iction.fetchCooldownET(spellName)
-                                iction.targetData[guid]['spellData'][spellName]['coolDown'] = remainingT
-                                iction.spellActiveCooldown(guid, spellName, remainingT - GetTime())
+                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = remainingT
+                                iction.spellActiveCooldown(guid, spellName, remainingT - GetTime(), spellID)
                             end
                         elseif endTime == nil then
-                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame)
+                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID)
                         end
                         --- Drain life and drain soul that have ended on current target.
-                        if spellName == 'Drain Soul' or spellName == "Drain Life" then
-                            local isChannelActive, cguid = iction.channelActive(spellName)
+                        if spellID == 198590 or spellID == 234153 then
+                            local isChannelActive, cguid = iction.channelActive(spellID)
                             if isChannelActive and cguid ~= guid then
-                                if iction.targetData[guid]['spellData'][spellName] ~= nil then
-                                    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellName])
-                                    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellName])
-                                    iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
-                                    iction.targetData[guid]['spellData'][spellName]['coolDown'] = nil
+                                if iction.targetData[guid]['spellData'][spellID] ~= nil then
+                                    iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellID])
+                                    iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellID])
+                                    iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
+                                    iction.targetData[guid]['spellData'][spellID]['coolDown'] = nil
                                 end
                             end
                         end
                     end
                 end
             else
-                for spellName, _ in pairs(spells) do
-                    iction.targetData[guid]['spellData'][spellName]['endTime'] = nil
+                for spellID, _ in pairs(spells) do
+                    iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
                 end
             end
         end
