@@ -280,18 +280,19 @@ function iction.getChannelSpell()
 end
 
 function iction.channelActive(spellID)
+    if spellID == nil then return false, nil end
+    local found = false
+    local changuid = nil
     for guid, data in pairs(iction.targetData) do
-        local spellData = data['spellData']
-        if spellData[spellID] ~= nil then
+        if iction.spellIDActive(guid, spellID) then
+            local spellData = data['spellData']
             if iction.targetData[guid]['spellData'][spellID]['isChanneled'] then
-                return true, guid
-            else
-                return false, nil
+                found = true
+                changuid = iction.targetData[guid]['guid']
             end
-        else
-            return false, nil
         end
     end
+    return found, changuid
 end
 
 function iction.clearChannelData()
@@ -312,22 +313,34 @@ function iction.clearChannelData()
 end
 
 function iction.currentBuffExpires()
-    -- get a list of spell names from the button
-    local spellNames = {}
-    for x,  info in pairs(iction.uiPlayerBuffButtons) do
-        table.insert(spellNames, info['name'])
-    end
-
-    if spellNames then
-        if (UnitName("Player")) then
-            for x = 1, iction.tablelength(spellNames) do
-                if spellNames[x] ~= nil then
-                    local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", spellNames[x], nil, "player")
-                    if expires ~= nil and iction.targetData[iction.playerGUI] ~= nil then
-                        if iction.targetData[iction.playerGUI]['spellData'][spellNames[x]] ~= nil  then
-                            iction.targetData[iction.playerGUI]['spellData'][spellNames[x]]['endTime'] = expires
+    if (UnitName("Player")) then
+        --- Do a channelling check first as we may have flicked targets while channelling ready to cast on fresh target.
+        local spellID, cexpires = iction.getChannelSpell()
+        if cexpires ~= nil then
+            local isChannelActive, channelguid = iction.channelActive(spellID)
+            if isChannelActive then
+                iction.targetData[channelguid]['spellData'][spellID]['endTime'] = cexpires
+                iction.targetData[channelguid]['spellData'][spellID]['isChanneled'] = true
+                return
+            end
+        else
+            if iction.targetData[iction.playerGUI] ~= nil then
+                local mobInfo = iction.targetData[iction.playerGUI]['spellData']
+                if mobInfo ~= nil then
+                    for spellID, spellDetails in pairs(mobInfo) do
+                        if iction.spellIDActive(iction.playerGUI, spellDetails['id']) then
+                            local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", mobInfo['spellName'], nil, "player")
+                            if expires ~= nil and iction.targetData[iction.playerGUI] ~= nil then
+                                if iction.targetData[iction.playerGUI]['spellData'][spellID] ~= nil  then
+                                    iction.targetData[iction.playerGUI]['spellData'][spellID]['endTime'] = expires
+                                end
+                            end
                         end
-    end end end end end
+                    end
+                end
+            end
+        end
+    end
 end
 
 function iction.clearAllSeeds(guid)
@@ -407,54 +420,54 @@ function iction.currentTargetDebuffExpires()
 
         --- Do a channelling check first as we may have flicked targets while channelling ready to cast on fresh target.
         local spellID, cexpires = iction.getChannelSpell()
+
         if cexpires ~= nil then
-            local isChannelActive, channelguid = iction.channelActive(name)
+            local isChannelActive, channelguid = iction.channelActive(spellID)
             if isChannelActive then
-                iction.targetData[channelguid]['spellData'][spellID]['endTime'] = cexpires
                 iction.targetData[channelguid]['spellData'][spellID]['isChanneled'] = true
-                return
+                iction.targetData[channelguid]['spellData'][spellID]['endTime'] = cexpires
             end
-        end
-        if iction.targetData[guid] ~= nil then
-            local mobInfo = iction.targetData[guid]['spellData']
-            if mobInfo ~= nil then
-                for spellID, spellDetails in pairs(mobInfo) do
-                    if iction.spellIDActive(guid, spellDetails['id']) then
-                        local _, _, _, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("Target", spellDetails['spellName'], nil, "player")
-                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
-                            iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
-                        elseif spellId == 27243 then --- duplicate seed for talent handling
-                            iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
-                        else
-                            iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
-                        end
+        else
+            if iction.targetData[guid] ~= nil then
+                local mobInfo = iction.targetData[guid]['spellData']
+                if mobInfo ~= nil then
+                    for spellID, spellDetails in pairs(mobInfo) do
+                        if iction.spellIDActive(guid, spellDetails['id']) then
+                            local _, _, _, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("Target", spellDetails['spellName'], nil, "player")
+                            if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
+                                iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
+                            elseif spellId == 27243 then --- duplicate seed for talent handling
+                                iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
+                            else
+                                iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
+                            end
 
-                        if count and count ~= 0 then
-                            iction.targetData[guid]['spellData'][spellID]['count'] = count
-                        end
+                            if count and count ~= 0 then
+                                iction.targetData[guid]['spellData'][spellID]['count'] = count
+                            end
 
-
-                elseif iction.isSpellOnCooldown(spellDetails['spellName'])  then
-                    if iction.targetData[guid] then
-                        local data = iction.targetData[guid]
-                        if data['spellData'] ~= nil then
-                            local isDead = data['dead']
-                            local spells = data['spellData']
-                            if not isDead then
-                                local start, duration, _ = GetSpellCooldown(spellDetails['spellName'])
-                                if duration > 1.5 then
-                                    local cdET = iction.fetchCooldownET(spellDetails['spellName'])
-                                    if iction.targetTableExists() and iction.spellIDActive(guid, spellDetails['id']) and iction.targetData[guid] ~= nil then
-                                        iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
-                                    else -- create an entry for the spell that is on cooldown
-                                        iction.createTargetData(guid, "AMob")
-                                        iction.createTargetSpellData(guid, spellDetails['spellName'], "DEBUFF", spellID)
-                                        iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
+                        elseif iction.isSpellOnCooldown(spellDetails['spellName'])  then
+                            if iction.targetData[guid] then
+                                local data = iction.targetData[guid]
+                                if data['spellData'] ~= nil then
+                                    local isDead = data['dead']
+                                    local spells = data['spellData']
+                                    if not isDead then
+                                        local start, duration, _ = GetSpellCooldown(spellDetails['spellName'])
+                                        if duration > 1.5 then
+                                            local cdET = iction.fetchCooldownET(spellDetails['spellName'])
+                                            if iction.targetTableExists() and iction.spellIDActive(guid, spellDetails['id']) and iction.targetData[guid] ~= nil then
+                                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
+                                            else -- create an entry for the spell that is on cooldown
+                                                iction.createTargetData(guid, "AMob")
+                                                iction.createTargetSpellData(guid, spellDetails['spellName'], "DEBUFF", spellID)
+                                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
+                                            end
+                                        end
                                     end
                                 end
                             end
                         end
-                    end
                     end
                 end
             end

@@ -14,7 +14,6 @@ function iction.createTarget(guid, creatureName, spellName, spellType, spellID)
         iction.createTargetData(guid, creatureName)
         iction.createTargetSpellData(guid, spellName, spellType, spellID)
         iction.createExpiresData(guid, spellName, spellType, spellID)
-
         --- This is necesssary for making sure a cast spell with a target switched lands with correct duration
         if spellType == 'DEBUFF' then
             iction.currentTargetDebuffExpires()
@@ -73,31 +72,32 @@ function iction.createExpiresData(guid, spellName, spellType, spellID)
                         iction.targetData[guid]['spellData'][channelSpellID]['isChanneled'] = true
                     end
                 end
-            end
-            -- Adding this as a clean run through due to casting drain soul which seeding which will ignite into corruptions.
-            local _, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, spellId = UnitDebuff("Target", spellName, nil, "PLAYER")
-            if expires then
-                iction.targetData[guid]['spellData'][spellID]['endTime'] = expires
             else
-                -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds, rof)
-                for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
-                    if iction.uiPlayerSpellButtons[i]['id'] == spellID then
-                        expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
-                        iction.targetData[guid]['spellData'][spellID]['endTime'] = expires
+                -- Adding this as a clean run through due to casting drain soul which seeding which will ignite into corruptions.
+                local _, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, spellId = UnitDebuff("Target", spellName, nil, "PLAYER")
+                if expires then
+                    iction.targetData[guid]['spellData'][spellID]['endTime'] = expires
+                else
+                    -- pull from the spellList instead, cause the API sucks and is returning nil (agony or sow the seeds, rof)
+                    for i = 1, iction.tablelength(iction.uiPlayerSpellButtons) do
+                        if iction.uiPlayerSpellButtons[i]['id'] == spellID then
+                            expires = iction.uiPlayerSpellButtons[i]['duration'] + GetTime()
+                            iction.targetData[guid]['spellData'][spellID]['endTime'] = expires
+                        end
                     end
                 end
-            end
 
---            if spellID == 233490 then
---                if iction.isValidButtonFrame(guid) then
---                    count = iction.targetData[guid]['spellData'][spellID]['count'] + 1
---                end
---            end
+                if spellID == 233490 or spellID == 233496 or spellID == 233497 then --- Unstable Affliction changes cause more than 1 spellID now
+                    if iction.isValidButtonFrame(guid) then
+                        count = iction.targetData[guid]['spellData'][233490]['count'] + 1
+                    end
+                end
 
-            if count and count ~= 0 then
-                if iction.isValidButtonFrame(guid) then
-                    if iction.targetData[guid]['spellData'][spellID]['count'] ~= nil then
-                        iction.targetData[guid]['spellData'][spellID]['count'] = count
+                if count and count ~= 0 then
+                    if iction.isValidButtonFrame(guid) then
+                        if iction.targetData[guid]['spellData'][spellID]['count'] ~= nil then
+                            iction.targetData[guid]['spellData'][spellID]['count'] = count
+                        end
                     end
                 end
             end

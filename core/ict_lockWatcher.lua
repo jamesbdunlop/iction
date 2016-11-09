@@ -126,14 +126,14 @@ function iction.ictionFrameWatcher(mainFrame)
                 iction.currentTargetDebuffExpires()
             elseif event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
             elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
---                if spellName == "Unstable Affliction" and eventName ~= "SPELL_PERIODIC_DAMAGE" then
---                    print("#####################")
---                    print('eventName: ' ..tostring(eventName))
---                    print('spellID: ' ..tostring(spellID))
---                    print('mobGUID: ' ..tostring(mobGUID))
---                    print('spellType: ' ..tostring(spellType))
---                    print("#####################")
---                end
+                if spellName == "Drain Life" and eventName ~= "SPELL_PERIODIC_DAMAGE" then
+                    print("#####################")
+                    print('eventName: ' ..tostring(eventName))
+                    print('spellID: ' ..tostring(spellID))
+                    print('mobGUID: ' ..tostring(mobGUID))
+                    print('spellType: ' ..tostring(spellType))
+                    print("#####################")
+                end
                 --- Check for valid spell
                 for _, v in pairs(iction.uiPlayerSpellButtons) do
                     if v['id'] == spellID then validSpell = true end
@@ -157,6 +157,7 @@ function iction.ictionFrameWatcher(mainFrame)
 
                     --- SPELL AURA APPLIED
                     if eventName == "SPELL_AURA_APPLIED" and spellID ~= 196447 then --- ignore channelDemonfire here
+                        if spellID == 234153 or spellID == 198590 then iction.clearChannelData() end
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_ENERGIZE" then
@@ -173,7 +174,11 @@ function iction.ictionFrameWatcher(mainFrame)
                         end
 
                     elseif eventName == "SPELL_AURA_REMOVED" then
-                        iction.clearChannelData()
+                        local channeledSpellID, cexpires = iction.getChannelSpell()
+                        local isChannelActive, channelguid = iction.channelActive(channeledSpellID)
+                        if not isChannelActive then iction.clearChannelData()
+                        end
+
                         if spellID == 111400 then                           --- BURNING RUSH
                             iction.createTarget(mobGUID, mobName, spellName, "BUFF", spellID)
                         elseif spellID == 27243 then                        --- Seed of Corruption
@@ -200,7 +205,6 @@ function iction.ictionFrameWatcher(mainFrame)
                     if eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Summon Darkglare" or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
                         iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID) -- wow thte GUID for this isn't the freaking targeted mob.. wtf
                     end
-                    iction.currentTargetDebuffExpires()
                 end
             end
         end
