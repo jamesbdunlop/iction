@@ -81,9 +81,8 @@ function iction.ictionFrameWatcher(mainFrame)
         end
 
         --------------------------------------------------------------------------------------
-        if event == "PLAYER_TARGET_CHANGED" and mobGUID then
-            iction.highlightTargetSpellframe(mobGUID)
-            iction.currentTargetDebuffExpires()
+        if event == "PLAYER_TARGET_CHANGED" then
+            iction.highlightTargetSpellframe(UnitGUID("Target"))
         end
 
         --------------------------------------------------------------------------------------
@@ -122,18 +121,9 @@ function iction.ictionFrameWatcher(mainFrame)
 
         --------------------------------------------------------------------------------------
         if sourceGUID == iction.playerGUID then
-            if event == "SPELL_CAST_FAILED" then
-                iction.currentTargetDebuffExpires()
-            elseif event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
+            if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
             elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
-                if spellName == "Drain Life" and eventName ~= "SPELL_PERIODIC_DAMAGE" then
-                    print("#####################")
-                    print('eventName: ' ..tostring(eventName))
-                    print('spellID: ' ..tostring(spellID))
-                    print('mobGUID: ' ..tostring(mobGUID))
-                    print('spellType: ' ..tostring(spellType))
-                    print("#####################")
-                end
+
                 --- Check for valid spell
                 for _, v in pairs(iction.uiPlayerSpellButtons) do
                     if v['id'] == spellID then validSpell = true end
@@ -165,12 +155,25 @@ function iction.ictionFrameWatcher(mainFrame)
                         if spellID == 17962 then
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
                         end
+                    elseif eventName == "SPELL_AURA_REFRESH" then
+                        iction.setMTapBorder()
+                        iction.clearChannelData()
+                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_CAST_SUCCESS" then
                         if spellID == 980 then                              --- AGONY
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                         elseif spellID == 196447 then                       --- CHANNEL DEMON FIRE
+                            iction.clearChannelData()
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
+                        elseif spellID == 5782 then                       --- Fear
+--                            print("#####################")
+--                            print('eventName: ' ..tostring(eventName))
+--                            print('spellID: ' ..tostring(spellID))
+--                            print('mobGUID: ' ..tostring(mobGUID))
+--                            print('spellType: ' ..tostring(spellType))
+--                            print("#####################")
+                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                         end
 
                     elseif eventName == "SPELL_AURA_REMOVED" then
@@ -195,10 +198,6 @@ function iction.ictionFrameWatcher(mainFrame)
                                 end
                             end
                         end
-
-                    elseif eventName == "SPELL_AURA_REFRESH" then
-                        iction.setMTapBorder()
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                     end
 
                     --- DESTRO ARTIFACT OPENING CAST
@@ -213,11 +212,12 @@ function iction.ictionFrameWatcher(mainFrame)
     -- ON UPDATE CHECKS
     local function _onUpdate()
         local shards = UnitPower("Player", 7)
-        iction.updateTimers()
         iction.setSoulShards(shards)
         iction.setConflagCount()
         iction.oocCleanup()
         iction.setMTapBorder()
+        iction.currentTargetDebuffExpires()
+        iction.updateTimers()
     end
     mainFrame:SetScript("OnUpdate", _onUpdate)
     mainFrame:UnregisterEvent("ADDON_LOADED")

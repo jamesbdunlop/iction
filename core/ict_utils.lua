@@ -157,7 +157,9 @@ function iction.calcFrameSize(Tbl)
     local fsize = iction.ictionButtonFramePad *2
 
     for key, value in pairs(Tbl) do
-        fsize = fsize + iction.bw
+        if value['vis'] then
+            fsize = fsize + iction.bw
+        end
     end
     cfh = fsize
     cfw = iction.bh + 5 -- frame edge padding
@@ -268,14 +270,14 @@ end
 --- TARGET UTILS -----------------------------------------------------------------------------
 function iction.getChannelSpell()
     local name, _, _, _, _, endTime, _, _ = UnitChannelInfo("Player")
-    local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(name)
+    local sname, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(name)
     if endTime ~= nil then
         local cexpires, dur
         dur = endTime/1000.0 - GetTime()
         cexpires =  GetTime() + dur
-        return spellID, cexpires
+        return spellID, cexpires, name
     else
-        return nil, nil
+        return nil, nil, nil
     end
 end
 
@@ -416,13 +418,13 @@ end
 function iction.currentTargetDebuffExpires()
     if (UnitName("target")) then
         local guid = UnitGUID("Target")
-        iction.highlightTargetSpellframe(guid)
+        iction.setNonTargetCooldown(guid)
 
+        iction.highlightTargetSpellframe(guid)
         --- Do a channelling check first as we may have flicked targets while channelling ready to cast on fresh target.
         local spellID, cexpires = iction.getChannelSpell()
-
         if cexpires ~= nil then
-            local isChannelActive, channelguid = iction.channelActive(spellID)
+            local isChannelActive, channelguid, spellName = iction.channelActive(spellID)
             if isChannelActive then
                 iction.targetData[channelguid]['spellData'][spellID]['isChanneled'] = true
                 iction.targetData[channelguid]['spellData'][spellID]['endTime'] = cexpires
@@ -431,6 +433,7 @@ function iction.currentTargetDebuffExpires()
             if iction.targetData[guid] ~= nil then
                 local mobInfo = iction.targetData[guid]['spellData']
                 if mobInfo ~= nil then
+                    iction.setTargetCooldown(guid)
                     for spellID, spellDetails in pairs(mobInfo) do
                         if iction.spellIDActive(guid, spellDetails['id']) then
                             local _, _, _, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("Target", spellDetails['spellName'], nil, "player")
@@ -445,27 +448,59 @@ function iction.currentTargetDebuffExpires()
                             if count and count ~= 0 then
                                 iction.targetData[guid]['spellData'][spellID]['count'] = count
                             end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
 
-                        elseif iction.isSpellOnCooldown(spellDetails['spellName'])  then
-                            if iction.targetData[guid] then
-                                local data = iction.targetData[guid]
-                                if data['spellData'] ~= nil then
-                                    local isDead = data['dead']
-                                    local spells = data['spellData']
-                                    if not isDead then
-                                        local start, duration, _ = GetSpellCooldown(spellDetails['spellName'])
-                                        if duration > 1.5 then
-                                            local cdET = iction.fetchCooldownET(spellDetails['spellName'])
-                                            if iction.targetTableExists() and iction.spellIDActive(guid, spellDetails['id']) and iction.targetData[guid] ~= nil then
-                                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
-                                            else -- create an entry for the spell that is on cooldown
-                                                iction.createTargetData(guid, "AMob")
-                                                iction.createTargetSpellData(guid, spellDetails['spellName'], "DEBUFF", spellID)
-                                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
-                                            end
-                                        end
-                                    end
-                                end
+function iction.setNonTargetCooldown(guidToIgnore)
+    for _, data in pairs(iction.targetData) do
+        if data['guid'] ~= guidToIgnore then
+            if data['spellData'] ~= nil then
+                local isDead = data['dead']
+                local spells = data['spellData']
+                if not isDead then
+                    for _, spellData in pairs(iction.uiPlayerSpellButtons) do
+                        local spellName = spellData['name']
+                        local spellID = spellData['id']
+                        if iction.isSpellOnCooldown(spellName) then
+                            local start, duration, _ = GetSpellCooldown(spellName)
+                            if duration > 1.5 then
+                                local cdET = iction.fetchCooldownET(spellName)
+                                iction.createTargetData(data['guid'], "AMob")
+                                iction.createTargetSpellData(data['guid'], spellName, "DEBUFF", spellID)
+                                iction.targetData[data['guid']]['spellData'][spellID]['coolDown'] = cdET
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function iction.setTargetCooldown(guid)
+    if iction.targetData[guid] then
+        local data = iction.targetData[guid]
+        if data['spellData'] ~= nil then
+            local isDead = data['dead']
+            local spells = data['spellData']
+            if not isDead then
+                for _, spellData in pairs(iction.uiPlayerSpellButtons) do
+                    local spellName = spellData['name']
+                    local spellID = spellData['id']
+                    if iction.isSpellOnCooldown(spellName) then
+                        local start, duration, _ = GetSpellCooldown(spellName)
+                        if duration > 1.5 then
+                            local cdET = iction.fetchCooldownET(spellName)
+                            if iction.targetData[guid]['spellData'][spellID] ~= nil then
+                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
+                            else
+                                iction.createTargetSpellData(guid, spellName, "DEBUFF", spellID)
+                                iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
                             end
                         end
                     end

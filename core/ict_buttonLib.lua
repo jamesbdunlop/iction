@@ -16,6 +16,7 @@ Agony       = {name = "Agony", insert = true, isTalentSpell = false, vis = true,
 DrainSoul   = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = false, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"},
 SiphonLife  = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"},
 PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""},
+Fear        = {name = "Fear", insert = true, isTalentSpell = false, vis = true, id = 5782, duration = 20, maxTime = 20, icon = ""},
 }
 local aff_BuffList = {
 manaTap     = {name = "Mana Tap",  insert = false, isTalentSpell = true,  vis = false, sbid = 44, id = 196104, duration = 20, maxTime = 26, icon = "Interface/AddOns/iction/media/icons/manaTap"},
@@ -27,9 +28,7 @@ DarkPact    = {name = "Dark Pact",  insert = false, isTalentSpell = true, vis = 
 WrathofConsumption = {name = "Wrath of Consumption",  insert = false, isTalentSpell = false, vis = false, id = 199472, duration = 20, maxTime = 20, icon = ""},
 SoulLeech   = {name = "Soul Leech", insert = true, isTalentSpell = false, vis = true, id = 108366, duration = 15, maxTime = 15, icon = ""},
 }
-local aff_artifact = {
-name        = "Tormented Souls",  insert = true, isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls"
-}
+local aff_artifact = { name = "Tormented Souls",  insert = true, isArtifact = true, isTalentSpell = false, vis = true, sbid = 46, id = 216708, duration = 30, maxTime = 30, icon = "Interface/AddOns/iction/media/icons/reapsouls" }
 
 ----------------------------------------------------------------------------------------------
 --- DESTRO -----------------------------------------------------------------------------------
@@ -39,6 +38,8 @@ Havoc       = {name = "Havoc",  insert = true, isTalentSpell = false, vis = true
 DrainLife   = {name = "Drain Life",  insert = true, isTalentSpell = false, vis = true, id = 234153, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"},
 ChannelDemonfire = {name = "Channel Demonfire",  insert = false, isTalentSpell = true, vis = false, id = 196447, duration = 2.6, maxTime = 2.6, icon = "Interface/AddOns/iction/media/icons/felflame"},
 Eradication = {name = "Eradication",  insert = false, isTalentSpell = true, vis = false, id = 196414, duration = 6, maxTime = 6, icon = "Interface/AddOns/iction/media/icons/eradication"},
+Conflag = {name = "Conflagrate",  insert = true, isTalentSpell = false, vis = false, id = 17962, duration = 0, maxTime = 0, icon = ""},
+Fear        = {name = "Fear", insert = true, isTalentSpell = false, vis = true, id = 5782, duration = 20, maxTime = 20, icon = ""},
 }
 local destro_BuffList = {
 Unending    = {name = "Unending Resolve", insert = true, isTalentSpell = false, vis = true, id = 104773, duration = 8, maxTime = 8, icon = ""},
@@ -56,6 +57,7 @@ local destro_artifact = {name = "Dimensional Rift", insert = true, isArtifact = 
 local demo_SpellList = {
 Doom        = {name = "Doom", insert = true, isTalentSpell = false, vis = true, id = 603, duration = 17.5, maxTime = 17.5, icon = ""},
 SummonDarkglare = {name = "Summon Darkglare", insert = false, isTalentSpell = true, vis = false, id = 205180, duration = 12, maxTime = 12, icon = ""},
+Fear        = {name = "Fear", insert = true, isTalentSpell = false, vis = true, id = 5782, duration = 20, maxTime = 20, icon = ""},
 }
 local demo_BuffList = {
 BurningRush = {name = "Burning Rush", insert = false, isTalentSpell = true, vis = false, id = 111400, duration = 999, maxTime = 999, icon = ""},
@@ -72,6 +74,7 @@ local demo_artifact = {name = "Thal`kiel's Consumption", isArtifact = true, isTa
 --- Process Buttons ------------------------------------------------------------------------------------
 function iction.addButtonsToTable(buttonList, desttable)
     local bList = buttonList
+    --- check talents
     for _, data in pairs(bList) do
         if data["isTalentSpell"] then
             for x=1, 7 do
@@ -90,8 +93,9 @@ function iction.addButtonsToTable(buttonList, desttable)
         end
     end
 
+    --- Now build the final button list
     for _, data in pairs(bList) do
-        if data['insert'] and data['vis'] then
+        if data['insert']  then
             table.insert(desttable, {name = data['name'],
                                      h = iction.bh,
                                      w = iction.bw,

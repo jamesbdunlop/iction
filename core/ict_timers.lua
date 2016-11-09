@@ -45,13 +45,16 @@ function iction.isValidButtonFrame(guid)
 end
 
 function iction.isSpellOnCooldown(spellName)
-    local start, duration, enable = GetSpellCooldown(spellName)
-    if start == 0 then
-        return false
-    elseif start == nil then
-        return false
-    else
-        return true
+    if spellName ~= nil then
+        local start, duration, enable = GetSpellCooldown(spellName)
+        if start == 0 then
+            return false
+        elseif start == nil then
+            return false
+        else
+            return true
+        end
+    else return false
     end
 end
 
