@@ -87,7 +87,7 @@ function iction.ictionFrameWatcher(mainFrame)
 
         --------------------------------------------------------------------------------------
         --- UNIT DIED
-        if sourceGUID == iction.playerGUID and eventName == "UNIT_DIED" then
+        if eventName == "UNIT_DIED" then
             local function removeDead()
                 --- Remove unit from the table if it died.
                 if mobGUID ~= iction.playerGIUD then
@@ -123,7 +123,14 @@ function iction.ictionFrameWatcher(mainFrame)
         if sourceGUID == iction.playerGUID then
             if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
             elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
-
+                if spellName == "Fear" then
+                    print("#####################")
+                    print('eventName: ' ..tostring(eventName))
+                    print('spellID: ' ..tostring(spellID))
+                    print('mobGUID: ' ..tostring(mobGUID))
+                    print('spellType: ' ..tostring(spellType))
+                    print("#####################")
+                end
                 --- Check for valid spell
                 for _, v in pairs(iction.uiPlayerSpellButtons) do
                     if v['id'] == spellID then validSpell = true end
@@ -179,13 +186,16 @@ function iction.ictionFrameWatcher(mainFrame)
                     elseif eventName == "SPELL_AURA_REMOVED" then
                         local channeledSpellID, cexpires = iction.getChannelSpell()
                         local isChannelActive, channelguid = iction.channelActive(channeledSpellID)
-                        if not isChannelActive then iction.clearChannelData()
+                        if not isChannelActive then
+                            iction.clearChannelData()
                         end
 
                         if spellID == 111400 then                           --- BURNING RUSH
                             iction.createTarget(mobGUID, mobName, spellName, "BUFF", spellID)
                         elseif spellID == 27243 then                        --- Seed of Corruption
                             iction.clearAllSeeds(mobGUID)
+                        elseif spellID == 118699 then
+                            iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = nil
                         else
                             --- check for stack frames
                             if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellID] then

@@ -1,10 +1,11 @@
 -- Changelog Release 1.1.2
 -- added conflag as a button for cleaner opening handling
 -- changed ictions spelling handling to be more spellID orientated for future dev
+-- Spells are now ordered
+-- Added fear to generic spell list
 
 --to do
 -- SORT OUT THE NEW UA SHIT
--- WORK OUT HOW TO ORDER THESE SPELLS WITHOUT BUSTING THE DRAIN LIFE SWITCH
 
 --- version Release 1.1.2
 local iction = iction
