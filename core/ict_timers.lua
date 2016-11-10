@@ -2,7 +2,12 @@
 --- MAIN TIMER UPDATE ------------------------------------------------------------------------
 
 function iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
-    local remainingT = tonumber(string.format("%.1d", remainingT))
+    local TL = tonumber(string.format("%.1f", (remainingT)))
+    if TL > 60.0 then
+        remainingT = tostring(tonumber(string.format("%.1d", remainingT/60.0))) .. "m"
+    else
+        remainingT = tonumber(string.format("%.1d", remainingT))
+    end
     iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], true)
     iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID], true, {1,.8,.8, 1})
 end
@@ -18,7 +23,13 @@ function iction.spellInfinite(guid, spellName, infinite, spellID)
 end
 
 function iction.spellActiveTimer(guid, spellName, remainingT, spellID)
-    local remainingT = tonumber(string.format("%.1d", remainingT))
+    local TL = remainingT - GetTime()
+    if TL > 60 then
+        remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
+    else
+        remainingT = tonumber(string.format("%.1d", remainingT))
+    end
+    --local remainingT = tonumber(string.format("%.1d", remainingT))
     if iction.targetButtons[guid]['buttonText'][spellID] then -- check for spec change with active buff timer
         iction.targetButtons[guid]['buttonText'][spellID]:SetText("")
         iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], false)
@@ -171,10 +182,17 @@ function iction.updateTimers()
                             end
                         --- Timers that have ended
                         elseif endTime == nil and coolDown ~= nil and not iction.infinite then
+                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID)
                             --- Spell On Cooldown. We have an active cooldown set in the tables already
                             if coolDown > GetTime() then
-                                local remainingT = coolDown - GetTime()
-                                iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
+                                local remainingT = tonumber(string.format("%.1f", (coolDown - GetTime())))
+                                if remainingT <= 3 then
+                                    remainingT = coolDown - GetTime()
+                                    iction.spellFadingTimer(guid, spellName, remainingT, spellID)
+                                else
+                                    remainingT = coolDown - GetTime()
+                                    iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
+                                end
                             else
                                 iction.spellHasEnded(guid, spellName, spellID)
                             end

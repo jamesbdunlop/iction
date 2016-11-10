@@ -3,6 +3,7 @@
 -- changed ictions spelling handling to be more spellID orientated for future dev
 -- Spells are now ordered
 -- Added fear to generic spell list
+-- Fixed it so cooldowns over 60 seconds show min remaining
 
 --to do
 -- SORT OUT THE NEW UA SHIT

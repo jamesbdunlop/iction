@@ -123,13 +123,13 @@ function iction.ictionFrameWatcher(mainFrame)
         if sourceGUID == iction.playerGUID then
             if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
             elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
-                if spellName == "Fear" then
-                    print("#####################")
-                    print('eventName: ' ..tostring(eventName))
-                    print('spellID: ' ..tostring(spellID))
-                    print('mobGUID: ' ..tostring(mobGUID))
-                    print('spellType: ' ..tostring(spellType))
-                    print("#####################")
+                if spellName == 'Unstable Affliction' and eventName == "SPELL_AURA_APPLIED" then
+--                    print("#####################")
+--                    print('eventName: ' ..tostring(eventName))
+                    --print('spellID: ' ..tostring(spellID))
+--                    print('mobGUID: ' ..tostring(mobGUID))
+--                    print('spellType: ' ..tostring(spellType))
+--                    print("#####################")
                 end
                 --- Check for valid spell
                 for _, v in pairs(iction.uiPlayerSpellButtons) do
@@ -174,12 +174,6 @@ function iction.ictionFrameWatcher(mainFrame)
                             iction.clearChannelData()
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
                         elseif spellID == 5782 then                       --- Fear
---                            print("#####################")
---                            print('eventName: ' ..tostring(eventName))
---                            print('spellID: ' ..tostring(spellID))
---                            print('mobGUID: ' ..tostring(mobGUID))
---                            print('spellType: ' ..tostring(spellType))
---                            print("#####################")
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                         end
 
@@ -192,10 +186,24 @@ function iction.ictionFrameWatcher(mainFrame)
 
                         if spellID == 111400 then                           --- BURNING RUSH
                             iction.createTarget(mobGUID, mobName, spellName, "BUFF", spellID)
-                        elseif spellID == 27243 then                        --- Seed of Corruption
+                        elseif spellID == 27243 then                        --- SEED
                             iction.clearAllSeeds(mobGUID)
                         elseif spellID == 118699 then
                             iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = nil
+                        elseif spellID == 233490 then -- ID for first UA cast!
+                            local expiresH = 0
+                            for x =1, 15 do
+                                local _, _, _, _, _, _, expires, _, _, _, spellId, _, _, _, _, _ = UnitAura("target", x, "PLAYER HARMFUL")
+                                if spellId == 233490 or spellId == 233496 or spellId == 233497 or spellId == 233498 or spellId ==  233499 then
+                                    if expires and expires > expiresH then
+                                        expiresH = expires
+                                    end
+                                end
+                            end
+                            if expiresH ~= 0 then
+                                iction.createTarget(mobGUID, mobName, spellName, spellType, 233490) -- Just keep refreshing the timer on the base spell over and over.
+                                iction.currentTargetDebuffExpires()
+                            end
                         else
                             --- check for stack frames
                             if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellID] then

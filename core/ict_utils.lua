@@ -413,13 +413,32 @@ function iction.spellIDActive(guid, spellID)
     else return false end
 end
 
+function iction.updateUACount(guid)
+    --- UA COUNT
+    local UACount = 0
+    for x = 1, 15 do
+        local  _, _, _, _, _, _, _, _, _, _, spellId, _, _, _, _, _ = UnitAura("target", x, "PLAYER HARMFUL")
+        if spellId == 233490 or spellId == 233496 or spellId ==  233497 or spellId == 233498 or spellId ==  233499 then
+            UACount = UACount + 1
+        end
+    end
+    if UACount ~= 0 then
+        if iction.targetData[guid] ~= nil then
+            if iction.targetData[guid]['spellData'] == nil then
+                iction.createTarget(guid, "aMob", "Unstable Afflction", "DEBUFF", 233490)
+            end
+            iction.targetData[guid]['spellData'][233490]['count'] = UACount
+        end
+    end
+end
+
 ------------------------------------------
 --- Update current target debuffs
 function iction.currentTargetDebuffExpires()
     if (UnitName("target")) then
         local guid = UnitGUID("Target")
+        iction.updateUACount(guid)
         iction.setNonTargetCooldown(guid)
-
         iction.highlightTargetSpellframe(guid)
         --- Do a channelling check first as we may have flicked targets while channelling ready to cast on fresh target.
         local spellID, cexpires = iction.getChannelSpell()
@@ -453,6 +472,7 @@ function iction.currentTargetDebuffExpires()
                 end
             end
         end
+
     end
 end
 
