@@ -12,13 +12,13 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
                   b:SetAttribute("name", value['id'])
                   b:SetFrameStrata("MEDIUM")
+                  b:EnableMouse(false)
                   b:SetDisabledFontObject("GameFontDisable")
                   b:SetNormalFontObject("GameFontNormalSmall");
                   b:SetHighlightFontObject("GameFontHighlight");
                   b:SetWidth(iction.bw)
                   b:SetHeight(iction.bh)
                   b:SetPoint("BOTTOM", pFrame, paddingX, paddingY)
-                  b:RegisterForClicks("AnyUp");
             local but = b:CreateTexture(nil, "ARTWORK")
                   but:SetAllPoints(true)
                   if value['id'] == nil then

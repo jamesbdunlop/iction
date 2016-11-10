@@ -197,7 +197,7 @@ function iction.ictionFrameWatcher(mainFrame)
                             iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = nil
                         elseif spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID ==  233499 then --- UA
                             local count = iction.targetData[mobGUID]['spellData'][233490]['count']
-                            if count then
+                            if count and count > 1 then
                                 count = count -1
                                 iction.targetData[mobGUID]['spellData'][233490]['count'] = count
                             end
@@ -206,6 +206,11 @@ function iction.ictionFrameWatcher(mainFrame)
                             if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellID] then
                                 iction.stackFrames[mobGUID][spellID]['font']:SetText("")
                                 iction.stackFrames[mobGUID][spellID]['frame'].texture:SetVertexColor(0,0,0,0)
+                                if iction.targetData[mobGUID]['spellData'] then
+                                    if iction.targetData[mobGUID]['spellData'][spellID] and spellID == 233490 then
+                                        iction.targetData[mobGUID]['spellData'][spellID]['count'] = 0
+                                    end
+                                end
                             end
                         end
                     end
