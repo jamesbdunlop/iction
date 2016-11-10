@@ -207,7 +207,7 @@ function iction.updateTimers()
                             iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID)
                         end
                         --- Drain life and drain soul that have ended on current target.
-                        if spellID == 198590 or spellID == 234153 then
+                        if spellID == 198590 or spellID == 234153 or spellID == 689 then
                             local isChannelActive, cguid = iction.channelActive(spellID)
                             if isChannelActive and cguid ~= guid then
                                 if iction.targetData[guid]['spellData'][spellID] ~= nil then

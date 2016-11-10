@@ -12,7 +12,7 @@ local aff_SpellList = {
 [1] = {Fear = {name = "Fear", insert = true, isTalentSpell = false, vis = true, id = 118699, duration = 20, maxTime = 20, icon = ""}},
 [2] = {Seed = {name = "Seed of Corruption", insert = true, isTalentSpell = false, vis = true, id = 27243, duration = 13.9, maxTime = 28, icon = "Interface/AddOns/iction/media/icons/seedofcorruption"}},
 [3] = {PhantomSingularity = {name = "Phantom Singularity", insert = false, isTalentSpell = true, vis = false, id = 205179, duration = 13.9, maxTime = 13.9, icon = ""}},
-[4] = {DrainLife = {name = "Drain Life", insert = true, isTalentSpell = false, vis = true, id = 234153, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"}},
+[4] = {DrainLife = {name = "Drain Life", insert = true, isTalentSpell = false, vis = true, id = 689, duration = 4.6, maxTime = 4.6, icon = "Interface/AddOns/iction/media/icons/drainLife"}},
 [5] = {DrainSoul = {name = "Drain Soul", insert = false, isTalentSpell = true, vis = false, id = 198590, duration = 14, maxTime = 4.75, icon = "Interface/AddOns/iction/media/icons/drainSoul"}},
 [6] = {SiphonLife  = {name = "Siphon Life", insert = false, isTalentSpell = true, vis = false, id = 63106, duration = 14, maxTime = 19.5, icon = "Interface/AddOns/iction/media/icons/siphonLife"}},
 [7] = {Corruption = {name = "Corruption", insert = true, isTalentSpell = false, vis = true, id = 146739, duration = 15, maxTime = 17.9, icon = "Interface/AddOns/iction/media/icons/corruption"}},

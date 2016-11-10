@@ -81,18 +81,6 @@ function iction.createExpiresData(guid, spellName, spellType, spellID)
                 end
             end
 
-            --- Handle UA count off UnitAura as this is entirely borked by Blizzard API now.
-            if spellID == 233490 or spellID == 233496 or spellID == 233497 or spellId == 233498 or spellId == 233499 then --- Unstable Affliction changes cause more than 1 spellID now
-                local UACount = 0
-                for x =1, 15 do
-                    local _, _, _, _, _, _, _, _, _, _, spellId, _, _, _, _, _ = UnitAura("target", x, "PLAYER HARMFUL")
-                    if spellId == 233490 or spellId == 233496 or spellId ==  233497 or spellId == 233498 or spellId == 233499 then
-                        UACount = UACount + 1
-                    end
-                end
-                iction.targetData[guid]['spellData'][233490]['count'] = UACount
-            end
-
             if count and count ~= 0 then
                 if iction.isValidButtonFrame(guid) then
                     if iction.targetData[guid]['spellData'][spellID]['count'] ~= nil then

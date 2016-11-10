@@ -1,13 +1,3 @@
--- Changelog Release 1.1.2
--- added conflag as a button for cleaner opening handling
--- changed ictions spelling handling to be more spellID orientated for future dev
--- Spells are now ordered
--- Added fear to generic spell list
--- Fixed it so cooldowns over 60 seconds show min remaining
-
---to do
--- SORT OUT THE NEW UA SHIT
-
 --- version Release 1.1.2
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
@@ -264,7 +254,7 @@ function iction.unlockUIElements(isMovable)
         iction.setMovable(iction.shardFrame, isMovable, true)
         if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
     end
-    for f in list_iter(cols) do
+    for f in ictionlist_iter(cols) do
         iction.setMovable(f, isMovable)
         if not isMovable then
             f.texture:SetVertexColor(1, 1, 1, 0)
@@ -325,7 +315,7 @@ function iction.setMovable(f, isMovable, hideDefault)
     end
 end
 
-function list_iter(t)
+function ictionlist_iter(t)
   local i = 0
   local n = table.getn(t)
   return function ()
