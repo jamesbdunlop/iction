@@ -195,7 +195,7 @@ function iction.ictionFrameWatcher(mainFrame)
                             iction.clearAllSeeds(mobGUID)
                         elseif spellID == 118699 then
                             iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = nil
-                        elseif spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID ==  233499 then --- UA
+                        elseif spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID == 233499 then --- UA
                             local count = iction.targetData[mobGUID]['spellData'][233490]['count']
                             if count and count > 1 then
                                 count = count -1

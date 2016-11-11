@@ -448,31 +448,32 @@ function iction.currentTargetDebuffExpires()
                 iction.targetData[channelguid]['spellData'][spellID]['isChanneled'] = true
                 iction.targetData[channelguid]['spellData'][spellID]['endTime'] = cexpires
             end
-        else
-            if iction.targetData[guid] ~= nil then
-                local mobInfo = iction.targetData[guid]['spellData']
-                if mobInfo ~= nil then
-                    iction.setTargetCooldown(guid)
-                    for spellID, spellDetails in pairs(mobInfo) do
-                        if iction.spellIDActive(guid, spellDetails['id']) then
-                            local _, _, _, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("Target", spellDetails['spellName'], nil, "player")
-                            if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
-                                iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
-                            elseif spellId == 27243 then --- duplicate seed for talent handling
-                                iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
-                            else
-                                iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
-                            end
+            local spec = GetSpecialization()
+            if spec == 3 then return end
+        end
+        -- Now handle UA cause it's a nightmare
+        if iction.targetData[guid] ~= nil then
+            local mobInfo = iction.targetData[guid]['spellData']
+            if mobInfo ~= nil then
+                iction.setTargetCooldown(guid)
+                for spellID, spellDetails in pairs(mobInfo) do
+                    if iction.spellIDActive(guid, spellDetails['id']) then
+                        local _, _, _, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("Target", spellDetails['spellName'], nil, "player")
+                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
+                            iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
+                        elseif spellId == 27243 then --- duplicate seed for talent handling
+                            iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
+                        else
+                            iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
+                        end
 
-                            if count and count ~= 0 then
-                                iction.targetData[guid]['spellData'][spellID]['count'] = count
-                            end
+                        if count and count ~= 0 then
+                            iction.targetData[guid]['spellData'][spellID]['count'] = count
                         end
                     end
                 end
             end
         end
-
     end
 end
 
