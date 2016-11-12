@@ -1,4 +1,4 @@
---- version Release 1.1.2
+--- version Release 1.1.3
 local iction = iction
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
@@ -7,7 +7,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "PLAYER_LOGIN" ) then
         local localizedClass, _, _ = UnitClass("Player");
         iction.playerGUID = UnitGUID("Player")
-        if localizedClass == 'Warlock' then
+        if localizedClass == 'Warlock' or localizedClass == 'Priest' then
             iction.setDebuffButtonLib()
             iction.setBuffButtonLib()
             iction.setMaxTargetTable()
