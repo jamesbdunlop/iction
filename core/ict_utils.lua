@@ -5,7 +5,7 @@ function iction.setMTapBorder()
     local mtOpacity = .6
     mt = false
 
-    if iction.buffActive("Mana Tap") == true or iction.buffActive("Backdraft") == true then
+    if iction.buffActive(196104) == true or iction.buffActive(117828) == true or iction.buffActive(232698) then
         mt = true
     end
 
@@ -26,14 +26,14 @@ function iction.setMTapBorder()
     end
 end
 
-function iction.buffActive(buffName)
+function iction.buffActive(spellID)
     local next = next
-    local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, value1, value2, value3 = UnitBuff("Player", buffName)
-    if name ~= nil then
-        return true
-    else
-        return false
+    local found = false
+    for x=1, 20, 1 do
+        local _, _, _, count, _, _, _, _, _, _, spellId, _, _, _, _, _, _, _, _  = UnitBuff("Player", x)
+        if spellId ~= nil and spellId == spellID then found = true end
     end
+    return found
 end
 
 function iction.setSoulShards(shards)
@@ -316,27 +316,14 @@ end
 
 function iction.currentBuffExpires()
     if (UnitName("Player")) then
-        --- Do a channelling check first as we may have flicked targets while channelling ready to cast on fresh target.
-        local spellID, cexpires = iction.getChannelSpell()
-        if cexpires ~= nil then
-            local isChannelActive, channelguid = iction.channelActive(spellID)
-            if isChannelActive then
-                iction.targetData[channelguid]['spellData'][spellID]['endTime'] = cexpires
-                iction.targetData[channelguid]['spellData'][spellID]['isChanneled'] = true
-                return
-            end
-        else
-            if iction.targetData[iction.playerGUI] ~= nil then
-                local mobInfo = iction.targetData[iction.playerGUI]['spellData']
-                if mobInfo ~= nil then
-                    for spellID, spellDetails in pairs(mobInfo) do
-                        if iction.spellIDActive(iction.playerGUI, spellDetails['id']) then
-                            local name, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitBuff("Player", mobInfo['spellName'], nil, "player")
-                            if expires ~= nil and iction.targetData[iction.playerGUI] ~= nil then
-                                if iction.targetData[iction.playerGUI]['spellData'][spellID] ~= nil  then
-                                    iction.targetData[iction.playerGUI]['spellData'][spellID]['endTime'] = expires
-                                end
-                            end
+        if iction.targetData[iction.playerGUID] ~= nil then
+            local mobInfo = iction.targetData[iction.playerGUID]['spellData']
+            if mobInfo ~= nil then
+                for spellID, spellDetails in pairs(mobInfo) do
+                    if iction.spellIDActive(iction.playerGUID, spellDetails['id']) then
+                        local _, _, _, count, _, _, expires, _, _, _, spellID, _, _, _, _, _, _, _, _  = UnitBuff("Player", spellDetails['spellName'])
+                        if expires ~= nil then
+                            iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = expires
                         end
                     end
                 end
@@ -487,10 +474,10 @@ function iction.setNonTargetCooldown(guidToIgnore)
                     for _, spellData in pairs(iction.uiPlayerSpellButtons) do
                         local spellName = spellData['name']
                         local spellID = spellData['id']
-                        if iction.isSpellOnCooldown(spellName) then
-                            local start, duration, _ = GetSpellCooldown(spellName)
+                        if iction.isSpellOnCooldown(spellID) then
+                            local start, duration, _ = GetSpellCooldown(spellID)
                             if duration > 1.5 then
-                                local cdET = iction.fetchCooldownET(spellName)
+                                local cdET = iction.fetchCooldownET(spellID)
                                 iction.createTargetData(data['guid'], "AMob")
                                 iction.createTargetSpellData(data['guid'], spellName, "DEBUFF", spellID)
                                 iction.targetData[data['guid']]['spellData'][spellID]['coolDown'] = cdET
@@ -513,10 +500,10 @@ function iction.setTargetCooldown(guid)
                 for _, spellData in pairs(iction.uiPlayerSpellButtons) do
                     local spellName = spellData['name']
                     local spellID = spellData['id']
-                    if iction.isSpellOnCooldown(spellName) then
-                        local start, duration, _ = GetSpellCooldown(spellName)
+                    if iction.isSpellOnCooldown(spellID) then
+                        local start, duration, _ = GetSpellCooldown(spellID)
                         if duration > 1.5 then
-                            local cdET = iction.fetchCooldownET(spellName)
+                            local cdET = iction.fetchCooldownET(spellID)
                             if iction.targetData[guid]['spellData'][spellID] ~= nil then
                                 iction.targetData[guid]['spellData'][spellID]['coolDown'] = cdET
                             else

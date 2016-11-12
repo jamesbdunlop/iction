@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------------------
 --- Define PLAYER SPELL & BUFF buttons -------------------------------------------------------
 local iction = iction
-iction.spells = {
+iction.lockspells = {
 [0] = nil,
 [1] = {spells = {
                 [0] = nil,
@@ -42,7 +42,7 @@ iction.spells = {
                 [4] = {ShadowyInspiration = {name = "Shadowy Inspiration", insert = false, isTalentSpell = true, vis = false, id = 196606, duration = 14, maxTime = 14, icon = ""}},
                 [5] = {SoulLeech   = {name = "Soul Leech", insert = true, isTalentSpell = false, vis = true, id = 108366, duration = 15, maxTime = 15, icon = ""}},
                 },
-       artifact = {name = "Thal`kiel's Consumption", isArtifact = true, isTalentSpell = false, vis = true, id = 211714, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
+       artifact = {name = "Thal`kiel's Consumption", insert = true, isArtifact = true, isTalentSpell = false, vis = true, id = 211714, duration = 4, maxTime = 8, icon = "Interface/AddOns/iction/media/icons/dimensionalRift" }
       },
 [3] = {spells = {
                 [0] = nil,

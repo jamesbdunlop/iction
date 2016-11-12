@@ -7,6 +7,7 @@ iction.SharedMedia = LibStub("LibSharedMedia-3.0");
 iction.bw = 36
 iction.bh = 36
 --- Addon Globals
+iction.spells = {}
 iction.ictionMFH = 64
 iction.ictionMFW = 128
 iction.ictionScale = 1

@@ -4,10 +4,10 @@ function iction.addButtonsToTable(buttonList, desttable)
     local bList = buttonList
     for _, data in ipairs(bList) do
         for spellName, spellData in pairs(data) do
-            print("JAMES: " .. tostring(spellName))
             if spellData["isTalentSpell"] then
                 for x=1, 7 do
                     for c=1, 3 do
+                        --- Drain soul / drain life spellButton switch
                         local _, name, _, selected, _ = GetTalentInfo(x, c, 1)
                         if name == spellData['name'] and selected then
                             spellData['vis'] = true

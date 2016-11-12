@@ -38,9 +38,10 @@ function iction.createTargetSpellData(guid, spellName, spellType, spellID)
     if iction.spellIDActive(guid, spellID) then
         return
     else
+        local name, _, _, _, _, _, _ = GetSpellInfo(spellID)
         iction.targetData[guid]['spellData'][spellID] = {}
         iction.targetData[guid]['spellData'][spellID]['spellType'] = spellType
-        iction.targetData[guid]['spellData'][spellID]['spellName'] = spellName
+        iction.targetData[guid]['spellData'][spellID]['spellName'] = name
         iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
         iction.targetData[guid]['spellData'][spellID]['coolDown'] = nil
         iction.targetData[guid]['spellData'][spellID]['count'] = 0

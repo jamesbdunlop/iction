@@ -86,7 +86,7 @@ function iction.spellHasEnded(guid, spellName, spellID)
     iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
     iction.targetData[guid]['spellData'][spellID]['count'] = nil
     -- Set the cooldown
-    if not iction.isSpellOnCooldown(spellName) then
+    if not iction.isSpellOnCooldown(spellID) then
         iction.targetData[guid]['spellData'][spellID]['coolDown'] = nil
     end
 end
@@ -196,10 +196,10 @@ function iction.updateTimers()
                             else
                                 iction.spellHasEnded(guid, spellName, spellID)
                             end
-                        elseif endTime == nil and iction.isSpellOnCooldown(spellName) and not iction.infinite then
-                            local _, duration, _ = GetSpellCooldown(spellName)
+                        elseif endTime == nil and iction.isSpellOnCooldown(spellID) and not iction.infinite then
+                            local _, duration, _ = GetSpellCooldown(spellID)
                             if duration > 1.5 then
-                                local remainingT = iction.fetchCooldownET(spellName)
+                                local remainingT = iction.fetchCooldownET(spellID)
                                 iction.targetData[guid]['spellData'][spellID]['coolDown'] = remainingT
                                 iction.spellActiveCooldown(guid, spellName, remainingT - GetTime(), spellID)
                             end

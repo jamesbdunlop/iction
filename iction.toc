@@ -21,13 +21,14 @@ core\ict_core.lua
 core\ictFrame.lua
 core\ict_options.lua
 core\ict_utils.lua
-
 core\ict_button.lua
 core\ict_timers.lua
 core\ict_spellFrame.lua
 core\ict_target.lua
 core\ict_lockWatcher.lua
+core\ict_PriestWatcher.lua
 spells\ict_lockSpells.lua
+spells\ict_priestSpells.lua
 core\ict_spellLoader.lua
 frames\mainFrame.lua
 frames\buffFrame.lua

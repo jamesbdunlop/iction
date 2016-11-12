@@ -7,6 +7,8 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "PLAYER_LOGIN" ) then
         local localizedClass, _, _ = UnitClass("Player");
         iction.playerGUID = UnitGUID("Player")
+        --- Set the spell table
+        if localizedClass == 'Warlock' then iction.spells = iction.lockspells elseif localizedClass == 'Priest' then iction.spells = iction.priestspells end
         if localizedClass == 'Warlock' or localizedClass == 'Priest' then
             iction.setDebuffButtonLib()
             iction.setBuffButtonLib()
@@ -66,22 +68,31 @@ SlashCmdList["ICTION"] = ictionArgs
 ----------------------------------------------------------------------------------------------
 --- BEGIN UI NOW ---
 function iction.initMainUI()
+    local localizedClass, _, _ = UnitClass("Player");
     --- Setup the mainFrame and Eventwatcher ---
     iction.spec = GetSpecialization()
     local mainFrame = iction.UIElement
     iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
-    iction.ictionFrameWatcher(iction.ictionMF)
+    if localizedClass == 'Warlock' then
+        iction.ictionLockFrameWatcher(iction.ictionMF)
+    elseif localizedClass == 'Priest' then
+        print("FASRRRT")
+        iction.ictionPriestFrameWatcher(iction.ictionMF)
+    end
+
     iction.ictionMF:SetScale(iction.ictionScale)
     --- Now fire off all the other build functions ---
     iction.createBottomBarArtwork()
     iction.setMTapBorder()
-    iction.createShardFrame()
 
-    if iction.debug then print('Shard frame created') end
-    if iction.spec == 3 then iction.createConflagFrame() end
+    if localizedClass == 'Warlock' then
+        iction.createShardFrame()
+        if iction.debug then print('Shard frame created') end
+        if iction.spec == 3 then iction.createConflagFrame() end
 
-    if iction.debug then print('Conflag frame created') end
-    iction.createArtifactFrame()
+        if iction.debug then print('Conflag frame created') end
+        iction.createArtifactFrame()
+    end
 
     if iction.debug then print('Artifact frame created') end
     iction.createBuffFrame()
@@ -236,6 +247,7 @@ function iction.createHighlightFrame()
 end
 
 function iction.unlockUIElements(isMovable)
+    local localizedClass, _, _ = UnitClass("Player");
     local cols = iction.debuffColumns
     if isMovable then
         -- override colors for special frames
@@ -243,16 +255,20 @@ function iction.unlockUIElements(isMovable)
         -- set movable
         iction.setMovable(iction.artifactFrame, isMovable, false)
         iction.setMovable(iction.buffFrame, isMovable, false)
-        iction.setMovable(iction.shardFrame, isMovable, false)
-        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
+        if localizedClass == 'Warlock' then
+            iction.setMovable(iction.shardFrame, isMovable, false)
+            if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
+        end
     else
         -- override colors for special frames
         iction.ictionMF.texture:SetVertexColor(.1, .1, .1, 0)
         -- set movable
         iction.setMovable(iction.artifactFrame, isMovable, false)
         iction.setMovable(iction.buffFrame, isMovable, true)
-        iction.setMovable(iction.shardFrame, isMovable, true)
-        if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
+        if localizedClass == 'Warlock' then
+            iction.setMovable(iction.shardFrame, isMovable, true)
+            if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
+        end
     end
     for f in ictionlist_iter(cols) do
         iction.setMovable(f, isMovable)
@@ -263,55 +279,57 @@ function iction.unlockUIElements(isMovable)
 end
 
 function iction.setMovable(f, isMovable, hideDefault)
-    local frameName = f:GetAttribute("name")
-    if isMovable then
-        f:SetParent(iction.ictionMF)
-        f.texture:SetVertexColor(.1, 1, .1, .7)
-        f:EnableMouse(true)
-        f:SetMovable(true)
-        f:SetParent(iction.ictionMF)
-        ---Name font string ---
-        if frameName ~= "Artifact" then
-            local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
-                -- Create the fontString for the button
-                  fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
-                  fntStr:SetPoint("CENTER", f, 0, 0)
-                  fntStr:SetTextColor(.1, 1, .1, 1)
-                  fntStr:SetText(string.gsub(frameName, "iction_", ""))
-                f.text = fntStr
-        end
-        ---Scripts for moving---
-        f:SetScript("OnMouseDown", function(self, button)
-          if button == "LeftButton" and not f.isMoving then
-           f:StartMoving();
-           f.isMoving = true;
-          end
-        end)
+    if f then
+        local frameName = f:GetAttribute("name")
+        if isMovable then
+            f:SetParent(iction.ictionMF)
+            f.texture:SetVertexColor(.1, 1, .1, .7)
+            f:EnableMouse(true)
+            f:SetMovable(true)
+            f:SetParent(iction.ictionMF)
+            ---Name font string ---
+            if frameName ~= "Artifact" then
+                local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
+                    -- Create the fontString for the button
+                      fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
+                      fntStr:SetPoint("CENTER", f, 0, 0)
+                      fntStr:SetTextColor(.1, 1, .1, 1)
+                      fntStr:SetText(string.gsub(frameName, "iction_", ""))
+                    f.text = fntStr
+            end
+            ---Scripts for moving---
+            f:SetScript("OnMouseDown", function(self, button)
+              if button == "LeftButton" and not f.isMoving then
+               f:StartMoving();
+               f.isMoving = true;
+              end
+            end)
 
-        f:SetScript("OnMouseUp", function(self, button)
-          if button == "LeftButton" and f.isMoving then
-           f:StopMovingOrSizing()
-           f.isMoving = false
-           f:SetParent(iction.ictionMF)
-           local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
-           local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
-           if iction.debug then print("point: " .. tostring(point)) end
-           if iction.debug then print("relativeTo: " .. tostring(relativeTo)) end
-           if iction.debug then print("xOffset: " .. tostring(xOffset)) end
-           if iction.debug then print("yOffset: " .. tostring(yOffset)) end
-           ictionFramePos[frameName]['point']['x'] = xOffset-MFxOffset
-           ictionFramePos[frameName]['point']['y'] = yOffset-MFyOffset
-           ictionFramePos[frameName]['point']['pos'] = point
-           f:SetPoint(point, iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
-          end
-        end)
-    else
-        f:EnableMouse(false)
-        f:SetMovable(false)
-        if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0) else f.texture:SetVertexColor(1, 1, 1, 1) end
-        f:SetScript("OnMouseDown", nil)
-        f:SetScript("OnMouseUp", nil)
-        f.text:SetText("")
+            f:SetScript("OnMouseUp", function(self, button)
+              if button == "LeftButton" and f.isMoving then
+               f:StopMovingOrSizing()
+               f.isMoving = false
+               f:SetParent(iction.ictionMF)
+               local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
+               local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
+               if iction.debug then print("point: " .. tostring(point)) end
+               if iction.debug then print("relativeTo: " .. tostring(relativeTo)) end
+               if iction.debug then print("xOffset: " .. tostring(xOffset)) end
+               if iction.debug then print("yOffset: " .. tostring(yOffset)) end
+               ictionFramePos[frameName]['point']['x'] = xOffset-MFxOffset
+               ictionFramePos[frameName]['point']['y'] = yOffset-MFyOffset
+               ictionFramePos[frameName]['point']['pos'] = point
+               f:SetPoint(point, iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
+              end
+            end)
+        else
+            f:EnableMouse(false)
+            f:SetMovable(false)
+            if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0) else f.texture:SetVertexColor(1, 1, 1, 1) end
+            f:SetScript("OnMouseDown", nil)
+            f:SetScript("OnMouseUp", nil)
+            f.text:SetText("")
+        end
     end
 end
 
