@@ -27,9 +27,10 @@ iction.priestspells = {
                 [4] = {VampricTouch = {name = "Vampiric Touch", insert = true, isTalentSpell = false, vis = true, id = 34914, duration = 14, maxTime = 14, icon = ""}},
                 [5] = {MindBlast = {name = "Mind Blast", insert = true, isTalentSpell = false, vis = true, id = 8092, duration = 1, maxTime = 1, icon = ""}},
                 --[6] = {MindBender = {name = "Mindbender", insert = false, isTalentSpell = true, vis = false, id = 200174, duration = 15, maxTime = 15, icon = ""}},
-                [6] = {VoidEruption = {name = "Void Eruption", insert = true, isTalentSpell = false, vis = true, id = 228260, duration = 15, maxTime = 15, icon = ""}},
-                [7] = {VoidBolt = {name = "Void Bolt", insert = true, isTalentSpell = false, vis = true, id = 205448, duration = 15, maxTime = 15, icon = ""}},
-                [8] = {ShadowWordVoid = {name = "Shadow Word: Void", insert = false, isTalentSpell = true, vis = false, id = 205351, duration = 14, maxTime = 14, icon = ""}},
+                --[6] = {VoidEruption = {name = "Void Eruption", insert = true, isTalentSpell = false, vis = true, id = 228260, duration = 15, maxTime = 15, icon = ""}},
+                --[7] = {VoidBolt = {name = "Void Bolt", insert = true, isTalentSpell = false, vis = true, id = 205448, duration = 15, maxTime = 15, icon = ""}},
+                [6] = {ShadowWordVoid = {name = "Shadow Word: Void", insert = false, isTalentSpell = true, vis = false, id = 205351, duration = 14, maxTime = 14, icon = ""}},
+                [7] = {MindSear = {name = "Mind Sear", insert = true, isTalentSpell = false, vis = true, id = 48045, duration = 4.3, maxTime = 4.3, icon = ""}},
                 },
        buffs = {
                 [0] = nil,
