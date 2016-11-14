@@ -43,16 +43,22 @@ SLASH_ICTION1  = "/iction"
 local function ictionArgs(arg, editbox)
     local split = split
     if not arg then iction.initMainUI()
+
     elseif arg == 'unlock' then
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG"], 100, 35, 35);
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["unlock"], 100, 35, 35);
         iction.unlockUIElements(true)
+
     elseif arg == 'lock' then
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["lock"], 100, 35, 35);
         iction.unlockUIElements(false)
+
     elseif arg == 'options' then iction.setOptionsFrame()
+
     elseif arg == 'hide' then iction.ictionMF:Hide()
+
     elseif arg == 'show' then iction.ictionMF:Show()
+
     else
         local max, cnt =  strsplit(" ", arg)
         if max == 'max' then

@@ -1,13 +1,10 @@
-----------------------------------------------------------------------------------------------
------ Register global name iction to ACE for use in addon lua files in the toc
 iction = {}
-iction.SharedMedia = LibStub("LibSharedMedia-3.0");
 ----------------------------------------------------------------------------------------------
 --- GLOBALS ----------------------------------------------------------------------------------
-iction.L = LibStub("AceLocale-3.0"):GetLocale("iction", false)
+iction.SharedMedia = LibStub("LibSharedMedia-3.0");
+iction.L = LibStub("AceLocale-3.0"):GetLocale("iction", false) or nil
 iction.bw = 36
 iction.bh = 36
---- Addon Globals
 iction.spells = {}
 iction.ictionMFH = 64
 iction.ictionMFW = 128
@@ -37,6 +34,9 @@ iction.cbX = 0
 iction.cbY = -235
 iction.cbScale = 1
 iction.frameData = nil
+
+
+
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
 local sframe = CreateFrame("Frame", 'ictionRoot')
@@ -44,14 +44,28 @@ local sframe = CreateFrame("Frame", 'ictionRoot')
 sframe:RegisterEvent("ADDON_LOADED")
 sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
+        --- Locale check
+        if iction.L == nil then print("Unsupported Locale!") end
+
+        --- Legacy check for globals cleanup
         if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
+
+        --- Initialize frame position table
         if not ictionFramePos then ictionFramePos = {} end
+
+        --- Initialize skin
         if not ictionSkin then iction.skin = 03 else iction.skin = ictionSkin end
+
+        --- Initialize buffBar layout
         if ictionBuffBarBarH == nil then
             ictionBuffBarBarH = true
         end
+
+        --- Initialize globalScale
         if ictionGlobalScale == nil then iction.ictionScale = 1 else iction.ictionScale = ictionGlobalScale end
         DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Buff frame:" .. tostring(ictionBuffBarBarH), 65, 35, 35);
+
+        --- Initialize targetCount
         if not ictionTargetCount then
             iction.ict_maxTargets = 2
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2.", 65, 35, 35);
@@ -59,6 +73,8 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.ict_maxTargets = ictionTargetCount
             DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Max tgt count is: ".. iction.ict_maxTargets, 100, 35, 35);
         end
+
+        --- Initialize castBarPosition
         if ictionSetCastBar == nil then
             iction.setCastBar = false
         else

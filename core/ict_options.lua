@@ -36,12 +36,12 @@ function iction.setOptionsFrame()
         ---------------------
         --- Move CastBar ----
         ict_moveCastBarButton = CreateFrame("CheckButton", "ict_moveCastBarButton", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_moveCastBarButton.tooltip = "Set place your bliz cast bar in a custom location or not."
+        ict_moveCastBarButton.tooltip = iction.L['MoveCastBarTT']
         icttext = _G["ict_moveCastBarButtonText"]
         if ictionSetCastBar then ict_moveCastBarButton:SetChecked(true) end
         ict_moveCastBarButton:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         ict_moveCastBarButton:SetPoint("TOP", iction.OptionsFrame, 0, -10)
-        icttext:SetText("Set custom cast bar location")
+        icttext:SetText(iction.L['MoveCastBarText'])
         ict_moveCastBarButton:SetScript("OnClick", function()
                                 if ict_moveCastBarButton:GetChecked() then
                                     PlaySound("igMainMenuOptionCheckBoxOn")
