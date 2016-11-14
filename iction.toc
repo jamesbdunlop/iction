@@ -3,6 +3,7 @@
 ## Version: 1.00
 ## Author: Macky kaz`goroth
 ## Notes: MOAR DOTS!
+##
 ##SavedVariablesPerCharacter: ictionFramePos
 ##SavedVariablesPerCharacter: ictionTargetCount
 ##SavedVariablesPerCharacter: ictionSetCastBar
@@ -17,7 +18,11 @@
 Libs\LibSharedMedia-3.0\lib.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 #@end-no-lib-strip@
+
+##---Locales
 locales\english_ui.lua
+
+##-- Core Stuff
 core\ict_core.lua
 core\ictFrame.lua
 core\ict_options.lua
@@ -26,10 +31,16 @@ core\ict_button.lua
 core\ict_timers.lua
 core\ict_spellFrame.lua
 core\ict_target.lua
-core\ict_lockWatcher.lua
-core\ict_PriestWatcher.lua
+
+##--- Frame watchers
+watchers\ict_lockWatcher.lua
+watchers\ict_PriestWatcher.lua
+
+##--- Spell Lists
 spells\ict_lockSpells.lua
 spells\ict_priestSpells.lua
+
+##--- Final UI Stuff
 core\ict_spellLoader.lua
 frames\mainFrame.lua
 frames\buffFrame.lua

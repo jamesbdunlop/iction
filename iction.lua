@@ -257,7 +257,7 @@ function iction.unlockUIElements(isMovable)
         -- set movable
         iction.setMovable(iction.artifactFrame, isMovable, false)
         iction.setMovable(iction.buffFrame, isMovable, false)
-        if localizedClass == 'Warlock' then
+        if localizedClass == iction.L['warlock'] then
             iction.setMovable(iction.shardFrame, isMovable, false)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
         end
@@ -267,7 +267,7 @@ function iction.unlockUIElements(isMovable)
         -- set movable
         iction.setMovable(iction.artifactFrame, isMovable, false)
         iction.setMovable(iction.buffFrame, isMovable, true)
-        if localizedClass == 'Warlock' then
+        if localizedClass == iction.L['warlock'] then
             iction.setMovable(iction.shardFrame, isMovable, true)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
         end
