@@ -5,6 +5,6 @@ externals:
 
 ignore:
     - .idea
-    - !archive
+    - .git
 
 package-as: iction

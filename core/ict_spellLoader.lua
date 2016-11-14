@@ -7,11 +7,11 @@ function iction.addButtonsToTable(buttonList, desttable)
             if spellData["isTalentSpell"] then
                 for x=1, 7 do
                     for c=1, 3 do
-                        --- Drain soul / drain life spellButton switch
                         local _, name, _, selected, _ = GetTalentInfo(x, c, 1)
                         if name == spellData['name'] and selected then
                             spellData['vis'] = true
                             spellData['insert'] = true
+                            --- Drain soul / drain life spellButton switch
                             if spellData['name'] == "Drain Soul" and selected then
                                 bList[4]['DrainLife']['insert'] = false
                                 bList[5]['DrainSoul']['insert'] = true
@@ -31,7 +31,6 @@ function iction.addButtonsToTable(buttonList, desttable)
                                          vis = spellData['vis']
                                          })
     end end end
-
 end
 
 function iction.tablelength(T)

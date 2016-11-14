@@ -323,7 +323,9 @@ function iction.currentBuffExpires()
                     if iction.spellIDActive(iction.playerGUID, spellDetails['id']) then
                         local _, _, _, count, _, _, expires, _, _, _, spellID, _, _, _, _, _, _, _, _  = UnitBuff("Player", spellDetails['spellName'])
                         if expires ~= nil then
-                            iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = expires
+                            if iction.targetData[iction.playerGUID]['spellData'][spellID] then
+                                iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = expires
+                            end
                         end
                     end
                 end

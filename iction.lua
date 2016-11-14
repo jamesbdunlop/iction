@@ -1,5 +1,6 @@
 --- version Release 1.1.3
 local iction = iction
+
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
 sframe:RegisterEvent("PLAYER_LOGIN")
@@ -8,19 +9,18 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         local localizedClass, _, _ = UnitClass("Player");
         iction.playerGUID = UnitGUID("Player")
         --- Set the spell table
-        if localizedClass == 'Warlock' then iction.spells = iction.lockspells elseif localizedClass == 'Priest' then iction.spells = iction.priestspells end
-        if localizedClass == 'Warlock' or localizedClass == 'Priest' then
+        if localizedClass == iction.L['warlock'] then iction.spells = iction.lockspells elseif localizedClass == iction.L['priest'] then iction.spells = iction.priestspells end
+        if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest'] then
             iction.setDebuffButtonLib()
             iction.setBuffButtonLib()
             iction.setMaxTargetTable()
             iction.initMainUI()
             iction.highlightFrameTexture = iction.createHighlightFrame()
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Loaded Iction UI. Use /iction options for option ui ", 15, 25, 35);
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] args: /iction unlock /iction lock  /iction max 1, 2, 3 or 4 ", 15, 25, 35);
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Targets: " .. tostring(ictionTargetCount), 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG1"], 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG2"], 15, 25, 35);
             local bf
             if ictionBuffBarBarH then bf = 'Horizontal' else bf = 'Vertical' end
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] BuffFrame: " .. bf, 15, 25, 35);
+            DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG3"] .. bf, 15, 25, 35);
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
@@ -44,12 +44,15 @@ local function ictionArgs(arg, editbox)
     local split = split
     if not arg then iction.initMainUI()
     elseif arg == 'unlock' then
-        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Unlocking iction ui elements.", 100, 35, 35);
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG"], 100, 35, 35);
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L["unlock"], 100, 35, 35);
         iction.unlockUIElements(true)
     elseif arg == 'lock' then
-        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Locked iction ui elements.", 100, 35, 35);
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L["lock"], 100, 35, 35);
         iction.unlockUIElements(false)
     elseif arg == 'options' then iction.setOptionsFrame()
+    elseif arg == 'hide' then iction.ictionMF:Hide()
+    elseif arg == 'show' then iction.ictionMF:Show()
     else
         local max, cnt =  strsplit(" ", arg)
         if max == 'max' then
@@ -58,7 +61,7 @@ local function ictionArgs(arg, editbox)
                 ictionTargetCount = count
                 ReloadUI()
             else
-                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Max count too high. Use 1 2 3 or 4", 100, 35, 35);
+                DEFAULT_CHAT_FRAME:AddMessage(iction.L["countError"], 100, 35, 35);
             end
         end
     end
@@ -73,10 +76,9 @@ function iction.initMainUI()
     iction.spec = GetSpecialization()
     local mainFrame = iction.UIElement
     iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
-    if localizedClass == 'Warlock' then
+    if localizedClass == iction.L['warlock'] then
         iction.ictionLockFrameWatcher(iction.ictionMF)
-    elseif localizedClass == 'Priest' then
-        print("FASRRRT")
+    elseif localizedClass == iction.L['priest'] then
         iction.ictionPriestFrameWatcher(iction.ictionMF)
     end
 
@@ -85,7 +87,7 @@ function iction.initMainUI()
     iction.createBottomBarArtwork()
     iction.setMTapBorder()
 
-    if localizedClass == 'Warlock' then
+    if localizedClass == iction.L['warlock'] then
         iction.createShardFrame()
         if iction.debug then print('Shard frame created') end
         if iction.spec == 3 then iction.createConflagFrame() end
@@ -328,7 +330,7 @@ function iction.setMovable(f, isMovable, hideDefault)
             if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0) else f.texture:SetVertexColor(1, 1, 1, 1) end
             f:SetScript("OnMouseDown", nil)
             f:SetScript("OnMouseUp", nil)
-            f.text:SetText("")
+            if f.text ~= nil then f.text:SetText("") end
         end
     end
 end
@@ -337,7 +339,7 @@ function ictionlist_iter(t)
   local i = 0
   local n = table.getn(t)
   return function ()
-           i = i + 1
-           if i <= n then return t[i] end
-         end
+       i = i + 1
+       if i <= n then return t[i] end
+     end
 end

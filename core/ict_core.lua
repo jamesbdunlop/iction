@@ -4,6 +4,7 @@ iction = {}
 iction.SharedMedia = LibStub("LibSharedMedia-3.0");
 ----------------------------------------------------------------------------------------------
 --- GLOBALS ----------------------------------------------------------------------------------
+iction.L = LibStub("AceLocale-3.0"):GetLocale("iction", false)
 iction.bw = 36
 iction.bh = 36
 --- Addon Globals

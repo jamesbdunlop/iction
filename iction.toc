@@ -15,8 +15,9 @@
 ##
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
 #@end-no-lib-strip@
-
+locales\english_ui.lua
 core\ict_core.lua
 core\ictFrame.lua
 core\ict_options.lua
