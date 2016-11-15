@@ -21,6 +21,7 @@ Libs\AceLocale-3.0\AceLocale-3.0.xml
 
 ##---Locales
 locales\english_ui.lua
+locales\german_ui.lua
 
 ##-- Core Stuff
 core\ict_core.lua

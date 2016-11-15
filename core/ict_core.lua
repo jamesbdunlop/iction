@@ -63,15 +63,12 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
 
         --- Initialize globalScale
         if ictionGlobalScale == nil then iction.ictionScale = 1 else iction.ictionScale = ictionGlobalScale end
-        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Buff frame:" .. tostring(ictionBuffBarBarH), 65, 35, 35);
 
         --- Initialize targetCount
         if not ictionTargetCount then
             iction.ict_maxTargets = 2
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]First time load detected setting tgt count to 2.", 65, 35, 35);
         else
             iction.ict_maxTargets = ictionTargetCount
-            DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionMSG]Max tgt count is: ".. iction.ict_maxTargets, 100, 35, 35);
         end
 
         --- Initialize castBarPosition

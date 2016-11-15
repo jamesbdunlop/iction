@@ -75,26 +75,26 @@ function iction.setOptionsFrame()
         ----------------------------------------------------------------------------------------------------------
         --- HORIZONTAL BUFF BAR
         ict_BBarHorizontalButton = CreateFrame("CheckButton", "ict_BBarHorizontalButton", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_BBarHorizontalButton.tooltip = "Set buffBar to be horizontal or not."
+        ict_BBarHorizontalButton.tooltip = iction.L['setBuffBar']
         bbhtext = _G["ict_BBarHorizontalButtonText"]
         if ictionBuffBarBarH then ict_BBarHorizontalButton:SetChecked(true) end
         ict_BBarHorizontalButton:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         ict_BBarHorizontalButton:SetPoint("TOP", iction.OptionsFrame, 0, -40)
-        bbhtext:SetText("Horizontal BuffBar?")
+        bbhtext:SetText(iction.L['HorizontalBuffBarText'])
         ict_BBarHorizontalButton:SetScript("OnClick", function()
             if ict_BBarHorizontalButton:GetChecked() then
                 ictionBuffBarBarH = true
-                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Set BuffBar to Horizontal", 100, 35, 35)
+                DEFAULT_CHAT_FRAME:AddMessage(iction.L['HorizontalBuffBar'], 100, 35, 35)
             else
                 ictionBuffBarBarH = false
-                DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44Set BuffBar to Vertical", 100, 35, 35)
+                DEFAULT_CHAT_FRAME:AddMessage(iction.L['VerticalBuffBarText'], 100, 35, 35)
             end
         end)
 
         ----------------------------------------------------------------------------------------------------------
         --- MAX TARGETS
         iction.ict_TargetLabel = iction.OptionsFrame:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_TargetLabel:SetText('Max Tgt Cols:')
+        iction.ict_TargetLabel:SetText(iction.L['maxTargetColsLabel'])
         iction.ict_TargetLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
         iction.ict_TargetLabel:SetPoint("TOP", iction.OptionsFrame, 0, -70)
 
@@ -107,11 +107,11 @@ function iction.setOptionsFrame()
         local tgIndent = 10
 
         ict_MaxTarget1Input = CreateFrame("CheckButton", "ict_maxCount1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget1Input.tooltip = "Set targets to track to 1. \nNote: Changing count will reload the UI on close."
+        ict_MaxTarget1Input.tooltip = iction.L['maxTargets1TT']
         ict_MaxTarget1Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
         ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -5)
         ict_MaxTarget1Inputtext = _G["ict_maxCount1Text"]
-        ict_MaxTarget1Inputtext:SetText("1")
+        ict_MaxTarget1Inputtext:SetText(iction.L['maxT1'])
         ict_MaxTarget1Input:SetScript("OnClick", function()
                                         ict_MaxTarget2Input:SetChecked(false)
                                         ict_MaxTarget3Input:SetChecked(false)
@@ -121,11 +121,11 @@ function iction.setOptionsFrame()
                                         end)
 
         ict_MaxTarget2Input = CreateFrame("CheckButton", "ict_maxCount2", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget2Input.tooltip = "Set targets to track to 2. \nNote: Changing count will reload the UI on close."
+        ict_MaxTarget2Input.tooltip = iction.L['maxTargets2TT']
         ict_MaxTarget2Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
         ict_MaxTarget2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -25)
         ict_MaxTarget2Inputtext = _G["ict_maxCount2Text"]
-        ict_MaxTarget2Inputtext:SetText("2")
+        ict_MaxTarget2Inputtext:SetText(iction.L['maxT2'])
         ict_MaxTarget2Input:SetScript("OnClick", function()
                                         ict_MaxTarget1Input:SetChecked(false)
                                         ict_MaxTarget3Input:SetChecked(false)
@@ -135,11 +135,11 @@ function iction.setOptionsFrame()
                                         end)
 
         ict_MaxTarget3Input = CreateFrame("CheckButton", "ict_maxCount3", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget3Input.tooltip = "Set targets to track to 3. \nNote: Changing count will reload the UI on close."
+        ict_MaxTarget3Input.tooltip = iction.L['maxTargets3TT']
         ict_MaxTarget3Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
         ict_MaxTarget3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -45)
         ict_MaxTarget3Inputtext = _G["ict_maxCount3Text"]
-        ict_MaxTarget3Inputtext:SetText("3")
+        ict_MaxTarget3Inputtext:SetText(iction.L['maxT3'])
         ict_MaxTarget3Input:SetScript("OnClick", function()
                                         ict_MaxTarget1Input:SetChecked(false)
                                         ict_MaxTarget2Input:SetChecked(false)
@@ -149,11 +149,11 @@ function iction.setOptionsFrame()
                                         end)
 
         ict_MaxTarget4Input = CreateFrame("CheckButton", "ict_maxCount4", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget4Input.tooltip = "Set targets to track to 4. \nNote: Changing count will reload the UI on close."
+        ict_MaxTarget4Input.tooltip = iction.L['maxTargets4TT']
         ict_MaxTarget4Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
         ict_MaxTarget4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -65)
         ict_MaxTarget4Inputtext = _G["ict_maxCount4Text"]
-        ict_MaxTarget4Inputtext:SetText("4")
+        ict_MaxTarget4Inputtext:SetText(iction.L['maxT4'])
         ict_MaxTarget4Input:SetScript("OnClick", function()
                                         ict_MaxTarget1Input:SetChecked(false)
                                         ict_MaxTarget2Input:SetChecked(false)
@@ -171,7 +171,7 @@ function iction.setOptionsFrame()
         --- SKIN SELECTION
         local skinNumber
         iction.ict_skinsLabel = iction.OptionsFrame:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_skinsLabel:SetText('Skin:')
+        iction.ict_skinsLabel:SetText(iction.L['skinLabel'])
         iction.ict_skinsLabel:SetPoint("LEFT", iction.OptionsFrame, 200, 0)
         iction.ict_skinsLabel:SetPoint("TOP", iction.OptionsFrame, 0, -70)
 
@@ -184,12 +184,12 @@ function iction.setOptionsFrame()
 
         local skinIndent = 10
         ict_skin1Input = CreateFrame("CheckButton", "ict_skin1", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin1Input.tooltip = "Select for skin 1"
+        ict_skin1Input.tooltip = iction.L['skin1TT']
         ict_skin1Input:SetWidth(24)
         ict_skin1Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
         ict_skin1Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -5)
         ict_skin1InputText = _G["ict_skin1Text"]
-        ict_skin1InputText:SetText("1")
+        ict_skin1InputText:SetText(iction.L['maxT1'])
         if ictionSkin == 1 then ict_skin1Input:SetChecked(true) end
         ict_skin1Input:SetScript("OnClick", function()
                                 ict_skin2Input:SetChecked(false)
@@ -200,12 +200,12 @@ function iction.setOptionsFrame()
                                 iction.createBottomBarArtwork()
                                 end)
         ict_skin2Input = CreateFrame("CheckButton", "ict_skin2", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin2Input.tooltip = "Select for skin 2"
+        ict_skin2Input.tooltip = iction.L['skin2TT']
         ict_skin2Input:SetWidth(24)
         ict_skin2Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
         ict_skin2Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -25)
         ict_skin2InputText = _G["ict_skin2Text"]
-        ict_skin2InputText:SetText("2")
+        ict_skin2InputText:SetText(iction.L['maxT2'])
         if ictionSkin == 2 then ict_skin2Input:SetChecked(true) end
         ict_skin2Input:SetScript("OnClick", function()
                                 ict_skin1Input:SetChecked(false)
@@ -216,12 +216,12 @@ function iction.setOptionsFrame()
                                 iction.createBottomBarArtwork()
                                 end)
         ict_skin3Input = CreateFrame("CheckButton", "ict_skin3", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin3Input.tooltip = "Select for skin 3"
+        ict_skin3Input.tooltip = iction.L['skin3TT']
         ict_skin3Input:SetWidth(24)
         ict_skin3Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
         ict_skin3Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -45)
         ict_skin3InputText = _G["ict_skin3Text"]
-        ict_skin3InputText:SetText("3")
+        ict_skin3InputText:SetText(iction.L['maxT3'])
         if ictionSkin == 3 then ict_skin3Input:SetChecked(true) end
         ict_skin3Input:SetScript("OnClick", function()
                                 ict_skin1Input:SetChecked(false)
@@ -232,12 +232,12 @@ function iction.setOptionsFrame()
                                 iction.createBottomBarArtwork()
                                 end)
         ict_skin4Input = CreateFrame("CheckButton", "ict_skin4", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin4Input.tooltip = "Select for skin 4"
+        ict_skin4Input.tooltip = iction.L['skin4TT']
         ict_skin4Input:SetWidth(24)
         ict_skin4Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
         ict_skin4Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -65)
         ict_skin4InputText = _G["ict_skin4Text"]
-        ict_skin4InputText:SetText("4")
+        ict_skin4InputText:SetText(iction.L['maxT4'])
         if ictionSkin == 4 then ict_skin4Input:SetChecked(true) end
         ict_skin4Input:SetScript("OnClick", function()
                                 ict_skin1Input:SetChecked(false)
@@ -251,7 +251,7 @@ function iction.setOptionsFrame()
         ----------------------------------------------------------------------------------------------------------
         --- SCALE
         iction.ict_scaleLabel = iction.OptionsFrame:CreateFontString("ScaleLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_scaleLabel:SetText('Scale:')
+        iction.ict_scaleLabel:SetText(iction.L['scale'])
         iction.ict_scaleLabel:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         iction.ict_scaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, 60)
 
@@ -261,7 +261,7 @@ function iction.setOptionsFrame()
         iction.ict_scaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, 60)
 
         iction.ict_Scale = CreateFrame("Slider", "ict_scaleSlider", iction.OptionsFrame, "OptionsSliderTemplate")
-        iction.ict_Scale.tooltip = "Set overall ui scale"
+        iction.ict_Scale.tooltip = L['scaleUI']
         iction.ict_Scale:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         iction.ict_Scale:SetPoint("BOTTOM", iction.OptionsFrame, 0, 45)
         iction.ict_Scale:SetMinMaxValues(.5,2)
@@ -285,11 +285,11 @@ function iction.setOptionsFrame()
         ----------------------------------------------------------------------------------------------------------
         --- UNLOCK
         ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_UnlockCBx.tooltip = "Unlock moveable ui elements. Uncheck to lock again."
+        ict_UnlockCBx.tooltip = L['unlockUITT']
         ict_UnlockCBx:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         ict_UnlockCBx:SetPoint("BOTTOM", iction.OptionsFrame, 0, 10)
         ict_UnlockCBxtext = _G["ict_unlockText"]
-        ict_UnlockCBxtext:SetText("Unlock UI")
+        ict_UnlockCBxtext:SetText(iction.L['unlockUILabel'])
         ict_UnlockCBx:SetScript("OnClick", function()
                                 if ict_UnlockCBx:GetChecked() then iction.unlockUIElements(true)
                                 else iction.unlockUIElements(false) end
@@ -312,7 +312,7 @@ function iction.setOptionsFrame()
         local fnt = closeOptionsButton:CreateFontString(nil, "OVERLAY", "GameFontWhite")
               fnt:SetFont(iction.font, 12, "OVERLAY", "THICKOUTLINE")
               fnt:SetPoint("CENTER", closeOptionsButton, 0, 0)
-              fnt:SetText("Close")
+              fnt:SetText(iction.L['close'])
         closeOptionsButton.text = fnt
         closeOptionsButton:SetScript("OnClick", function()
             iction.OptionsFrame:Hide()

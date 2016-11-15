@@ -15,7 +15,29 @@ L['countError'] = "\124c00FFFF44Max count too high. Use 1 2 3 or 4"
 --- Options UI text
 L['MoveCastBarTT'] = "Set place your bliz cast bar in a custom location or not."
 L['MoveCastBarText'] = "Set custom cast bar location"
-
+L['skinLabel'] = 'Skin:'
+L['skin1TT'] = "Select for skin 1"
+L['skin2TT'] = "Select for skin 2"
+L['skin3TT'] = "Select for skin 3"
+L['skin4TT'] = "Select for skin 4"
+L['scale'] = "Scale:"
+L['scaleUI'] = "Set overall ui scale"
+L['unlockUILabel'] = "Unlock UI"
+L['unlockUITT'] = "Unlock moveable ui elements. Uncheck to lock again."
+L['maxTargetColsLabel'] = 'Max Tgt Cols:'
+L['maxTargets1TT'] = "Max targets 1. \nNote: Changing count will reload the UI on close."
+L['maxTargets2TT'] = "Max targets 2. \nNote: Changing count will reload the UI on close."
+L['maxTargets3TT'] = "Max targets 3. \nNote: Changing count will reload the UI on close."
+L['maxTargets4TT'] = "Max targets 4. \nNote: Changing count will reload the UI on close."
+L['maxT1'] = "1"
+L['maxT2'] = "2"
+L['maxT3'] = "3"
+L['maxT4'] = "4"
+L['setBuffBar'] = "Set buffBar to be horizontal or not."
+L['HorizontalBuffBar'] = "Horizontal BuffBar?"
+L['HorizontalBuffBarText'] = "\124c00FFFF44Set BuffBar to Horizontal"
+L['VerticalBuffBarText'] = "\124c00FFFF44Set BuffBar to Vertical"
+L['close'] = "Close"
 --- UI stuff
 L['warlock'] = 'Warlock'
 L['priest'] = 'Priest'
