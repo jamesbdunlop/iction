@@ -158,7 +158,7 @@ function iction.calcFrameSize(Tbl)
 
     for key, value in pairs(Tbl) do
         if value['vis'] then
-            fsize = fsize + iction.bw
+            fsize = fsize + iction.bw + iction.ictionButtonFramePad
         end
     end
     cfh = fsize
@@ -416,7 +416,9 @@ function iction.updateUACount(guid)
             if iction.targetData[guid]['spellData'] == nil then
                 iction.createTarget(guid, "aMob", "Unstable Afflction", "DEBUFF", 233490)
             end
-            iction.targetData[guid]['spellData'][233490]['count'] = UACount
+            if iction.targetData[guid]['spellData'] ~= nil then
+                iction.targetData[guid]['spellData'][233490]['count'] = UACount
+            end
         end
     end
 end

@@ -1,4 +1,13 @@
 --- version Release 1.1.3
+--- Added locales base
+--- Added shadow priest watcher / spell table
+--- General Cleanup
+--- Changed fading timer text to red color
+
+--- TO DO
+--- Add a frame for priest to watch for the whole insanity deal / VoidBolt / VoidEruption
+--- Fix seeds pinging off Target dummies but not creating all targets. Then bugging out one of the dummies.
+
 local iction = iction
 
 local sframe = CreateFrame("Frame", 'ictionRoot')

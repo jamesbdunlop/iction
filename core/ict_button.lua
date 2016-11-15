@@ -39,9 +39,9 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
             if ictionBuffBarBarH and buff then
                 b:SetPoint("LEFT", pFrame, paddingX, paddingY)
                 paddingY = paddingY
-                paddingX = paddingX + iction.bh
+                paddingX = paddingX + iction.bh + iction.ictionButtonFramePad
             else
-                paddingY = paddingY + iction.bh
+                paddingY = paddingY + iction.bh + iction.ictionButtonFramePad
                 paddingX = paddingX
             end
             -- Add the button the the creatures button table

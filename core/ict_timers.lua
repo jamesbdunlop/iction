@@ -40,7 +40,7 @@ end
 function iction.spellFadingTimer(guid, spellName, remainingT, spellID)
     local remainingT = tonumber(string.format("%.1f", remainingT))
     iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], true)
-    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID])
+    iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID], true, {1,0,0,1})
 end
 
 function iction.isValidButtonFrame(guid)
@@ -92,36 +92,45 @@ function iction.spellHasEnded(guid, spellName, spellID)
 end
 
 function iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID)
+    local localizedClass, _, _ = UnitClass("Player")
     if not iction.stackFrames[guid] then
         iction.stackFrames[guid] = {}
     end
 
     if not iction.stackFrames[guid][spellID] then
+        local buttonFrame = iction.targetButtons[guid]['buttonFrames'][spellID]
         local stackFrameData = iction.ictStackFrameData
-        stackFrameData['uiParentFrame'] = iction.targetButtons[guid]['buttonFrames'][spellID]
-        stackFrameData['point']['p'] = iction.targetButtons[guid]['buttonFrames'][spellID]
-        stackFrameData['point']['x'] = 19
-        stackFrameData['point']['y'] = 2
-        stackFrameData['w'] = 20
-        stackFrameData['h'] = 15
+        stackFrameData['uiParentFrame'] = buttonFrame
+        stackFrameData['point']['p'] = buttonFrame
+        stackFrameData['w'] = iction.bw/2.5
+        stackFrameData['h'] = iction.bh/2.5
+
         local stackFrameBldr = iction.UIElement
         local stackFrame = stackFrameBldr.create(stackFrameBldr, stackFrameData)
-        stackFrame.text = stackFrameBldr.addFontSring(stackFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 12, 1, 1, 1, 1)
+        stackFrame.text = stackFrameBldr.addFontSring(stackFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 10, 1, 1, 1, 1)
+        if localizedClass == iction.L['priest'] then
+            stackFrame:SetPoint("BOTTOM", buttonFrame, 15, 22)
+        else
+            stackFrame:SetPoint("BOTTOM", buttonFrame, 15, 22)
+        end
 
         iction.stackFrames[guid][spellID] = {frame = stackFrame, font = stackFrame.text}
         iction.setButtonText(count, false, stackFrame.text)
         if timerText ~= nil and timerButtonFrame ~= nil then
-            timerText:SetPoint("TOP", timerButtonFrame, 0, -3)
+            timerText:SetPoint("BOTTOM", timerButtonFrame, 0, 3)
         end
     else
         local stackFrame = iction.stackFrames[guid][spellID]['frame']
         local stackFrametext = iction.stackFrames[guid][spellID]['font']
         stackFrame.texture:SetVertexColor(0,0,0,1)
-        stackFrame:SetPoint("BOTTOM", timerButtonFrame, 19, 2)
         iction.setButtonText(count, false, stackFrametext)
         if count == nil then stackFrame.texture:SetVertexColor(0,0,0,0) end
         if timerText ~= nil and timerButtonFrame ~= nil then
-            timerText:SetPoint("TOP", timerButtonFrame, 0, -3)
+            if count == nil then
+                timerText:SetPoint("CENTER", timerButtonFrame, 0, 3)
+            else
+                timerText:SetPoint("BOTTOM", timerButtonFrame, 0, 3)
+            end
         end
     end
 end

@@ -261,7 +261,7 @@ function iction.setOptionsFrame()
         iction.ict_scaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, 60)
 
         iction.ict_Scale = CreateFrame("Slider", "ict_scaleSlider", iction.OptionsFrame, "OptionsSliderTemplate")
-        iction.ict_Scale.tooltip = L['scaleUI']
+        iction.ict_Scale.tooltip = iction.L['scaleUI']
         iction.ict_Scale:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         iction.ict_Scale:SetPoint("BOTTOM", iction.OptionsFrame, 0, 45)
         iction.ict_Scale:SetMinMaxValues(.5,2)
@@ -285,7 +285,7 @@ function iction.setOptionsFrame()
         ----------------------------------------------------------------------------------------------------------
         --- UNLOCK
         ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_UnlockCBx.tooltip = L['unlockUITT']
+        ict_UnlockCBx.tooltip = iction.L['unlockUITT']
         ict_UnlockCBx:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
         ict_UnlockCBx:SetPoint("BOTTOM", iction.OptionsFrame, 0, 10)
         ict_UnlockCBxtext = _G["ict_unlockText"]
