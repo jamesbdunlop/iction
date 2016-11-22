@@ -1,13 +1,6 @@
+local last = 0
 function iction.ictionPriestFrameWatcher(mainFrame)
     mainFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    mainFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-    mainFrame:RegisterEvent("SPELL_AURA_REMOVED")
-    mainFrame:RegisterEvent("SPELL_AURA_APPLIED")
-    mainFrame:RegisterEvent("SPELL_AURA_APPLIED_DOSE")
-    mainFrame:RegisterEvent("SPELL_DAMAGE")
-    mainFrame:RegisterEvent("SPELL_CAST_SUCCESS")
-    mainFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1, prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
         local event = event
         local eventName = eventName
@@ -25,61 +18,8 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         end
         --------------------------------------------------------------------------------------
         if event == "PLAYER_SPECIALIZATION_CHANGED" then
-            local function specChanged()
-                local spec = GetSpecialization()
-                if iction.spec ~= spec then
-                    iction.spec = spec
-                    DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!", 15, 25, 35)
-                    -- Cleanup various elements now.
-                    if iction.targetFrames[iction.playerGUID] ~= nil then
-                        for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
-                            if iction.targetButtons[iction.playerGUID]["buttonFrames"][i] ~= nil then
-                                iction.targetButtons[iction.playerGUID]["buttonFrames"][i]:Hide()
-                                iction.targetButtons[iction.playerGUID]["buttonFrames"][i] = nil
-                            end
-                        end
-                        for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonText"]) do
-                            if iction.targetButtons[iction.playerGUID]["buttonText"][i] ~= nil then
-                                iction.targetButtons[iction.playerGUID]["buttonText"][i]:Hide()
-                                iction.targetButtons[iction.playerGUID]["buttonText"][i] = nil
-                            end
-                        end
-                        iction.targetFrames[iction.playerGUID]:Hide()
-                        iction.targetFrames[iction.playerGUID] = nil
-                    end
-
-                    iction.shardFrame = nil
-                    iction.highlightFrameTexture = nil
-
-                    -- Now recreate the button libs
-                    iction.setDebuffButtonLib()
-                    iction.setBuffButtonLib()
-                    -- Conflag frame for destro spec
-                    if iction.spec == 3 then
-                        iction.createConflagFrame()
-                    else
-                        if iction.conflagFrame ~= nil then
-                            iction.conflagFrame:Hide()
-                        end
-                    end
-                    -- Reset all soul shard images to 0 as the shard count resets on spec change
-                    for i = 1, iction.tablelength(iction.soulShards) do
-                        if iction.soulShards[i] ~= nil then
-                            iction.soulShards[i]:Hide()
-                        end
-                    end
-                    iction.createShardFrame()
-                    local shards = UnitPower("Player", 7)
-                    iction.setSoulShards(shards)
-                    -- Change the artifact frame
-                    iction.createArtifactFrame()
-                    -- Reset highlightframe size for buttons changes
-                    iction.highlightFrameTexture = iction.createHighlightFrame()
-                end
-            end
-            specChanged()
+            iction.specChanged()
         end
-
         --------------------------------------------------------------------------------------
         if event == "PLAYER_TARGET_CHANGED" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
@@ -106,11 +46,10 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                             end
                         end
                     end
-                    iction.highlightTargetSpellframe(UnitGUID("Target"))
-                    return
                 end
             end
             removeDead()
+            iction.highlightTargetSpellframe(UnitGUID("Target"))
         --- PLAYER DIED
         elseif sourceGUID == iction.playerGUID and eventName == "PLAYER_DEAD" then
             local buttonTexts = iction.targetButtons[iction.playerGUID]["buttonText"]
@@ -123,7 +62,6 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         if sourceGUID == iction.playerGUID then
             if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
             elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
-
                 --- Check for valid spell
                 for _, v in pairs(iction.uiPlayerSpellButtons) do
                     if v['id'] == spellID then validSpell = true end
@@ -151,24 +89,27 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                     end
 
                     --- SPELL AURA APPLIED
-                    if eventName == "SPELL_AURA_APPLIED" then --- ignore channelDemonfire here
+                    if eventName == "SPELL_AURA_APPLIED" then
                         if spellID == 15407 then iction.clearChannelData() end      --- MindFlay
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        if spellID == 124430 then
+                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        else
+                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        end
+
 
                     elseif eventName == "SPELL_ENERGIZE" then
                         --- MindBlast OPENING CAST
                         if spellID == 8092 then                                     --- MindBlast
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
                         end
+
                     elseif eventName == "SPELL_AURA_REFRESH" then
                         iction.clearChannelData()
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
---                    elseif eventName == "SPELL_CAST_SUCCESS" then
---                        print("")
---
---                    elseif eventName == "SPELL_PERIODIC_DAMAGE" then
---                        print("")
+                    elseif eventName == "SPELL_CAST_SUCCESS" then
+                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_AURA_REMOVED" then
                         local channeledSpellID, cexpires = iction.getChannelSpell()
@@ -176,6 +117,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                         if not isChannelActive then
                             iction.clearChannelData()
                         end
+                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                         --- check for stack frames
                         if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellID] then
@@ -192,14 +134,19 @@ function iction.ictionPriestFrameWatcher(mainFrame)
             end
         end
     end
+
     mainFrame:SetScript("OnEvent", eventHandler)
     -- ON UPDATE CHECKS
-    local function _onUpdate()
-        iction.oocCleanup()
-        iction.setMTapBorder()
-        iction.currentTargetDebuffExpires()
-        iction.currentBuffExpires()
-        iction.updateTimers()
+    local function _onUpdate(self, elapsed)
+        iction.getTargetHP()
+        last = last + elapsed
+        if last >= 1 then
+            iction.oocCleanup()
+            iction.setMTapBorder()
+            iction.currentTargetDebuffExpires()
+            iction.currentBuffExpires()
+            iction.updateTimers()
+        end
     end
     mainFrame:SetScript("OnUpdate", _onUpdate)
     mainFrame:UnregisterEvent("ADDON_LOADED")

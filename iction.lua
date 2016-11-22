@@ -1,35 +1,40 @@
---- version Release 1.1.3
---- Added locales base
---- Added shadow priest watcher / spell table
---- General Cleanup
---- Changed fading timer text to red color
+--- version Release 1.2.1
+--- Tweaked lock artifact count font size
 
---- TO DO
---- Add a frame for priest to watch for the whole insanity deal / VoidBolt / VoidEruption
---- Fix seeds pinging off Target dummies but not creating all targets. Then bugging out one of the dummies.
+-- TO DO
+--- Add a frame for watching MindBlast and ShadowWord Death energy gains and void bolt tracking
 
 local iction = iction
+local localizedClass, _, _ = UnitClass("Player")
 
 local sframe = CreateFrame("Frame", 'ictionRoot')
 --- Triggers attached to dummy frame for intial load of addon
 sframe:RegisterEvent("PLAYER_LOGIN")
 sframe:SetScript("OnEvent", function(self, event, arg1)
+    local function loadUI()
+        iction.setDebuffButtonLib()
+        iction.setBuffButtonLib()
+        iction.setMaxTargetTable()
+        iction.initMainUI()
+        iction.highlightFrameTexture = iction.createHighlightFrame()
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG1"], 15, 25, 35)
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG2"], 15, 25, 35)
+        local bf
+        if ictionBuffBarBarH then bf = 'Horizontal' else bf = 'Vertical' end
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG3"] .. bf, 15, 25, 35)
+    end
     if( event == "PLAYER_LOGIN" ) then
-        local localizedClass, _, _ = UnitClass("Player");
         iction.playerGUID = UnitGUID("Player")
         --- Set the spell table
-        if localizedClass == iction.L['warlock'] then iction.spells = iction.lockspells elseif localizedClass == iction.L['priest'] then iction.spells = iction.priestspells end
-        if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest'] then
-            iction.setDebuffButtonLib()
-            iction.setBuffButtonLib()
-            iction.setMaxTargetTable()
-            iction.initMainUI()
-            iction.highlightFrameTexture = iction.createHighlightFrame()
-            DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG1"], 15, 25, 35);
-            DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG2"], 15, 25, 35);
-            local bf
-            if ictionBuffBarBarH then bf = 'Horizontal' else bf = 'Vertical' end
-            DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG3"] .. bf, 15, 25, 35);
+        if localizedClass == iction.L['warlock'] then
+            iction.spells = iction.lockspells
+            loadUI()
+        elseif localizedClass == iction.L['priest'] then
+            iction.spec = GetSpecialization()
+            if iction.spec == 3 then
+                iction.spells = iction.priestspells
+                loadUI()
+            end
         end
         self:UnregisterEvent("PLAYER_LOGIN")
     end
@@ -86,9 +91,7 @@ SlashCmdList["ICTION"] = ictionArgs
 ----------------------------------------------------------------------------------------------
 --- BEGIN UI NOW ---
 function iction.initMainUI()
-    local localizedClass, _, _ = UnitClass("Player");
     --- Setup the mainFrame and Eventwatcher ---
-    iction.spec = GetSpecialization()
     local mainFrame = iction.UIElement
     iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
     if localizedClass == iction.L['warlock'] then
@@ -104,20 +107,15 @@ function iction.initMainUI()
 
     if localizedClass == iction.L['warlock'] then
         iction.createShardFrame()
-        if iction.debug then print('Shard frame created') end
         if iction.spec == 3 then iction.createConflagFrame() end
-
-        if iction.debug then print('Conflag frame created') end
-        iction.createArtifactFrame()
+    elseif localizedClass == iction.L['priest'] then
+        if iction.spec == 3 then
+            iction.createInsanityFrame()
+        end
     end
-
-    if iction.debug then print('Artifact frame created') end
+    iction.createArtifactFrame()
     iction.createBuffFrame()
-
-    if iction.debug then print('Buff frame created') end
     iction.createDebuffColumns()
-
-    if iction.debug then print('Debuff Column frames created') end
     iction.setcastbar()
 
 end
@@ -216,10 +214,41 @@ function iction.createConflagFrame()
     table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 1))
 end
 
+function iction.createInsanityFrame()
+    local insanityBar = {}
+    local insanityData = iction.ictInsanityData
+    insanityData["uiParentFrame"] = iction.ictionMF
+    insanityData["point"]["p"] = iction.ictionMF
+    iction.insanityFrameBldr = iction.UIElement
+    iction.insanityFrame = iction.insanityFrameBldr.create(iction.insanityFrameBldr, insanityData)
+    iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 106, iction.bh/1.8, "BACKGROUND", nil, "LEFT", -3, 0, "Interface\\ChatFrame\\ChatFrameBackground", 0, 0, 0, 1)
+    table.insert(insanityBar, iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 1, iction.bh/2, "ARTWORK", nil, "LEFT", 0, 0, "Interface\\ChatFrame\\ChatFrameBackground", .5, .1, 1, 1))
+    iction.insanityFrame.text = iction.insanityFrameBldr.addFontSring(iction.insanityFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 16, 1, 1, 1, 1)
+    local function _updateInsanity()
+        local insanity = UnitPower("player", SPELL_POWER_INSANITY)
+        if insanity ~= 0 then
+            insanityBar[1]:SetWidth(insanity)
+            iction.insanityFrame.text:SetText(tostring(insanity))
+            insanityBar[1]:SetVertexColor(.5, .1, 1, 1)
+        else
+            insanityBar[1]:SetVertexColor(0, 0, 0, .1)
+            iction.insanityFrame.text:SetText("0")
+        end
+    end
+    iction.insanityFrame:SetScript("OnUpdate", _updateInsanity)
+
+end
+
 function iction.createArtifactFrame()
     if iction.artifactFrame~= nil then
         iction.artifactFrame:Hide()
         iction.artifactFrame = nil
+    end
+    local fntSize
+    if localizedClass == iction.L['warlock'] then
+        fntSize = 26
+    elseif localizedClass == iction.L['priest'] then
+        fntSize = 20
     end
 
     local next = next
@@ -232,8 +261,8 @@ function iction.createArtifactFrame()
         iction.artifactFrameBldr = iction.UIElement
         iction.artifactFrame = iction.artifactFrameBldr.create(iction.artifactFrameBldr, artifactData)
         iction.artifactFrame.texture = iction.artifactFrameBldr.addTexture(iction.artifactFrame, "artifact-01", 15, 15, "ARTWORK", true, nil, nil, nil, GetSpellTexture(artifact['id']), 1, 1, 1, 1)
-        iction.artifactFrame.text = iction.artifactFrameBldr.addFontSring(iction.artifactFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 28, 1, 1, 1, 1)
-        local function _onUpdate()
+        iction.artifactFrame.text = iction.artifactFrameBldr.addFontSring(iction.artifactFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, fntSize, 1, 1, 1, 1)
+        local function _warlockUpdate()
             local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", artifact['name'])
             local charges, _, _, _ = GetSpellCharges(artifact['name'])
             if count == nil and charges == nil then
@@ -246,7 +275,51 @@ function iction.createArtifactFrame()
                 end
             end
         end
-        iction.artifactFrame:SetScript("OnUpdate", _onUpdate)
+
+        local function _priestUpdate()
+            if iction.buffActive(194249) then
+                iction.artifactFrame.texture:SetVertexColor(1, 1, 1, 1)
+            else
+                iction.artifactFrame.texture:SetVertexColor(1, .1, .1, .7)
+            end
+
+            --- Update channeled timer for artifact channel
+            local channeledSpellID, cexpires = iction.getChannelSpell()
+            if channeledSpellID == 205065 then
+                local remainingT = cexpires - GetTime()
+                local TL = tonumber(string.format("%.1f", (remainingT)))
+                if TL > 3 then
+                    iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
+                else
+                    iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
+                end
+                iction.artifactFrame.text:SetText(tostring(TL))
+
+            elseif iction.isSpellOnCooldown(205065) then
+                local start, duration, _ = GetSpellCooldown(205065)
+                if duration > 1.5 then
+                    local cdET = iction.fetchCooldownET(205065)
+                    local remainingT = cdET - GetTime()
+                    local TL = tonumber(string.format("%.1d", (remainingT)))
+                    iction.artifactFrame.texture:SetVertexColor(.55, .1, .1, 1)
+                    if TL > 3 then
+                        iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
+                    else
+                        iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
+                    end
+                    iction.artifactFrame.text:SetText(TL)
+                end
+            else
+                iction.artifactFrame.text:SetText("")
+            end
+            --- Sparkle on insanity
+        end
+
+        if localizedClass == iction.L['warlock'] then
+            iction.artifactFrame:SetScript("OnUpdate", _warlockUpdate)
+        elseif localizedClass == iction.L['priest'] and iction.spec == 3 then
+            iction.artifactFrame:SetScript("OnUpdate", _priestUpdate)
+        end
     end
 end
 
@@ -264,7 +337,6 @@ function iction.createHighlightFrame()
 end
 
 function iction.unlockUIElements(isMovable)
-    local localizedClass, _, _ = UnitClass("Player");
     local cols = iction.debuffColumns
     if isMovable then
         -- override colors for special frames
@@ -275,6 +347,8 @@ function iction.unlockUIElements(isMovable)
         if localizedClass == iction.L['warlock'] then
             iction.setMovable(iction.shardFrame, isMovable, false)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
+        elseif localizedClass == iction.L['priest'] then
+            if  iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false) end
         end
     else
         -- override colors for special frames
@@ -285,6 +359,8 @@ function iction.unlockUIElements(isMovable)
         if localizedClass == iction.L['warlock'] then
             iction.setMovable(iction.shardFrame, isMovable, true)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
+        elseif localizedClass == iction.L['priest'] then
+            if iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false, {0, 0, 0, 1}) end
         end
     end
     for f in ictionlist_iter(cols) do
@@ -295,7 +371,7 @@ function iction.unlockUIElements(isMovable)
     end
 end
 
-function iction.setMovable(f, isMovable, hideDefault)
+function iction.setMovable(f, isMovable, hideDefault, color)
     if f then
         local frameName = f:GetAttribute("name")
         if isMovable then
@@ -329,10 +405,6 @@ function iction.setMovable(f, isMovable, hideDefault)
                f:SetParent(iction.ictionMF)
                local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
                local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
-               if iction.debug then print("point: " .. tostring(point)) end
-               if iction.debug then print("relativeTo: " .. tostring(relativeTo)) end
-               if iction.debug then print("xOffset: " .. tostring(xOffset)) end
-               if iction.debug then print("yOffset: " .. tostring(yOffset)) end
                ictionFramePos[frameName]['point']['x'] = xOffset-MFxOffset
                ictionFramePos[frameName]['point']['y'] = yOffset-MFyOffset
                ictionFramePos[frameName]['point']['pos'] = point
@@ -342,7 +414,14 @@ function iction.setMovable(f, isMovable, hideDefault)
         else
             f:EnableMouse(false)
             f:SetMovable(false)
-            if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0) else f.texture:SetVertexColor(1, 1, 1, 1) end
+            if hideDefault then f.texture:SetVertexColor(0, 0, 0, 0)
+            else
+                if color == nil then
+                    f.texture:SetVertexColor(1, 1, 1, 1)
+                else
+                    f.texture:SetVertexColor(color[1], color[2], color[3], color[4])
+                end
+            end
             f:SetScript("OnMouseDown", nil)
             f:SetScript("OnMouseUp", nil)
             if f.text ~= nil then f.text:SetText("") end

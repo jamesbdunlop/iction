@@ -1,3 +1,4 @@
+local localizedClass, _, _ = UnitClass("Player")
 ----------------------------------------------------------------------------------------------
 --- MAIN FRAME UI STUFF ---
 function iction.setMTapBorder()
@@ -5,20 +6,24 @@ function iction.setMTapBorder()
     local mtOpacity = .6
     mt = false
 
-    if iction.buffActive(196104) == true or iction.buffActive(117828) == true or iction.buffActive(232698) then
+    if iction.buffActive(196104) == true or iction.buffActive(117828) == true or iction.buffActive(232698) or iction.buffActive(194249) then
         mt = true
     end
 
     if mt then
         for x=1, 4 do
-            f = iction.uiBotBarArt[x]
+            local f = iction.uiBotBarArt[x]
             if f then
-                f.texture:SetVertexColor(.1, 1, .1, 1)
+                if iction.buffActive(194249) then
+                    f.texture:SetVertexColor(1, .2, 1, 1)
+                else
+                    f.texture:SetVertexColor(.1, 1, .1, 1)
+                end
             end
         end
     else
         for x=1, 4 do
-            f = iction.uiBotBarArt[x]
+            local f = iction.uiBotBarArt[x]
             if f then
                 f.texture:SetVertexColor(1, 1, 1, 1)
             end
@@ -192,12 +197,13 @@ end
 --- TIMERS UTILS -----------------------------------------------------------------------------
 function iction.oocCleanup()
     --- Clear target all data as we exited combat except buffs that might be running
-    if not UnitAffectingCombat("player") then
+    if UnitAffectingCombat("player") then
+        return
+    elseif not UnitAffectingCombat("player") then
         if iction.targetTableExists() then
             for guid, targets in pairs(iction.targetData) do
                 if guid ~= iction.playerGUID then
                     --if iction.targetData[guid]['dead'] then
-                    if iction.debug then print("Removing iction.targetData[guid]" .. tostring(guid)) end
                     if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
                     if iction.stackFrames[guid] then
                         -- hide all button stack frames that were build
@@ -228,7 +234,6 @@ function iction.oocCleanup()
                 for guid, targets in pairs(iction.targetFrames) do
                     if guid ~= iction.playerGUID then
                         if iction.targetFrames[guid] ~= nil then
-                            if iction.debug then print("Removing iction.targetFrames[guid]" .. tostring(guid)) end
                             iction.targetFrames[guid]:Hide()
                         end
                         if iction.targetFrames[guid] then
@@ -332,6 +337,25 @@ function iction.currentBuffExpires()
             end
         end
     end
+    --- Insanity handler
+    if iction.targetButtons[iction.playerGUID] ~= nil then
+        local insanity = UnitPower("player", SPELL_POWER_INSANITY)
+        local shortVoid = false
+        for x=1, 7 do
+            for c=1, 3 do
+                local _, name, _, selected, _, spellid = GetTalentInfo(x, c, 1)
+                if spellid == 193225 and selected then shortVoid = true end
+            end
+        end
+
+        if shortVoid and insanity >= 70 then
+            iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)
+        elseif insanity == 100 then
+            iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)
+        else
+            iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(.3,.3,.3,.5)
+        end
+    end
 end
 
 function iction.clearAllSeeds(guid)
@@ -426,7 +450,9 @@ end
 ------------------------------------------
 --- Update current target debuffs
 function iction.currentTargetDebuffExpires()
-    if (UnitName("target")) then
+    if not (UnitName("target")) then
+        return
+    elseif (UnitName("target")) then
         local guid = UnitGUID("Target")
         iction.updateUACount(guid)
         iction.setNonTargetCooldown(guid)
@@ -518,6 +544,87 @@ function iction.setTargetCooldown(guid)
                     end
                 end
             end
+        end
+    end
+end
+
+function iction.specChanged()
+    local spec = GetSpecialization()
+    if iction.spec ~= spec then
+        iction.spec = spec
+        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!", 15, 25, 35)
+        -- Cleanup various elements now.
+        if iction.targetFrames[iction.playerGUID] ~= nil then
+            for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
+                if iction.targetButtons[iction.playerGUID]["buttonFrames"][i] ~= nil then
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][i]:Hide()
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][i] = nil
+                end
+            end
+            for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonText"]) do
+                if iction.targetButtons[iction.playerGUID]["buttonText"][i] ~= nil then
+                    iction.targetButtons[iction.playerGUID]["buttonText"][i]:Hide()
+                    iction.targetButtons[iction.playerGUID]["buttonText"][i] = nil
+                end
+            end
+            iction.targetFrames[iction.playerGUID]:Hide()
+            iction.targetFrames[iction.playerGUID] = nil
+        end
+
+        iction.shardFrame = nil
+        iction.highlightFrameTexture = nil
+
+        -- Now recreate the button libs
+        iction.setDebuffButtonLib()
+        iction.setBuffButtonLib()
+        -- Conflag frame for destro spec
+        if iction.spec == 3 then
+            iction.createConflagFrame()
+        else
+            if iction.conflagFrame ~= nil then
+                iction.conflagFrame:Hide()
+            end
+        end
+        -- Reset all soul shard images to 0 as the shard count resets on spec change
+        for i = 1, iction.tablelength(iction.soulShards) do
+            if iction.soulShards[i] ~= nil then
+                iction.soulShards[i]:Hide()
+            end
+        end
+        iction.createShardFrame()
+        local shards = UnitPower("Player", 7)
+        iction.setSoulShards(shards)
+        -- Change the artifact frame
+        iction.createArtifactFrame()
+        -- Reset highlightframe size for buttons changes
+        iction.highlightFrameTexture = iction.createHighlightFrame()
+    end
+end
+
+function iction.checkKillingBlowSpells()
+    local tgtGUID = UnitGUID("Target")
+    if localizedClass == iction.L['priest'] then
+        if not iction.spellIDActive(tgtGUID, 32379) then
+            if iction.colGUIDExists(tgtGUID) then
+                iction.createTargetSpellData(tgtGUID, '', "DEBUFF", 32379)
+                iction.createExpiresData(tgtGUID, "", "DEBUFF", 32379)
+            end
+        end
+        if iction.colGUIDExists(tgtGUID) then
+            if not iction.isSpellOnCooldown(32379) then
+                iction.targetButtons[tgtGUID]["buttonFrames"][32379].texture:SetVertexColor(.1,1,.1,1)
+            end
+        end
+    end
+end
+
+function iction.getTargetHP()
+    if UnitName("target") then
+        local health = UnitHealth("target")
+        local max_health = UnitHealthMax("target")
+        local percent = (max_health *.2)
+        if health <= percent then
+            iction.checkKillingBlowSpells()
         end
     end
 end

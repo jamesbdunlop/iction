@@ -32,6 +32,7 @@ core\ict_button.lua
 core\ict_timers.lua
 core\ict_spellFrame.lua
 core\ict_target.lua
+core\ict_insanity.lua
 
 ##--- Frame watchers
 watchers\ict_lockWatcher.lua
@@ -48,6 +49,8 @@ frames\buffFrame.lua
 frames\debuffFrame.lua
 frames\shardFrame.lua
 frames\conflagFrame.lua
+frames\voidFrame.lua
+frames\insanityFrame.lua
 frames\artifactFrame.lua
 frames\highlightFrame.lua
 frames\spellFrame.lua

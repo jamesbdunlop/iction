@@ -1,37 +1,15 @@
 --- Core frame class
 local iction = iction
 iction.UIElement = {}
-local ictDefaultFrameData = {uiType = "Frame",
-                            uiName = "TestFrame",
-                            nameAttr = "TestName",
-                            uiParentFrame = iction.ictionMF,
-                            uiInherits = nil,
-                            userPlaced = true,
-                            movable = true,
-                            enableMouse = false,
-                            SetClampedToScreen = true,
-                            w = 50,
-                            h = 50,
-                            bgCol = {r = 0, g = 1, b= 0, a = 0},
-                            strata = "HIGH",
-                            texture = {name = nil, allPoints = true,
-                                       texture= "Interface\\ChatFrame\\ChatFrameBackground",
-                                       vr = 1, vg = 1, vb = 1, va = 1, level = "ARTWORK" },
-                            point = {pos = "TOP", p = iction.ictionMF, x = 10, y = 0}
-                            }
-
 function iction.UIElement.create(self, data)
     local attrName = data['nameAttr']
-    if iction.debug then print('attrName: ' .. tostring(attrName)) end
     if not ictionFramePos[attrName] then
-        if iction.debug then print('attrName ' .. tostring(attrName) .. ' has no global position stored ' ) end
         ictionFramePos[attrName] = {}
         ictionFramePos[attrName]["point"] = {}
         ictionFramePos[attrName]["point"]['pos'] = data["point"]['pos']
         ictionFramePos[attrName]["point"]['x']   = data["point"]['x']
         ictionFramePos[attrName]["point"]['y']   = data["point"]['y']
     else
-        if iction.debug then print('attrName ' .. tostring(attrName) .. ' has global positions!' ) end
         data["point"]['pos'] = ictionFramePos[attrName]["point"]['pos']
         data["point"]['x'] = ictionFramePos[attrName]["point"]['x']
         data["point"]['y'] = ictionFramePos[attrName]["point"]['y']

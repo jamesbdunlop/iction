@@ -1,10 +1,7 @@
 ----------------------------------------------------------------------------------------------
 --- CREATE TARGET SPELLS UI  ---
 function iction.createSpellFrame(creatureName, guid, bgFile)
-    if iction.debug then print("Dbg: iction.createSpellFrame for " .. tostring(creatureName)) end
     local freeSlot, colID = iction.findSlot(guid)
-    if iction.debug then print("freeSlot " .. tostring(freeSlot)) end
-    if iction.debug then print("colID " .. tostring(colID)) end
     if freeSlot and not iction.targetFrames[guid] then
         iction.targetFrames[guid] = CreateFrame("Frame", nil)
         iction.targetFrames[guid]:SetAttribute("name", 'ictionDeBuffFrame')
@@ -40,7 +37,6 @@ end
 ----------------------------------------------------------------------------------------------
 --- CREATE PLAYER BUFF UI  ---
 function iction.createPlayerBuffFrame()
-    if iction.debug then print("Dbg: iction.createPlayerBuffFrame") end
     local fw, fh
     if not iction.targetFrames[iction.playerGUID] then
         local offset

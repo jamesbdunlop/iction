@@ -7,14 +7,23 @@ function iction.addButtonsToTable(buttonList, desttable)
             if spellData["isTalentSpell"] then
                 for x=1, 7 do
                     for c=1, 3 do
-                        local _, name, _, selected, _ = GetTalentInfo(x, c, 1)
-                        if name == spellData['name'] and selected then
+                        local _, name, _, selected, _, spellid = GetTalentInfo(x, c, 1)
+                        --- how is it that ShadowyInsight talent and buff applied have different id's argh
+                        if spellData['id'] == 124430 and spellid == 162452 then
+                            if selected then
+                                spellData['vis'] = true
+                                spellData['insert'] = true
+                            end
+                        end
+
+                        if spellid == spellData['id'] and selected then
                             spellData['vis'] = true
                             spellData['insert'] = true
                             --- Drain soul / drain life spellButton switch
-                            if spellData['name'] == "Drain Soul" and selected then
+                            if spellData['id'] == 198590 and selected then
                                 bList[4]['DrainLife']['insert'] = false
                                 bList[5]['DrainSoul']['insert'] = true
+
     end end end end end end end
 
     for _, data in ipairs(bList) do
@@ -38,6 +47,8 @@ function iction.tablelength(T)
   for _ in pairs(T) do count = count + 1 end
   return count
 end
+
+local localizedClass, _, _ = UnitClass("Player")
 
 function iction.setDebuffButtonLib()
     local buttonLib

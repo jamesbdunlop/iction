@@ -9,12 +9,10 @@ function iction.createTarget(guid, creatureName, spellName, spellType, spellID)
         elseif guid == iction.playerGUID then
             frm = iction.createPlayerBuffFrame() end
 
-        if iction.debug then print("\tfrm: "  .. tostring(frm)) end
         if frm then iction.createButtons(frm, guid, spellType) end
         iction.createTargetData(guid, creatureName)
         iction.createTargetSpellData(guid, spellName, spellType, spellID)
         iction.createExpiresData(guid, spellName, spellType, spellID)
-        if iction.debug then print("Target successfully created") end
     end
 end
 

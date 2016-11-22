@@ -8,7 +8,6 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
         if value['vis'] then
             local spellID = value['id']
             -- Create the button frame
-            if iction.debug then print("Creating button for " .. value['name']) end
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
                   b:SetAttribute("name", value['id'])
                   b:SetFrameStrata("MEDIUM")
