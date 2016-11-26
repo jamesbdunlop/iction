@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------
 --- BUTTON GENERATOR -------------------------------------------------------------------------
 function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
+    if iction.debug then print("buttonBuild") end
     -- Create an empty button table
     local buttonFrames = {}
     local buttonText = {}
@@ -9,7 +10,10 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
             local spellID = value['id']
             -- Create the button frame
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
+                  print("created a button: " .. tostring(value['name']))
+                  b:RegisterEvent("SPELL_CAST_START")
                   b:SetAttribute("name", value['id'])
+                  b:SetAttribute("spellName", value['name'])
                   b:SetFrameStrata("MEDIUM")
                   b:EnableMouse(false)
                   b:SetDisabledFontObject("GameFontDisable")
@@ -20,12 +24,8 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
                   b:SetPoint("BOTTOM", pFrame, paddingX, paddingY)
             local but = b:CreateTexture(nil, "ARTWORK")
                   but:SetAllPoints(true)
-                  if value['id'] == nil then
-                      but:SetTexture(value['icon'])
-                  else
-                     local file_id = GetSpellTexture(value['id'])
-                      but:SetTexture(file_id)
-                 end
+                  local file_id = GetSpellTexture(value['id'])
+                  but:SetTexture(file_id)
                   but:SetVertexColor(0.9,0.3,0.3, .5)
             b.texture = but
             -- Create the fontString for the button

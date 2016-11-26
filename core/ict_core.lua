@@ -28,6 +28,7 @@ iction.uiPlayerArtifact = {}
 iction.uiBotBarArt = {}
 iction.playerGUID = UnitGUID("Player")
 iction.debug = false
+iction.debugTimers = false
 iction.font = iction.SharedMedia:Fetch("font", "FRIZQT__")
 iction.setCastBar = true
 iction.cbX = 0

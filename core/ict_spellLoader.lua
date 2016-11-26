@@ -15,15 +15,15 @@ function iction.addButtonsToTable(buttonList, desttable)
                                 spellData['insert'] = true
                             end
                         end
-
-                        if spellid == spellData['id'] and selected then
-                            spellData['vis'] = true
-                            spellData['insert'] = true
-                            --- Drain soul / drain life spellButton switch
-                            if spellData['id'] == 198590 and selected then
-                                bList[4]['DrainLife']['insert'] = false
-                                bList[5]['DrainSoul']['insert'] = true
-
+                        if spellData['tid'] ~= nil then
+                            if spellid == spellData['tid'] and selected then
+                                spellData['vis'] = true
+                                spellData['insert'] = true
+                                --- Drain soul / drain life spellButton switch
+                                if spellData['tid'] == 198590 and selected then
+                                    bList[4]['DrainLife']['insert'] = false
+                                    bList[5]['DrainSoul']['insert'] = true
+                                end
     end end end end end end end
 
     for _, data in ipairs(bList) do
@@ -33,7 +33,6 @@ function iction.addButtonsToTable(buttonList, desttable)
                                          h = iction.bh,
                                          w = iction.bw,
                                          inherits = "SecureActionButtonTemplate",
-                                         icon = spellData['icon'],
                                          id = spellData['id'],
                                          duration = spellData['duration'],
                                          maxTime = spellData['maxTime'],

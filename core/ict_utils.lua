@@ -64,9 +64,9 @@ end
 
 ----------------------------------------------------------------------------------------------
 --- BUTTON UTILS -----------------------------------------------------------------------------
-function iction.setButtonState(active, hidden, button, refresh)
+function iction.setButtonState(active, hidden, button, refresh, procced)
     if button ~= nil then
-        if active and not refresh then
+        if active and not refresh and not procced then
             button:SetBackdropColor(1, 1, 1, 1)
             button.texture:SetVertexColor(0.9,0.9,0.9, .9)
         elseif hidden then
@@ -75,6 +75,9 @@ function iction.setButtonState(active, hidden, button, refresh)
         elseif active and refresh then
             button:SetBackdropColor(1, 1, 1, 1)
             button.texture:SetVertexColor(1, 0, 0, 1)
+        elseif active and procced then
+            button:SetBackdropColor(1, 1, .1, 1)
+            button.texture:SetVertexColor(1, 1, .1, 1)
         else
             button.texture:SetVertexColor(0.9,0.3,0.3, .5)
         end
@@ -203,14 +206,18 @@ function iction.oocCleanup()
         if iction.targetTableExists() then
             for guid, targets in pairs(iction.targetData) do
                 if guid ~= iction.playerGUID then
-                    --if iction.targetData[guid]['dead'] then
-                    if iction.targetFrames[guid] then iction.targetFrames[guid]:Hide() end
+                    if iction.targetFrames[guid] then
+                        iction.targetFrames[guid]:Hide()
+                    end
+
                     if iction.stackFrames[guid] then
                         -- hide all button stack frames that were build
                         for i = 1, iction.tablelength(iction.stackFrames[guid]) do
                             if iction.stackFrames[guid][i] ~= nil then
+                                print("Removed stackFrame: " .. tostring(iction.stackFrames[guid][i]))
                                 iction.stackFrames[guid][i]['frame']:Hide()
                                 iction.stackFrames[guid][i]= nil
+                                iction.stackFrames[guid] = nil
                             end
                         end
                     end
@@ -249,7 +256,7 @@ end
 
 function iction.highlightTargetSpellframe(guid)
     if UnitAffectingCombat("player") then
-        if guid == nil then
+        if guid == nil or not (UnitName("target")) then
             iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
         elseif guid ~= iction.playerGUID then
             local prev = iction.hlGuid
@@ -263,6 +270,12 @@ function iction.highlightTargetSpellframe(guid)
                         iction.highlightFrame:SetPoint("CENTER", f, 0, 0)
                         iction.hlGuid = guid
                     else
+                        iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
+                    end
+                end
+            else
+                if iction.targetData[guid] ~= nil then
+                    if iction.targetData[guid]['dead'] then
                         iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
                     end
                 end
@@ -396,11 +409,23 @@ end
 function iction.tagDeadTarget(guid)
     -- Fix the current tracked targets state
     if guid ~= iction.playerGUI then
-        if iction.targetData[guid] ~= nil then
+        if iction.targetData[guid] then
             iction.hideFrame(guid, true)
             iction.targetData[guid]['dead'] = true
             iction.targetData[guid]['spellData'] = nil
-            iction.highlightTargetSpellframe(guid)
+            --- Hide all button stack frames that were built
+            if iction.stackFrames[guid] then
+                for k, v in pairs(iction.stackFrames[guid]) do
+                    for p, q in pairs(v) do
+                        if p == 'frame' then
+                            q:SetBackdropColor(0,0,0,0)
+                            q.texture:SetVertexColor(0,0,0,0)
+                        elseif p == 'font' then
+                            q:SetText("")
+                        end
+                    end
+                end
+            end
         end
         -- Fix the display columns
         local found, id = iction.colGUIDExists(guid)
@@ -441,7 +466,9 @@ function iction.updateUACount(guid)
                 iction.createTarget(guid, "aMob", "Unstable Afflction", "DEBUFF", 233490)
             end
             if iction.targetData[guid]['spellData'] ~= nil then
-                iction.targetData[guid]['spellData'][233490]['count'] = UACount
+                if iction.targetData[guid]['spellData'][233490] ~= nil then
+                    iction.targetData[guid]['spellData'][233490]['count'] = UACount
+                end
             end
         end
     end
@@ -492,6 +519,7 @@ function iction.currentTargetDebuffExpires()
             end
         end
     end
+    iction.getTargetHP()
 end
 
 function iction.setNonTargetCooldown(guidToIgnore)
@@ -601,30 +629,75 @@ function iction.specChanged()
     end
 end
 
-function iction.checkKillingBlowSpells()
-    local tgtGUID = UnitGUID("Target")
-    if localizedClass == iction.L['priest'] then
-        if not iction.spellIDActive(tgtGUID, 32379) then
-            if iction.colGUIDExists(tgtGUID) then
-                iction.createTargetSpellData(tgtGUID, '', "DEBUFF", 32379)
-                iction.createExpiresData(tgtGUID, "", "DEBUFF", 32379)
-            end
-        end
-        if iction.colGUIDExists(tgtGUID) then
-            if not iction.isSpellOnCooldown(32379) then
-                iction.targetButtons[tgtGUID]["buttonFrames"][32379].texture:SetVertexColor(.1,1,.1,1)
+--function iction.checkKillingBlowSpells(tguid)
+--    if tguid == nil then return end
+--
+--    if localizedClass == iction.L['priest'] then
+--        local swdID = 32379
+--        for guid, data in pairs(iction.targetData) do
+--            if data['spellData'] ~= nil then
+--                local isDead = data['dead']
+--                local spells = data['spellData']
+--                if not isDead then
+--                    if not iction.spellIDActive(guid, swdID) then
+--                        iction.createTargetSpellData(guid, "", "DEBUFF", swdID)
+--                        iction.createExpiresData(guid, "", "DEBUFF", swdID)
+--                    end
+--                end
+--            end
+--        end
+--        for guid, data in pairs(iction.targetData) do
+--            if tguid == guid then
+--                if data['spellData'] ~= nil then
+--                    local isDead = data['dead']
+--                    local spells = data['spellData']
+--                    if not isDead then
+--                        --- Now change button if not on cooldown
+--                        if not iction.isSpellOnCooldown(swdID) then
+--                            local charges, maxCharges, start, duration = GetSpellCharges(swdID)
+--                            if charges ~= nil and charges ~= 0 then
+--                                iction.targetData[guid]['spellData'][swdID]['count'] = charges
+--                            end
+--
+--                            if iction.isValidButtonFrame(guid) then
+--                                if iction.targetButtons[guid]["buttonFrames"][swdID] ~= nil then
+--                                    if iction.getTargetHP() then
+--                                        iction.setButtonState(true, false, iction.targetButtons[guid]["buttonFrames"][swdID], false, true)
+--                                    else
+--                                        iction.setButtonState(false, true, iction.targetButtons[guid]["buttonFrames"][swdID], false, false)
+--                                    end
+--                                end
+--                            end
+--                        end
+--                    end
+--                end
+--            end
+--        end
+--    end
+--end
+
+function iction.isReaperActive()
+    for x=1, 7 do
+        for c=1, 3 do
+            local _, name, _, selected, _, spellid = GetTalentInfo(x, c, 1)
+            --- how is it that ShadowyInsight talent and buff applied have different id's argh
+            if spellid == 199853 and selected then
+                return .35
             end
         end
     end
+    return .20
 end
 
 function iction.getTargetHP()
     if UnitName("target") then
         local health = UnitHealth("target")
         local max_health = UnitHealthMax("target")
-        local percent = (max_health *.2)
+        local percent = (max_health * iction.isReaperActive())
         if health <= percent then
-            iction.checkKillingBlowSpells()
+            return true
+        else
+            return false
         end
     end
 end

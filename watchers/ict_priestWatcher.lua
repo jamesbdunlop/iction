@@ -1,6 +1,15 @@
 local last = 0
 function iction.ictionPriestFrameWatcher(mainFrame)
     mainFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    mainFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    mainFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+    mainFrame:RegisterEvent("SPELL_AURA_REMOVED")
+    mainFrame:RegisterEvent("SPELL_AURA_APPLIED")
+    mainFrame:RegisterEvent("SPELL_AURA_APPLIED_DOSE")
+    mainFrame:RegisterEvent("SPELL_DAMAGE")
+    mainFrame:RegisterEvent("SPELL_CAST_SUCCESS")
+    mainFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1, prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
         local event = event
         local eventName = eventName
@@ -11,11 +20,24 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         mobName = prefix3
         spellName = sufx4
         spellID = sufx3
-        if eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
+--        if sourceGUID == iction.playerGUID and eventName == "SPELL_CAST_SUCCESS" then
+--            print('spellType spellName: ' .. tostring(spellName))
+--            print('spellType spcstSuc: ' .. tostring(sufx6))
+--        end
+
+        if sourceGUID == iction.playerGUID and eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
             spellType = "DEBUFF"
         else
             spellType = sufx6
         end
+
+--        if sourceGUID == iction.playerGUID and spellID == 32379 then
+--            print("eventName: " .. tostring(eventName))
+--            print("spellID: " .. tostring(spellID))
+--            print("spellName: " .. tostring(spellName))
+--            print("spellType: " .. tostring(spellType))
+--            print("#####")
+--        end
         --------------------------------------------------------------------------------------
         if event == "PLAYER_SPECIALIZATION_CHANGED" then
             iction.specChanged()
@@ -33,19 +55,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                 if mobGUID ~= iction.playerGIUD then
                     iction.tagDeadTarget(mobGUID)
                     iction.targetData[mobGUID] = nil
-                    --- Hide all button stack frames that were built
-                    if iction.stackFrames[mobGUID] then
-                        for k, v in pairs(iction.stackFrames[mobGUID]) do
-                            for p, q in pairs(v) do
-                                if p == 'frame' then
-                                    q:SetBackdropColor(0,0,0,0)
-                                    q.texture:SetVertexColor(0,0,0,0)
-                                elseif p == 'font' then
-                                    q:SetText("")
-                                end
-                            end
-                        end
-                    end
+
                 end
             end
             removeDead()
@@ -91,18 +101,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                     --- SPELL AURA APPLIED
                     if eventName == "SPELL_AURA_APPLIED" then
                         if spellID == 15407 then iction.clearChannelData() end      --- MindFlay
-                        if spellID == 124430 then
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                        else
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                        end
-
-
-                    elseif eventName == "SPELL_ENERGIZE" then
-                        --- MindBlast OPENING CAST
-                        if spellID == 8092 then                                     --- MindBlast
-                            iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
-                        end
+                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_AURA_REFRESH" then
                         iction.clearChannelData()
@@ -130,6 +129,23 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                             end
                         end
                     end
+                    --- SWD
+                    if mobGUID ~= iction.playerGUID and iction.targetData[mobGUID] then
+                        local swdID = 32379
+                        if iction.targetData[mobGUID]['spellData'][swdID] == nil then
+                            iction.createTarget(mobGUID, "", "Shadow Word: Death", "DEBUFF", swdID)
+                        end
+                        if iction.isValidButtonFrame(mobGUID) then
+                            local charges, _, _, _ = GetSpellCharges(swdID)
+                            local timerText = iction.targetButtons[mobGUID]["buttonText"][swdID]
+                            local timerButtonFrame = iction.targetButtons[mobGUID]["buttonFrames"][swdID]
+                            local charges, _, _, _ = GetSpellCharges(swdID)
+                            if charges ~= nil and charges ~= 0 then
+                                iction.targetData[mobGUID]['spellData'][swdID]['count'] = charges
+                                iction.createStackFrame(mobGUID, "SWD", charges, timerText, timerButtonFrame, swdID)
+                            end
+                        end
+                    end
                 end
             end
         end
@@ -138,15 +154,14 @@ function iction.ictionPriestFrameWatcher(mainFrame)
     mainFrame:SetScript("OnEvent", eventHandler)
     -- ON UPDATE CHECKS
     local function _onUpdate(self, elapsed)
-        iction.getTargetHP()
         last = last + elapsed
-        if last >= 1 then
+        if last >= .15 then
+            iction.currentTargetDebuffExpires()
             iction.oocCleanup()
             iction.setMTapBorder()
-            iction.currentTargetDebuffExpires()
             iction.currentBuffExpires()
-            iction.updateTimers()
         end
+        iction.updateTimers()
     end
     mainFrame:SetScript("OnUpdate", _onUpdate)
     mainFrame:UnregisterEvent("ADDON_LOADED")
