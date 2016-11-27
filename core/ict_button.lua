@@ -10,7 +10,6 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
             local spellID = value['id']
             -- Create the button frame
             local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
-                  print("created a button: " .. tostring(value['name']))
                   b:RegisterEvent("SPELL_CAST_START")
                   b:SetAttribute("name", value['id'])
                   b:SetAttribute("spellName", value['name'])
