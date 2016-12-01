@@ -148,6 +148,7 @@ function iction.createStackFrame(guid, spellName, count, timerText, timerButtonF
         end
     end
 end
+
 local localizedClass, _, _ = UnitClass("Player")
 function iction.updateTimers()
         if iction.targetData ~= nil then
@@ -248,8 +249,6 @@ function iction.updateTimers()
                                     end
                                 end
                             end
-
-
                         end
                     end
                 else
@@ -288,7 +287,7 @@ function iction.updateTimers()
                     end
                     local swdID = 32379
                     local tguid = UnitGUID("Target")
-                    if tguid == guid then
+                    if tguid == guid  and guid ~= iction.playerGUID then
                         if data['spellData'] ~= nil then
                             local isDead = data['dead']
                             local spells = data['spellData']
@@ -310,14 +309,5 @@ function iction.updateTimers()
                                     if iction.isValidButtonFrame(guid) then
                                         if iction.targetButtons[guid]["buttonFrames"][swdID] ~= nil then
                                             iction.setButtonState(true, false, iction.targetButtons[guid]["buttonFrames"][swdID], false, true)
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
+    end end end end end end end end end end
 end

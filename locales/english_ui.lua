@@ -41,3 +41,4 @@ L['close'] = "Close"
 --- UI stuff
 L['warlock'] = 'Warlock'
 L['priest'] = 'Priest'
+L['specChangeMSG'] = "\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!"

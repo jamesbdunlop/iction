@@ -577,10 +577,13 @@ function iction.setTargetCooldown(guid)
 end
 
 function iction.specChanged()
+    local localizedClass, _, _ = UnitClass("Player")
     local spec = GetSpecialization()
+    if not iction.ictionMF then iction.initMainUI() end
     if iction.spec ~= spec then
         iction.spec = spec
-        DEFAULT_CHAT_FRAME:AddMessage("\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!", 15, 25, 35)
+
+        DEFAULT_CHAT_FRAME:AddMessage(iction.L['specChangeMSG'], 15, 25, 35)
         -- Cleanup various elements now.
         if iction.targetFrames[iction.playerGUID] ~= nil then
             for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
@@ -601,80 +604,45 @@ function iction.specChanged()
 
         iction.shardFrame = nil
         iction.highlightFrameTexture = nil
+        if localizedClass == iction.L['warlock'] then
+            -- Conflag frame for destro spec
+            if iction.spec == 3 then
+                iction.createConflagFrame()
+            else
+                if iction.conflagFrame ~= nil then
+                    iction.conflagFrame:Hide()
+                end
+            end
+            -- Reset all soul shard images to 0 as the shard count resets on spec change
+            for i = 1, iction.tablelength(iction.soulShards) do
+                if iction.soulShards[i] ~= nil then
+                    iction.soulShards[i]:Hide()
+                end
+            end
+            iction.createShardFrame()
+            local shards = UnitPower("Player", 7)
+            iction.setSoulShards(shards)
+        end
 
+        if localizedClass == iction.L['priest'] then
+            if spec == 3 then
+                iction.spells = iction.priestspells
+                iction.ictionMF:Show()
+            else
+                if iction.ictionMF then iction.ictionMF:Hide() end
+                iction.spec = spec
+                return
+            end
+        end
         -- Now recreate the button libs
         iction.setDebuffButtonLib()
         iction.setBuffButtonLib()
-        -- Conflag frame for destro spec
-        if iction.spec == 3 then
-            iction.createConflagFrame()
-        else
-            if iction.conflagFrame ~= nil then
-                iction.conflagFrame:Hide()
-            end
-        end
-        -- Reset all soul shard images to 0 as the shard count resets on spec change
-        for i = 1, iction.tablelength(iction.soulShards) do
-            if iction.soulShards[i] ~= nil then
-                iction.soulShards[i]:Hide()
-            end
-        end
-        iction.createShardFrame()
-        local shards = UnitPower("Player", 7)
-        iction.setSoulShards(shards)
         -- Change the artifact frame
         iction.createArtifactFrame()
         -- Reset highlightframe size for buttons changes
         iction.highlightFrameTexture = iction.createHighlightFrame()
     end
 end
-
---function iction.checkKillingBlowSpells(tguid)
---    if tguid == nil then return end
---
---    if localizedClass == iction.L['priest'] then
---        local swdID = 32379
---        for guid, data in pairs(iction.targetData) do
---            if data['spellData'] ~= nil then
---                local isDead = data['dead']
---                local spells = data['spellData']
---                if not isDead then
---                    if not iction.spellIDActive(guid, swdID) then
---                        iction.createTargetSpellData(guid, "", "DEBUFF", swdID)
---                        iction.createExpiresData(guid, "", "DEBUFF", swdID)
---                    end
---                end
---            end
---        end
---        for guid, data in pairs(iction.targetData) do
---            if tguid == guid then
---                if data['spellData'] ~= nil then
---                    local isDead = data['dead']
---                    local spells = data['spellData']
---                    if not isDead then
---                        --- Now change button if not on cooldown
---                        if not iction.isSpellOnCooldown(swdID) then
---                            local charges, maxCharges, start, duration = GetSpellCharges(swdID)
---                            if charges ~= nil and charges ~= 0 then
---                                iction.targetData[guid]['spellData'][swdID]['count'] = charges
---                            end
---
---                            if iction.isValidButtonFrame(guid) then
---                                if iction.targetButtons[guid]["buttonFrames"][swdID] ~= nil then
---                                    if iction.getTargetHP() then
---                                        iction.setButtonState(true, false, iction.targetButtons[guid]["buttonFrames"][swdID], false, true)
---                                    else
---                                        iction.setButtonState(false, true, iction.targetButtons[guid]["buttonFrames"][swdID], false, false)
---                                    end
---                                end
---                            end
---                        end
---                    end
---                end
---            end
---        end
---    end
---end
 
 function iction.isReaperActive()
     for x=1, 7 do

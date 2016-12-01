@@ -9,7 +9,7 @@ function iction.createTarget(guid, creatureName, spellName, spellType, spellID)
         elseif guid == iction.playerGUID then
             frm = iction.createPlayerBuffFrame() end
 
-        if frm then iction.createButtons(frm, guid, spellType) end
+        if frm then iction.createButtons(frm, guid, spellType) frm:Show() end
         iction.createTargetData(guid, creatureName)
         iction.createTargetSpellData(guid, spellName, spellType, spellID)
         iction.createExpiresData(guid, spellName, spellType, spellID)
@@ -58,7 +58,11 @@ function iction.createExpiresData(guid, spellName, spellType, spellID)
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
         if spellType == 'BUFF' then
             local _, _, _, _, _, _, expires, _, _, _, _ = UnitBuff("Player", spellName)
-            iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = expires
+            if iction.targetData[iction.playerGUID]['spellData'] then
+                if iction.targetData[iction.playerGUID]['spellData'][spellID] then
+                    iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = expires
+                end
+            end
 
         elseif spellType == 'DEBUFF' then
             local channelSpellID, cexpires = iction.getChannelSpell()

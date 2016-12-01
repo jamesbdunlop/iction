@@ -55,7 +55,6 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                 if mobGUID ~= iction.playerGIUD then
                     iction.tagDeadTarget(mobGUID)
                     iction.targetData[mobGUID] = nil
-
                 end
             end
             removeDead()

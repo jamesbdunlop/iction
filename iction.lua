@@ -1,8 +1,9 @@
---- version Release 1.2.2
-
+--- version Release 1.2.3
+-- Fixed bug with priest spec changes
+-- Fixed bug on priest when selecting self a stack frame shows up
+-- Fixed missing spec change message in locales
 
 --- TO DO
---- Remove the 1 when no UA exists
 --- On Death lingering insanity buff icon vanishes.
 
 local iction = iction
@@ -119,7 +120,6 @@ function iction.initMainUI()
     iction.createBuffFrame()
     iction.createDebuffColumns()
     iction.setcastbar()
-
 end
 
 ----------------------------------------------------------------------------------------------
