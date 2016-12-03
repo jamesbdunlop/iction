@@ -35,6 +35,7 @@ iction.priestspells = {
                     insert = true, isTalentSpell = false, vis = true, tid = nil, id = 34914, duration = 14, maxTime = 14, icon = ""}},
                 [7] = {MindBlast = {name = "Mind Blast", insert = true, isTalentSpell = false, vis = true, id = 8092, duration = 1, maxTime = 1, icon = ""}},
                 [8] = {VoidBolt = {name = "Void Bolt", insert = true, isTalentSpell = false, vis = true, id = 205448, duration = 15, maxTime = 15, icon = ""}},
+                [9] = {ShadowCrash = {name = "Shadow Crash", insert = true, isTalentSpell = false, vis = true, id = 205385, duration = 5, maxTime = 5, icon = ""}},
                 },
        buffs = {
                 [0] = nil,
