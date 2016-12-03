@@ -106,7 +106,9 @@ function iction.ictionLockFrameWatcher(mainFrame)
                         --- CONFLAG OPENING CAST
                         if spellID == 17962 then
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
+                            iction.setConflagCount()
                         end
+
                     elseif eventName == "SPELL_AURA_REFRESH" then
                         if iction.debug then print("SPELL_AURA_REFRESH") end
                         iction.setMTapBorder()
@@ -122,6 +124,8 @@ function iction.ictionLockFrameWatcher(mainFrame)
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
                         elseif spellID == 5782 then                       --- Fear
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        elseif spellID == 17962 then
+                            iction.setConflagCount()
                         end
 
                     elseif eventName == "SPELL_PERIODIC_DAMAGE" then

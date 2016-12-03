@@ -20,10 +20,6 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         mobName = prefix3
         spellName = sufx4
         spellID = sufx3
---        if sourceGUID == iction.playerGUID and eventName == "SPELL_CAST_SUCCESS" then
---            print('spellType spellName: ' .. tostring(spellName))
---            print('spellType spcstSuc: ' .. tostring(sufx6))
---        end
 
         if sourceGUID == iction.playerGUID and eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
             spellType = "DEBUFF"
@@ -31,13 +27,6 @@ function iction.ictionPriestFrameWatcher(mainFrame)
             spellType = sufx6
         end
 
---        if sourceGUID == iction.playerGUID and spellID == 32379 then
---            print("eventName: " .. tostring(eventName))
---            print("spellID: " .. tostring(spellID))
---            print("spellName: " .. tostring(spellName))
---            print("spellType: " .. tostring(spellType))
---            print("#####")
---        end
         --------------------------------------------------------------------------------------
         if event == "PLAYER_SPECIALIZATION_CHANGED" then
             iction.specChanged()

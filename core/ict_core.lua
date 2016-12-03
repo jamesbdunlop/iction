@@ -82,6 +82,6 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             if iction_cby ~= nil then iction.cbY = iction_cby end
         end
     elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
-        iction.specChanged()
+        if not iction.MF then iction.specChanged() end
     end
 end)

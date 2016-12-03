@@ -42,22 +42,28 @@ function iction.buffActive(spellID)
 end
 
 function iction.setSoulShards(shards)
-    for x = 1, 5 do
-        iction.soulShards[x]:SetVertexColor(1, 1, 1, 0)
-    end
-    for x = 1, shards do
-        iction.soulShards[x]:SetVertexColor(1, 1, 1, 1)
+    if iction.soulShards then
+        for x = 1, 5 do
+            iction.soulShards[x]:SetVertexColor(1, 1, 1, 0)
+        end
+        for x = 1, shards do
+            if iction.soulShards[x] ~= nil then
+                iction.soulShards[x]:SetVertexColor(1, 1, 1, 1)
+            end
+        end
     end
 end
 
 function iction.setConflagCount()
-    if iction.spec == 3 then
-        local confCount = iction.getConflagCharges() or 0
-        for x = 1, 2 do
-            iction.conflags[x]:SetVertexColor(1, 1, 1, 0)
-        end
-        for x = 1, confCount do
-            iction.conflags[x]:SetVertexColor(1, 1, 1, 1)
+    if localizedClass == iction.L['warlock'] then
+        if iction.spec == 3 then
+            local confCount = iction.getConflagCharges() or 0
+            for x = 1, 2 do
+                iction.conflags[x]:SetVertexColor(0, 0, 0, 0)
+            end
+            for x = 1, confCount do
+                iction.conflags[x]:SetVertexColor(1, 1, 1, 1)
+            end
         end
     end
 end
@@ -578,6 +584,12 @@ end
 
 function iction.specChanged()
     local localizedClass, _, _ = UnitClass("Player")
+    if localizedClass == iction.L['priest'] then
+        iction.spells = iction.priestspells
+    else
+        iction.spells = iction.lockspells
+    end
+
     local spec = GetSpecialization()
     if not iction.ictionMF then iction.initMainUI() end
     if iction.spec ~= spec then
@@ -626,7 +638,7 @@ function iction.specChanged()
 
         if localizedClass == iction.L['priest'] then
             if spec == 3 then
-                iction.spells = iction.priestspells
+                iction.createDebuffColumns()
                 iction.ictionMF:Show()
             else
                 if iction.ictionMF then iction.ictionMF:Hide() end

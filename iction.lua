@@ -1,7 +1,7 @@
 --- version Release 1.2.3
 -- Fixed bug with priest spec changes
 -- Fixed bug on priest when selecting self a stack frame shows up
--- Fixed missing spec change message in locales
+-- Fixed missing spec change message in locales (added to german)
 
 --- TO DO
 --- On Death lingering insanity buff icon vanishes.
@@ -217,8 +217,8 @@ function iction.createConflagFrame()
     conflagData["point"]["p"] = iction.ictionMF
     iction.conflagFrameBldr = iction.UIElement
     iction.conflagFrame = iction.conflagFrameBldr.create(iction.conflagFrameBldr, conflagData)
-    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-01", 15, 15, "ARTWORK", nil, "LEFT", 15, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 1))
-    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 1))
+    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-01", 15, 15, "ARTWORK", nil, "LEFT", 15, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
+    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
 end
 
 function iction.createInsanityFrame()
