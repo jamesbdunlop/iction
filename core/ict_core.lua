@@ -35,6 +35,7 @@ iction.cbX = 0
 iction.cbY = -235
 iction.cbScale = 1
 iction.frameData = nil
+
 iction.spec = GetSpecialization()
 
 

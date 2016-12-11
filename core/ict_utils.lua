@@ -273,6 +273,7 @@ function iction.highlightTargetSpellframe(guid)
                     if f ~= nil and iction.targetData[guid]["dead"] ~= true then
                         iction.highlightFrameTexture:SetVertexColor(.1, .6, .1, .45)
                         iction.highlightFrame:SetParent(f)
+                        iction.highlightFrame:SetFrameStrata("BACKGROUND")
                         iction.highlightFrame:SetPoint("CENTER", f, 0, 0)
                         iction.hlGuid = guid
                     else

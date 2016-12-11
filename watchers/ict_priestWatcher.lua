@@ -73,7 +73,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                 else
                     --- CANCEL CHANNEL DATA ON SPELL CAST START
                     if eventName == "SPELL_CAST_START" then
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
                     end
 
                     --- UPDATE SPELL COUNT

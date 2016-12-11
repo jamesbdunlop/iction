@@ -25,7 +25,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         if ictionBuffBarBarH then bf = 'Horizontal' else bf = 'Vertical' end
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG3"] .. bf, 15, 25, 35)
     end
-    if( event == "PLAYER_LOGIN" ) then
+    if (event == "PLAYER_LOGIN") then
         iction.playerGUID = UnitGUID("Player")
         --- Set the spell table
         if localizedClass == iction.L['warlock'] then
@@ -59,22 +59,16 @@ SLASH_ICTION1  = "/iction"
 local function ictionArgs(arg, editbox)
     local split = split
     if not arg then iction.initMainUI()
-
     elseif arg == 'unlock' then
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG"], 100, 35, 35);
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["unlock"], 100, 35, 35);
         iction.unlockUIElements(true)
-
     elseif arg == 'lock' then
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["lock"], 100, 35, 35);
         iction.unlockUIElements(false)
-
     elseif arg == 'options' then iction.setOptionsFrame()
-
     elseif arg == 'hide' then iction.ictionMF:Hide()
-
     elseif arg == 'show' then iction.ictionMF:Show()
-
     else
         local max, cnt =  strsplit(" ", arg)
         if max == 'max' then
@@ -150,24 +144,20 @@ end
 
 function iction.createBuffFrame()
     if iction.debug then print("createBuffFrame") end
-    if iction.buffFrame == nil then
-        local fw, fh
-        if ictionBuffBarBarH == true then
-            _, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
-            fh = iction.bh+5
-        else
-            fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
-        end
-        local buffData = iction.ictBuffFrameData
-        buffData['uiParentFrame'] = iction.ictionMF
-        buffData['point']['p'] = iction.ictionMF
-        buffData['w'] = fw
-        buffData['h'] = fh
-        local buffFrame = iction.UIElement
-        iction.buffFrame = buffFrame.create(buffFrame, buffData)
+    local fw, fh
+    if ictionBuffBarBarH == true then
+        _, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
+        fh = iction.bh+5
     else
-        return iction.buffFrame
+        fw, fh = iction.calcFrameSize(iction.uiPlayerBuffButtons)
     end
+    local buffData = iction.ictBuffFrameData
+    buffData['uiParentFrame'] = iction.ictionMF
+    buffData['point']['p'] = iction.ictionMF
+    buffData['w'] = fw
+    buffData['h'] = fh
+    local buffFrame = iction.UIElement
+    iction.buffFrame = buffFrame.create(buffFrame, buffData)
 end
 
 function iction.createDebuffColumns()
@@ -176,7 +166,7 @@ function iction.createDebuffColumns()
     local x, y
     x = -(iction.bw*2 + iction.ictionMFW)
     y = -(iction.ictionMFH/2)
-    for i = 1, 4 do
+    for i = 1, 4, 1 do
         if i == 3 then x = x + iction.ictionMFW+50 end
         local colData = iction.ictDeBuffColumnData
         colData["uiName"] = "iction_col_".. i
@@ -190,7 +180,8 @@ function iction.createDebuffColumns()
         local deBfCol = debuffColumn.create(debuffColumn, colData)
         debuffColumn.addTexture(deBfCol, "iction_col" .. i .. '_bg', 32, 28, "ARTWORK", true, nil, nil, nil, "Interface/AddOns/iction/media/"..i, .1, .5, .1, 0)
         x = x + 75
-        table.insert(iction.debuffColumns, deBfCol)
+        --table.insert(iction.debuffColumns, deBfCol)
+        iction.debuffColumns["col_" ..i] = deBfCol
     end
 end
 
@@ -342,7 +333,7 @@ function iction.createHighlightFrame()
     highlightData["point"]["p"] = iction.ictionMF
     iction.highlightFrameBldr = iction.UIElement
     iction.highlightFrame = iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
-    local bghl = iction.highlightFrameBldr.addTexture(iction.highlightFrame, "ict_highlightTexture", 15, 15, "ARTWORK", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+    local bghl = iction.highlightFrameBldr.addTexture(iction.highlightFrame, "ict_highlightTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
     return bghl
 end
 
@@ -374,7 +365,7 @@ function iction.unlockUIElements(isMovable)
             if iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false, {0, 0, 0, 1}) end
         end
     end
-    for f in ictionlist_iter(cols) do
+    for id, f in pairs(cols) do
         iction.setMovable(f, isMovable)
         if not isMovable then
             f.texture:SetVertexColor(1, 1, 1, 0)

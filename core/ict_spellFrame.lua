@@ -3,7 +3,7 @@
 function iction.createSpellFrame(creatureName, guid, bgFile)
     local freeSlot, colID = iction.findSlot(guid)
     if freeSlot and not iction.targetFrames[guid] then
-        iction.targetFrames[guid] = CreateFrame("Frame", nil)
+        iction.targetFrames[guid] = CreateFrame("Frame", "aFrame", iction.debuffColumns[colID])
         iction.targetFrames[guid]:SetAttribute("name", 'ictionDeBuffFrame')
         iction.targetFrames[guid]:EnableMouse(false)
         iction.targetFrames[guid]:SetFrameStrata("HIGH")
@@ -25,9 +25,8 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
         iction.targetCols[colID]['guid'] = guid
         iction.targetCols[colID]['active'] = true
 
-        iction.targetFrames[guid]:SetPoint("CENTER", "iction_"..colID)
-        iction.targetFrames[guid]:SetPoint("BOTTOM", "iction_"..colID)
-        iction.targetFrames[guid]:SetParent("iction_"..colID)
+        iction.targetFrames[guid]:SetPoint("CENTER", iction.debuffColumns[colID])
+        iction.targetFrames[guid]:SetPoint("BOTTOM", iction.debuffColumns[colID])
         return iction.targetFrames[guid]
     else
         return false
