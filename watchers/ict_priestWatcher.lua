@@ -16,17 +16,15 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         local spellName, mobName, mobGUID, spellType, spellID
         local validSpell = false
         mobGUID = prefix2
-        if mobGUID ~= nil then if string.find(mobGUID, "Pet", 1) then return end end
+        if mobGUIDmobGUID ~= nil then if string.find(mobGUID, "Pet", 1) then return end end
         mobName = prefix3
         spellName = sufx4
         spellID = sufx3
-
         if sourceGUID == iction.playerGUID and eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
             spellType = "DEBUFF"
         else
             spellType = sufx6
         end
-
         --------------------------------------------------------------------------------------
         if event == "PLAYER_SPECIALIZATION_CHANGED" then
             iction.specChanged()
@@ -72,7 +70,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                     return
                 else
                     --- CANCEL CHANNEL DATA ON SPELL CAST START
-                    if eventName == "SPELL_CAST_START" then
+                    if eventName == "SPELL_CAST_START" and UnitGUID("Target") ~= iction.playerGUID and mobGUID ~= iction.playerGUID then
                         iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
                     end
 
@@ -87,16 +85,23 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                     end
 
                     --- SPELL AURA APPLIED
-                    if eventName == "SPELL_AURA_APPLIED" then
+                    if eventName == "SPELL_AURA_APPLIED" and mobGUID ~= iction.playerGUID then
                         if spellID == 15407 then iction.clearChannelData() end      --- MindFlay
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        if spellID == 194249 and UnitGUID("Target") ~= iction.playerGUID then
+                            iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
+                        else
+                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        end
 
                     elseif eventName == "SPELL_AURA_REFRESH" then
                         iction.clearChannelData()
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_CAST_SUCCESS" then
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        --- Need a check for shadow crash and voidform here as mobGUID is empty string! GG BLIZ! GRRR
+                        if mobGUID ~= "" then
+                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        end
 
                     elseif eventName == "SPELL_AURA_REMOVED" then
                         local channeledSpellID, cexpires = iction.getChannelSpell()
@@ -104,6 +109,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                         if not isChannelActive then
                             iction.clearChannelData()
                         end
+
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                         --- check for stack frames
