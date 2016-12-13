@@ -358,7 +358,7 @@ function iction.currentBuffExpires()
         end
     end
     --- Insanity handler
-    if iction.targetButtons[iction.playerGUID] ~= nil then
+    if iction.targetButtons[iction.playerGUID] ~= nil and iction.targetButtons[iction.playerGUID]["buttonFrames"] ~= nil then
         local insanity = UnitPower("player", SPELL_POWER_INSANITY)
         local shortVoid = false
         for x=1, 7 do
@@ -510,7 +510,7 @@ function iction.currentTargetDebuffExpires()
                 for spellID, spellDetails in pairs(mobInfo) do
                     if iction.spellIDActive(guid, spellDetails['id']) then
                         local _, _, _, count, _, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("Target", spellDetails['spellName'], nil, "player")
-                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then -- ritz follower immolate spell id
+                        if expirationTime ~= nil and unitCaster == 'player' and spellId ~= 216145 then ---and spellId ~= 222074 then -- ritz follower immolate spell id
                             iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime
                         elseif spellId == 27243 then --- duplicate seed for talent handling
                             iction.targetData[guid]['spellData'][spellID]['endTime'] = expirationTime

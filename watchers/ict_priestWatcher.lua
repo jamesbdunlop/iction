@@ -92,7 +92,8 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                         else
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                         end
-
+                    elseif eventName == "SPELL_AURA_APPLIED" and mobGUID == iction.playerGUID then
+                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                     elseif eventName == "SPELL_AURA_REFRESH" then
                         iction.clearChannelData()
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
