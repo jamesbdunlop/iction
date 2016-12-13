@@ -9,8 +9,21 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
         if value['vis'] then
             local spellID = value['id']
             -- Create the button frame
-            local b = CreateFrame("Button", value['name'], pFrame, value["inherits"])
-                  b:RegisterEvent("SPELL_CAST_START")
+            local fPFrame = pFrame
+            local bw = iction.bw
+            local bh = iction.bh
+            if value['id'] == 32379 then --- SWD smelly handler as I am avoiding a full core system overhaul at this point.
+                fPFrame = iction.SWDFrame
+                paddingX = 0
+                paddingY = 0
+                bw = bw + 15
+                bh = bh + 15
+            elseif value['id'] == 205448 then --- VoidBolt smelly handler as I am avoiding a full core system overhaul at this point.
+                fPFrame = iction.voidFrame
+                paddingX = 0
+                paddingY = 0
+            end
+                local b = CreateFrame("Button", value['name'], fPFrame, value["inherits"])
                   b:SetAttribute("name", value['id'])
                   b:SetAttribute("spellName", value['name'])
                   b:SetFrameStrata("MEDIUM")
@@ -18,9 +31,9 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
                   b:SetDisabledFontObject("GameFontDisable")
                   b:SetNormalFontObject("GameFontNormalSmall");
                   b:SetHighlightFontObject("GameFontHighlight");
-                  b:SetWidth(iction.bw)
-                  b:SetHeight(iction.bh)
-                  b:SetPoint("BOTTOM", pFrame, paddingX, paddingY)
+                  b:SetWidth(bw)
+                  b:SetHeight(bh)
+                  b:SetPoint("BOTTOM", fPFrame, paddingX, paddingY)
             local but = b:CreateTexture(nil, "ARTWORK")
                   but:SetAllPoints(true)
                   local file_id = GetSpellTexture(value['id'])
@@ -35,7 +48,7 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff)
             b.text = fnt
 
             if ictionBuffBarBarH and buff then
-                b:SetPoint("LEFT", pFrame, paddingX, paddingY)
+                b:SetPoint("LEFT", fPFrame, paddingX, paddingY)
                 paddingY = paddingY
                 paddingX = paddingX + iction.bh + iction.ictionButtonFramePad
             else

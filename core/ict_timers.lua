@@ -295,7 +295,7 @@ function iction.updateTimers()
                                 if iction.targetData[guid]['spellData'][swdID] == nil then
                                     iction.createTarget(guid, "", "Shadow Word: Death", "DEBUFF", swdID)
                                 end
-                                if not iction.isSpellOnCooldown(swdID) then
+                                if not iction.isSpellOnCooldown(swdID) and iction.getTargetHP() then
                                     local timerText = iction.targetButtons[guid]["buttonText"][swdID]
                                     local timerButtonFrame = iction.targetButtons[guid]["buttonFrames"][swdID]
                                     local charges, _, _, _ = GetSpellCharges(swdID)
@@ -309,5 +309,15 @@ function iction.updateTimers()
                                     if iction.isValidButtonFrame(guid) then
                                         if iction.targetButtons[guid]["buttonFrames"][swdID] ~= nil then
                                             iction.setButtonState(true, false, iction.targetButtons[guid]["buttonFrames"][swdID], false, true)
-    end end end end end end end end end end
+                                        end
+                                    end
+                                elseif not iction.getTargetHP() then
+                                    if iction.isValidButtonFrame(guid) then
+                                        if iction.targetButtons[guid]["buttonFrames"][swdID] ~= nil then
+                                            iction.setButtonState(false, true, iction.targetButtons[guid]["buttonFrames"][swdID], false, false)
+                                        end
+                                    end
+                                end
+
+    end end end end end end end
 end

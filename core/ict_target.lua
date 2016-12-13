@@ -1,4 +1,6 @@
 local next = next
+local localizedClass, _, _ = UnitClass("Player")
+
 ----------------------------------------------------------------------------------------------
 --- CREATE AN ICTION TARGET ------------------------------------------------------------------
 function iction.createTarget(guid, creatureName, spellName, spellType, spellID)

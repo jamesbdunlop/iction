@@ -135,7 +135,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                             local timerText = iction.targetButtons[mobGUID]["buttonText"][swdID]
                             local timerButtonFrame = iction.targetButtons[mobGUID]["buttonFrames"][swdID]
                             local charges, _, _, _ = GetSpellCharges(swdID)
-                            if charges ~= nil and charges ~= 0 then
+                            if charges ~= nil and charges ~= 0 and iction.getTargetHP() then
                                 iction.targetData[mobGUID]['spellData'][swdID]['count'] = charges
                                 iction.createStackFrame(mobGUID, "SWD", charges, timerText, timerButtonFrame, swdID)
                             end
@@ -155,6 +155,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
             iction.oocCleanup()
             iction.setMTapBorder()
             iction.currentBuffExpires()
+            iction.isVoidEruptionActive()
         end
         iction.updateTimers()
     end

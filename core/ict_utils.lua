@@ -682,3 +682,32 @@ function iction.getTargetHP()
         end
     end
 end
+
+function iction.isVoidEruptionActive()
+    if (UnitName("Player")) then
+        local _, _, _, count, _, _, expires, _, _, _, sID, _, _, _, _, _, _, _, _  = UnitBuff("Player", 194249)
+        if expires == nil then
+            iction.voidFrame.texture:SetVertexColor(1, 1, 1, 0)
+            for guid, data in pairs(iction.targetData) do
+                if iction.isValidButtonFrame(guid) then
+                    ---active, hidden, button, refresh, procced
+                    iction.setButtonState(false, true, iction.targetButtons[guid]['buttonFrames'][205448], false, false)
+                    ---text, hidden, fontString, colorize, color
+                    iction.setButtonText("", true, iction.targetButtons[guid]['buttonText'][205448], nil, nil)
+                end
+            end
+        else
+            iction.voidFrame.texture:SetVertexColor(1, 1, 1, 1)
+            for guid, data in pairs(iction.targetData) do
+                if iction.isValidButtonFrame(guid) then
+                    if not iction.isSpellOnCooldown(205448) then
+                        ---active, hidden, button, refresh, procced
+                        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][205448], false, true)
+                    else
+                        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][205448], false, false)
+                    end
+                end
+            end
+        end
+    end
+end

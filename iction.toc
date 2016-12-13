@@ -50,6 +50,7 @@ frames\debuffFrame.lua
 frames\shardFrame.lua
 frames\conflagFrame.lua
 frames\voidFrame.lua
+frames\swdFrame.lua
 frames\insanityFrame.lua
 frames\artifactFrame.lua
 frames\highlightFrame.lua

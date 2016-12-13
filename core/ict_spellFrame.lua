@@ -1,3 +1,5 @@
+local localizedClass, _, _ = UnitClass("Player")
+local iction = iction
 ----------------------------------------------------------------------------------------------
 --- CREATE TARGET SPELLS UI  ---
 function iction.createSpellFrame(creatureName, guid, bgFile)
@@ -18,6 +20,9 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
         -- Set the height of the frame based on the number of buttons
         local fw, fh
         fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
+        if localizedClass == iction.L['priest'] then
+            fh = fh - (iction.bh*2) --- resize to remove swd and voidBolt from frame
+        end
         iction.targetFrames[guid]:SetWidth(fw)
         iction.targetFrames[guid]:SetHeight(fh)
 

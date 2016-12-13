@@ -5,6 +5,8 @@
 
 --- TO DO
 --- On Death lingering insanity buff icon vanishes.
+--- Clean up voidBolt frame handling
+--- Clezn up swd frame handling
 
 local iction = iction
 local localizedClass, _, _ = UnitClass("Player")
@@ -108,6 +110,8 @@ function iction.initMainUI()
     elseif localizedClass == iction.L['priest'] then
         if iction.spec == 3 then
             iction.createInsanityFrame()
+            iction.createSWDFrame()
+            iction.createVoidFrame()
         end
     end
     iction.createArtifactFrame()
@@ -117,7 +121,7 @@ function iction.initMainUI()
 end
 
 ----------------------------------------------------------------------------------------------
---- UI STUFF ---------------------------------------------------------------------------------
+--- UI BUILDERS ------------------------------------------------------------------------------
 function iction.createBottomBarArtwork()
     if iction.debug then print("createBottomBarArtwork") end
     -- clear previous
@@ -326,6 +330,9 @@ end
 function iction.createHighlightFrame()
     if iction.debug then print("createHighlightFrame") end
     local fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
+    if localizedClass == iction.L['priest'] then
+        fh = fh - (iction.bh*2) --- resize to remove swd and voidBolt from frame
+    end
     local highlightData = iction.ictHighLightFrameData
     highlightData["uiParentFrame"] = iction.ictionMF
     highlightData["w"] = fw
@@ -333,10 +340,32 @@ function iction.createHighlightFrame()
     highlightData["point"]["p"] = iction.ictionMF
     iction.highlightFrameBldr = iction.UIElement
     iction.highlightFrame = iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
-    local bghl = iction.highlightFrameBldr.addTexture(iction.highlightFrame, "ict_highlightTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+    local bghl = iction.highlightFrameBldr.addTexture(iction.highlightFrame, "ict_highlightTexture", 1, 1, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
     return bghl
 end
 
+function iction.createSWDFrame()
+    if iction.debug then print("createSWDFrame") end
+    local SWDData = iction.ictSWDData
+    SWDData["uiParentFrame"] = iction.ictionMF
+    SWDData["point"]["p"] = iction.ictionMF
+    iction.SWDFrameBldr = iction.UIElement
+    iction.SWDFrame = iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
+    local swdtexture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+end
+
+function iction.createVoidFrame()
+    if iction.debug then print("createVoidFrame") end
+    local SWDData = iction.ictVoidData
+    SWDData["uiParentFrame"] = iction.ictionMF
+    SWDData["point"]["p"] = iction.ictionMF
+    iction.voidFrameBldr = iction.UIElement
+    iction.voidFrame = iction.voidFrameBldr.create(iction.voidFrameBldr, SWDData)
+    local swdtexture = iction.voidFrameBldr.addTexture(iction.voidFrame, "ict_voidFrameTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+end
+
+----------------------------------------------------------------------------------------------
+--- UI CUSTOMIZE -----------------------------------------------------------------------------
 function iction.unlockUIElements(isMovable)
     if iction.debug then print("unlockUIElements") end
     local cols = iction.debuffColumns
@@ -351,6 +380,8 @@ function iction.unlockUIElements(isMovable)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
         elseif localizedClass == iction.L['priest'] then
             if  iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false) end
+            if  iction.SWDFrame ~= nil then iction.setMovable(iction.SWDFrame, isMovable, false) end
+            if  iction.voidFrame ~= nil then iction.setMovable(iction.voidFrame, isMovable, false) end
         end
     else
         -- override colors for special frames
@@ -363,6 +394,8 @@ function iction.unlockUIElements(isMovable)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, true) end
         elseif localizedClass == iction.L['priest'] then
             if iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false, {0, 0, 0, 1}) end
+            if iction.SWDFrame ~= nil then iction.setMovable(iction.SWDFrame, isMovable, false, {0, 0, 0, 0}) end
+            if iction.voidFrame ~= nil then iction.setMovable(iction.voidFrame, isMovable, false, {0, 0, 0, 0}) end
         end
     end
     for id, f in pairs(cols) do
