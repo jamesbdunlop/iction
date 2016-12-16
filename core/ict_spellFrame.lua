@@ -18,13 +18,13 @@ function iction.createSpellFrame(creatureName, guid, bgFile)
               bg:SetVertexColor(0, 0, 0, 0)
         iction.targetFrames[guid].texture = bg
         -- Set the height of the frame based on the number of buttons
-        local fw, fh
-        fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
+        local fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
         if localizedClass == iction.L['priest'] then
-            fh = fh - (iction.bh*2) --- resize to remove swd and voidBolt from frame
+            local num = (iction.bh*2) - (iction.ictionButtonFramePad *2)
+            fh = (fh - num) - 53
         end
-        iction.targetFrames[guid]:SetWidth(fw)
         iction.targetFrames[guid]:SetHeight(fh)
+        iction.targetFrames[guid]:SetWidth(fw)
 
         -- Set frame to be an active column in the debuff columns table
         iction.targetCols[colID]['guid'] = guid

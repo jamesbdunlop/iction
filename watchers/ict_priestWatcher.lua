@@ -25,18 +25,19 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         else
             spellType = sufx6
         end
+
         --------------------------------------------------------------------------------------
-        if event == "PLAYER_SPECIALIZATION_CHANGED" then
+        if event == "PLAYER_SPECIALIZATION_CHANGED" and mobGUID ~= ""  then
             iction.specChanged()
         end
         --------------------------------------------------------------------------------------
-        if event == "PLAYER_TARGET_CHANGED" then
+        if event == "PLAYER_TARGET_CHANGED" and mobGUID ~= "" then
             iction.highlightTargetSpellframe(UnitGUID("Target"))
         end
 
         --------------------------------------------------------------------------------------
         --- UNIT DIED
-        if eventName == "UNIT_DIED" then
+        if eventName == "UNIT_DIED" and mobGUID ~= "" then
             local function removeDead()
                 --- Remove unit from the table if it died.
                 if mobGUID ~= iction.playerGIUD then
@@ -71,46 +72,47 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                 else
                     --- CANCEL CHANNEL DATA ON SPELL CAST START
                     if eventName == "SPELL_CAST_START" and UnitGUID("Target") ~= iction.playerGUID and mobGUID ~= iction.playerGUID then
-                        iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
+                        if mobGUID ~= "" then
+                            iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
+                        end
                     end
 
                     --- UPDATE SPELL COUNT
                     if eventName == "SPELL_AURA_APPLIED_DOSE" then
-                        if iction.spellIDActive(mobGUID, spellID) then
-                            if spellID == 205372 then
-                                iction.targetData[mobGUID]['spellData'][spellID]['count'] = sufx7
-                                iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = GetTime() + 5
+                        if mobGUID ~= "" then
+                            if iction.spellIDActive(mobGUID, spellID) then
+                                if spellID == 205372 then
+                                    iction.targetData[mobGUID]['spellData'][spellID]['count'] = sufx7
+                                    iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = GetTime() + 5
+                                end
                             end
                         end
                     end
 
                     --- SPELL AURA APPLIED
-                    if eventName == "SPELL_AURA_APPLIED" and mobGUID ~= iction.playerGUID then
+                    if eventName == "SPELL_AURA_APPLIED" and mobGUID ~= iction.playerGUID and mobGUID ~= "" then
                         if spellID == 15407 then iction.clearChannelData() end      --- MindFlay
                         if spellID == 194249 and UnitGUID("Target") ~= iction.playerGUID then
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
                         else
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                         end
-                    elseif eventName == "SPELL_AURA_APPLIED" and mobGUID == iction.playerGUID then
+                    elseif eventName == "SPELL_AURA_APPLIED" and mobGUID == iction.playerGUID and mobGUID ~= "" then
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                    elseif eventName == "SPELL_AURA_REFRESH" then
+                    elseif eventName == "SPELL_AURA_REFRESH" and mobGUID ~= "" then
                         iction.clearChannelData()
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
-                    elseif eventName == "SPELL_CAST_SUCCESS" then
+                    elseif eventName == "SPELL_CAST_SUCCESS" and mobGUID ~= "" then
                         --- Need a check for shadow crash and voidform here as mobGUID is empty string! GG BLIZ! GRRR
-                        if mobGUID ~= "" then
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                        end
+                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
-                    elseif eventName == "SPELL_AURA_REMOVED" then
+                    elseif eventName == "SPELL_AURA_REMOVED" and mobGUID ~= "" then
                         local channeledSpellID, cexpires = iction.getChannelSpell()
                         local isChannelActive, channelguid = iction.channelActive(channeledSpellID)
                         if not isChannelActive then
                             iction.clearChannelData()
                         end
-
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                         --- check for stack frames
@@ -124,8 +126,9 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                             end
                         end
                     end
-                    --- SWD
-                    if mobGUID ~= iction.playerGUID and iction.targetData[mobGUID] then
+
+                    --- SWD  SHADOW WORD: DEATH
+                    if mobGUID ~= iction.playerGUID and iction.targetData[mobGUID] and mobGUID ~=  "" then
                         local swdID = 32379
                         if iction.targetData[mobGUID]['spellData'][swdID] == nil then
                             iction.createTarget(mobGUID, "", "Shadow Word: Death", "DEBUFF", swdID)
@@ -137,7 +140,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                             local charges, _, _, _ = GetSpellCharges(swdID)
                             if charges ~= nil and charges ~= 0 and iction.getTargetHP() then
                                 iction.targetData[mobGUID]['spellData'][swdID]['count'] = charges
-                                iction.createStackFrame(mobGUID, "SWD", charges, timerText, timerButtonFrame, swdID)
+                                iction.createStackFrame(mobGUID, "SWD", charges, timerText, timerButtonFrame, swdID, iction.bw/2.5, iction.bh/2.5)
                             end
                         end
                     end
@@ -155,7 +158,6 @@ function iction.ictionPriestFrameWatcher(mainFrame)
             iction.oocCleanup()
             iction.setMTapBorder()
             iction.currentBuffExpires()
-            iction.isVoidEruptionActive()
         end
         iction.updateTimers()
     end

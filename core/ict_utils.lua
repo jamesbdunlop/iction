@@ -85,6 +85,7 @@ function iction.setButtonState(active, hidden, button, refresh, procced)
             button:SetBackdropColor(1, 1, .1, 1)
             button.texture:SetVertexColor(1, 1, .1, 1)
         else
+            button:SetBackdropColor(1, 1, 1, 1)
             button.texture:SetVertexColor(0.9,0.3,0.3, .5)
         end
     end
@@ -209,6 +210,12 @@ function iction.oocCleanup()
     if UnitAffectingCombat("player") then
         return
     elseif not UnitAffectingCombat("player") then
+        if localizedClass == iction.L['priest'] then
+            iction.voidFrame.texture:SetVertexColor(0,0,0,0)
+            iction.voidFrame:SetBackdropColor(0,0,0,0)
+            iction.SWDFrame.texture:SetVertexColor(0,0,0,0)
+            iction.SWDFrame:SetBackdropColor(0,0,0,0)
+        end
         if iction.targetTableExists() then
             for guid, targets in pairs(iction.targetData) do
                 if guid ~= iction.playerGUID then
@@ -262,7 +269,7 @@ end
 
 function iction.highlightTargetSpellframe(guid)
     if UnitAffectingCombat("player") then
-        if guid == nil or not (UnitName("target")) then
+        if guid == nil or not (UnitName("target")) or guid == "" then
             iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
         elseif guid ~= iction.playerGUID then
             local prev = iction.hlGuid
@@ -271,9 +278,11 @@ function iction.highlightTargetSpellframe(guid)
                 local pf = iction.targetFrames[iction.hlGuid] or nil
                 if iction.targetData[guid] ~= nil then
                     if f ~= nil and iction.targetData[guid]["dead"] ~= true then
+                        iction.highlightFrameTexture:SetAllPoints(true)
                         iction.highlightFrameTexture:SetVertexColor(.1, .6, .1, .45)
                         iction.highlightFrame:SetParent(f)
                         iction.highlightFrame:SetFrameStrata("BACKGROUND")
+                        iction.highlightFrame:SetPoint("BOTTOM", f, 0, 0)
                         iction.highlightFrame:SetPoint("CENTER", f, 0, 0)
                         iction.hlGuid = guid
                     else
@@ -526,7 +535,6 @@ function iction.currentTargetDebuffExpires()
             end
         end
     end
-    iction.getTargetHP()
 end
 
 function iction.setNonTargetCooldown(guidToIgnore)
@@ -671,43 +679,15 @@ function iction.isReaperActive()
 end
 
 function iction.getTargetHP()
+    local isDead = UnitIsDead("target")
     if UnitName("target") then
         local health = UnitHealth("target")
         local max_health = UnitHealthMax("target")
         local percent = (max_health * iction.isReaperActive())
-        if health <= percent then
+        if health <= percent and not isDead then
             return true
         else
             return false
-        end
-    end
-end
-
-function iction.isVoidEruptionActive()
-    if (UnitName("Player")) then
-        local _, _, _, count, _, _, expires, _, _, _, sID, _, _, _, _, _, _, _, _  = UnitBuff("Player", 194249)
-        if expires == nil then
-            iction.voidFrame.texture:SetVertexColor(1, 1, 1, 0)
-            for guid, data in pairs(iction.targetData) do
-                if iction.isValidButtonFrame(guid) then
-                    ---active, hidden, button, refresh, procced
-                    iction.setButtonState(false, true, iction.targetButtons[guid]['buttonFrames'][205448], false, false)
-                    ---text, hidden, fontString, colorize, color
-                    iction.setButtonText("", true, iction.targetButtons[guid]['buttonText'][205448], nil, nil)
-                end
-            end
-        else
-            iction.voidFrame.texture:SetVertexColor(1, 1, 1, 1)
-            for guid, data in pairs(iction.targetData) do
-                if iction.isValidButtonFrame(guid) then
-                    if not iction.isSpellOnCooldown(205448) then
-                        ---active, hidden, button, refresh, procced
-                        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][205448], false, true)
-                    else
-                        iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][205448], false, false)
-                    end
-                end
-            end
         end
     end
 end

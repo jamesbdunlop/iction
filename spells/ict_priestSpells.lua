@@ -27,18 +27,14 @@ iction.priestspells = {
                     insert = true, isTalentSpell = false, vis = true, tid = nil, id = 48045, duration = 4.3, maxTime = 4.3, icon = ""}},
                 [3] = {ShadowCrash = {name = "Shadow Crash",
                     insert = true, isTalentSpell = false, vis = true, id = 205385, duration = 5, maxTime = 5, icon = ""}},
-                [4] = {VoidBolt = {name = "Void Bolt",
-                    insert = true, isTalentSpell = false, vis = true, id = 205448, duration = 15, maxTime = 15, icon = ""}},
-                [5] = {ShadowWordPain = {name = "Shadow Word: Death",
-                    insert = true, isTalentSpell = false, vis = true, tid = nil, id = 589, duration = 14, maxTime = 14, icon = ""}},
-                [6] = {VampricTouch = {name = "Vampiric Touch",
+                [4] = {VampricTouch = {name = "Vampiric Touch",
                     insert = true, isTalentSpell = false, vis = true, tid = nil, id = 34914, duration = 14, maxTime = 14, icon = ""}},
-                [7] = {MindFlay = {name = "Mind Flay",
+                [5] = {MindFlay = {name = "Mind Flay",
                     insert = true, isTalentSpell = false, vis = true, tid = nil, id = 15407, duration = 2.5, maxTime = 2.5, icon = ""}},
-                [8] = {MindBlast = {name = "Mind Blast",
+                [6] = {ShadowWordPain = {name = "Shadow Word: Death",
+                    insert = true, isTalentSpell = false, vis = true, tid = nil, id = 589, duration = 14, maxTime = 14, icon = ""}},
+                [7] = {MindBlast = {name = "Mind Blast",
                     insert = true, isTalentSpell = false, vis = true, id = 8092, duration = 1, maxTime = 1, icon = ""}},
-                [9] = {ShadowWordDeath = {name = "Shadow Word: Death",
-                    insert = true, isTalentSpell = false, vis = true, tid = nil, id = 32379, duration = nil, maxTime = nil, icon = ""}},
                 },
        buffs = {
                 [0] = nil,
@@ -58,8 +54,21 @@ iction.priestspells = {
                     insert = true, isTalentSpell = false, vis = true, tid = nil, id = 228260, duration = 15, maxTime = 15, icon = ""}},
                 [8] = {ShadowyInsightBuff = {name = "Shadowy Insight",
                     insert = false, isTalentSpell = true, vis = false, tid = 162452, id = 124430, duration = 15, maxTime = 15, icon = ""}},
-                --124430[8] = {VoidForm = {name = "Void Form", insert = false, isTalentSpell = false, vis = false, id = 194249, duration = 15, maxTime = 15, icon = ""}},
                 },
-       artifact = {name = "Void Torrent", insert = true, isArtifact = true, isTalentSpell = false, vis = true, id = 205065, duration = 4, maxTime = 4, icon = "" }
+       artifact = {name = "Void Torrent",
+                   insert = true, isArtifact = true, isTalentSpell = false, vis = true, id = 205065, duration = 4, maxTime = 4, icon = "" },
+
+       swd = {
+              [0] = nil,
+              [1] = {ShadowWordDeath = {name = "Shadow Word: Death",
+                    insert = true, isTalentSpell = false, vis = true, tid = nil, id = 32379, duration = nil, maxTime = nil, icon = ""}},
+              },
+       voidB = {
+              [0] = nil,
+              [1] = {VoidBolt = {name = "Void Bolt",
+                    insert = true, isTalentSpell = false, vis = true, id = 205448, duration = 15, maxTime = 15, icon = ""}},
+              },
       },
 }
+--                124430[8] = {VoidForm = {name = "Void Form", insert = false, isTalentSpell = false, vis = false, id = 194249, duration = 15, maxTime = 15, icon = ""}},
+

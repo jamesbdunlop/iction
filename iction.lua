@@ -330,9 +330,6 @@ end
 function iction.createHighlightFrame()
     if iction.debug then print("createHighlightFrame") end
     local fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
-    if localizedClass == iction.L['priest'] then
-        fh = fh - (iction.bh*2) --- resize to remove swd and voidBolt from frame
-    end
     local highlightData = iction.ictHighLightFrameData
     highlightData["uiParentFrame"] = iction.ictionMF
     highlightData["w"] = fw
@@ -345,6 +342,7 @@ function iction.createHighlightFrame()
 end
 
 function iction.createSWDFrame()
+    iction.SWDUIElements = {}
     if iction.debug then print("createSWDFrame") end
     local SWDData = iction.ictSWDData
     SWDData["uiParentFrame"] = iction.ictionMF
@@ -352,16 +350,38 @@ function iction.createSWDFrame()
     iction.SWDFrameBldr = iction.UIElement
     iction.SWDFrame = iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
     local swdtexture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+
+    --- CREATE SPECIAL BUTTON
+    local swd = {}
+    local swdID = iction.swdID
+    iction.addButtonsToTable(iction.priestspells[3]['swd'], swd)
+    iction.SWDButtonFrame, iction.SWDButtonText = iction.buttonBuild(iction.SWDFrame, 'nil', swd, 0, 0, False, 42)
+    iction.SWDButtonFrame[swdID]:SetWidth(SWDData["w"])
+    iction.SWDButtonFrame[swdID]:SetHeight(SWDData["h"])
+    table.insert(iction.SWDUIElements, iction.SWDFrame)
+    table.insert(iction.SWDUIElements, iction.SWDButtonFrame)
+    table.insert(iction.SWDUIElements, iction.SWDButtonText)
 end
 
 function iction.createVoidFrame()
+    iction.voidBoltUIElements = {}
     if iction.debug then print("createVoidFrame") end
-    local SWDData = iction.ictVoidData
-    SWDData["uiParentFrame"] = iction.ictionMF
-    SWDData["point"]["p"] = iction.ictionMF
+    local VFData = iction.ictVoidData
+    VFData["uiParentFrame"] = iction.ictionMF
+    VFData["point"]["p"] = iction.ictionMF
     iction.voidFrameBldr = iction.UIElement
-    iction.voidFrame = iction.voidFrameBldr.create(iction.voidFrameBldr, SWDData)
-    local swdtexture = iction.voidFrameBldr.addTexture(iction.voidFrame, "ict_voidFrameTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+    iction.voidFrame = iction.voidFrameBldr.create(iction.voidFrameBldr, VFData)
+    local swdtexture = iction.voidFrameBldr.addTexture(iction.voidFrame, "ict_voidFrameTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", 1, 1, 1, 0)
+    --- CREATE SPECIAL BUTTON
+    local vblt = {}
+    local vbltID = iction.vbID
+    iction.addButtonsToTable(iction.priestspells[3]['voidB'], vblt)
+    iction.vBoltButtonFrame, iction.vBoltButtonText = iction.buttonBuild(iction.voidFrame, 'nil', vblt, 0, 0, False, 24)
+    iction.vBoltButtonFrame[vbltID]:SetWidth(VFData["w"])
+    iction.vBoltButtonFrame[vbltID]:SetHeight(VFData["h"])
+    table.insert(iction.voidBoltUIElements, iction.voidFrame)
+    table.insert(iction.voidBoltUIElements, iction.vBoltButtonFrame)
+    table.insert(iction.voidBoltUIElements, iction.vBoltButtonText)
 end
 
 ----------------------------------------------------------------------------------------------
