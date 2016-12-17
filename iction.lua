@@ -1,12 +1,7 @@
---- version Release 1.2.3
--- Fixed bug with priest spec changes
--- Fixed bug on priest when selecting self a stack frame shows up
--- Fixed missing spec change message in locales (added to german)
+--- version Release 1.3.1
+-- Fixed buff bar to be hard set middle of the line when in Horizontal
+-- Fixed the stackframe number for spells other than swd to be more in their frames
 
---- TO DO
---- On Death lingering insanity buff icon vanishes.
---- Clean up voidBolt frame handling
---- Clezn up swd frame handling
 
 local iction = iction
 local localizedClass, _, _ = UnitClass("Player")
@@ -349,7 +344,7 @@ function iction.createSWDFrame()
     SWDData["point"]["p"] = iction.ictionMF
     iction.SWDFrameBldr = iction.UIElement
     iction.SWDFrame = iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
-    local swdtexture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+    iction.SWDFrame.texture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
 
     --- CREATE SPECIAL BUTTON
     local swd = {}
@@ -371,7 +366,7 @@ function iction.createVoidFrame()
     VFData["point"]["p"] = iction.ictionMF
     iction.voidFrameBldr = iction.UIElement
     iction.voidFrame = iction.voidFrameBldr.create(iction.voidFrameBldr, VFData)
-    local swdtexture = iction.voidFrameBldr.addTexture(iction.voidFrame, "ict_voidFrameTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", 1, 1, 1, 0)
+    iction.voidFrame.texture = iction.voidFrameBldr.addTexture(iction.voidFrame, "ict_voidFrameTexture", 15, 15, "ARTWORK", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", 1, 1, 1, 0)
     --- CREATE SPECIAL BUTTON
     local vblt = {}
     local vbltID = iction.vbID
@@ -432,7 +427,7 @@ function iction.setMovable(f, isMovable, hideDefault, color)
         local frameName = f:GetAttribute("name")
         if isMovable then
             f:SetParent(iction.ictionMF)
-            f.texture:SetVertexColor(.1, 1, .1, .7)
+            f.texture:SetVertexColor(.1, 1, .1, .25)
             f:EnableMouse(true)
             f:SetMovable(true)
             f:SetParent(iction.ictionMF)

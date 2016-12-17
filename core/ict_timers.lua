@@ -223,6 +223,8 @@ function iction.updateTimers()
     end
 
     local function runTimers()
+        local stackFrameX = -2
+        local stackFrameY = -2
         --- GENERAL SPELL TIMER
         if iction.targetData ~= nil then
             -- {GUID = {name = creatureName, dead = false, spellData = {spellName = {name=spellName, endtime=float}}}}
@@ -256,14 +258,14 @@ function iction.updateTimers()
                                         if endTime < GetTime() or endTime == GetTime() then
                                             --- Spell has ended
                                             iction.spellHasEnded(guid, spellName, spellID)
-                                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                         elseif endTime > GetTime() then
                                             --- Spell is still active
                                             --- Fetch the remaining time for the spell now
                                             local remainingT = tonumber(string.format("%.1f", (endTime - GetTime())))
                                             if count and count ~= 0 then
                                                 --- Set the current stack count for active
-                                                iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                                iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                             end
 
                                             if remainingT <= 3 then
@@ -281,9 +283,9 @@ function iction.updateTimers()
                                 elseif endTime == nil and coolDown ~= nil and not iction.infinite then
                                     if count and count ~= 0 then
                                         --- Set the current stack count for active
-                                        iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                        iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                     else
-                                        iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                        iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                     end
                                     --- Spell On Cooldown. We have an active cooldown set in the tables already
                                     if coolDown > GetTime() then
@@ -306,7 +308,7 @@ function iction.updateTimers()
                                         iction.spellActiveCooldown(guid, spellName, remainingT - GetTime(), spellID)
                                     end
                                 elseif endTime == nil then
-                                    iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                    iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, 5, 5)
                                 end
                                 --- Drain life and drain soul that have ended on current target.
                                 if spellID == 198590 or spellID == 234153 or spellID == 689 then

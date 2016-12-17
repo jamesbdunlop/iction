@@ -227,7 +227,6 @@ function iction.oocCleanup()
                         -- hide all button stack frames that were build
                         for i = 1, iction.tablelength(iction.stackFrames[guid]) do
                             if iction.stackFrames[guid][i] ~= nil then
-                                print("Removed stackFrame: " .. tostring(iction.stackFrames[guid][i]))
                                 iction.stackFrames[guid][i]['frame']:Hide()
                                 iction.stackFrames[guid][i]= nil
                                 iction.stackFrames[guid] = nil

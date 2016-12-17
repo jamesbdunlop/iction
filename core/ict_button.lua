@@ -23,7 +23,9 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff, fon
                   b:SetHighlightFontObject("GameFontHighlight");
                   b:SetWidth(bw)
                   b:SetHeight(bh)
-                  b:SetPoint("BOTTOM", fPFrame, paddingX, paddingY)
+                  if not buff then
+                    b:SetPoint("BOTTOM", fPFrame, paddingX, paddingY)
+                  end
             local but = b:CreateTexture(nil, "ARTWORK")
                   but:SetAllPoints(true)
                   local file_id = GetSpellTexture(value['id'])
@@ -39,7 +41,7 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff, fon
             b.text = fnt
 
             if ictionBuffBarBarH and buff then
-                b:SetPoint("LEFT", fPFrame, paddingX, paddingY)
+                b:SetPoint("LEFT", fPFrame, paddingX, 20)
                 paddingY = paddingY
                 paddingX = paddingX + iction.bh + iction.ictionButtonFramePad
             else
