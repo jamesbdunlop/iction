@@ -111,9 +111,13 @@ function iction.setOptionsFrame()
             ict_BBarHorizontalButton:SetScript("OnClick", function()
                 if ict_BBarHorizontalButton:GetChecked() then
                     ictionBuffBarBarH = true
+                    iction.removeBuffButtons()
+                    iction.setBuffButtonLib()
                     DEFAULT_CHAT_FRAME:AddMessage(iction.L['HorizontalBuffBarText'], 100, 35, 35)
                 else
                     ictionBuffBarBarH = false
+                    iction.removeBuffButtons()
+                    iction.setBuffButtonLib()
                     DEFAULT_CHAT_FRAME:AddMessage(iction.L['VerticalBuffBarText'], 100, 35, 35)
                 end
             end)

@@ -396,14 +396,14 @@ function iction.clearAllSeeds(guid)
     end
 end
 
-function iction.addSeeds(guid, spellName, spellType)
+function iction.addSeeds(guid, spellName, spellType, spellID)
     -- now check we have it in a column
     if not iction.colGUIDExists(guid) then -- it isn't present as an active target column so try to make one now.
-        iction.createTarget(guid, 'nil', spellName, spellType)
+        iction.createTarget(guid, 'nil', spellName, spellType, spellID)
     end
     if iction.colGUIDExists(guid) then
-        iction.createTargetSpellData(guid, spellName, spellType)
-        iction.createExpiresData(guid, spellName, spellType)
+        iction.createTargetSpellData(guid, spellName, spellType, spellID)
+        iction.createExpiresData(guid, spellName, spellType, spellID)
     end
 end
 
@@ -590,6 +590,25 @@ function iction.setTargetCooldown(guid)
     end
 end
 
+function iction.removeBuffButtons()
+    if iction.targetFrames[iction.playerGUID] ~= nil then
+        for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
+            if iction.targetButtons[iction.playerGUID]["buttonFrames"][i] ~= nil then
+                iction.targetButtons[iction.playerGUID]["buttonFrames"][i]:Hide()
+                iction.targetButtons[iction.playerGUID]["buttonFrames"][i] = nil
+            end
+        end
+        for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonText"]) do
+            if iction.targetButtons[iction.playerGUID]["buttonText"][i] ~= nil then
+                iction.targetButtons[iction.playerGUID]["buttonText"][i]:Hide()
+                iction.targetButtons[iction.playerGUID]["buttonText"][i] = nil
+            end
+        end
+        iction.targetFrames[iction.playerGUID]:Hide()
+        iction.targetFrames[iction.playerGUID] = nil
+    end
+end
+
 function iction.specChanged()
     local localizedClass, _, _ = UnitClass("Player")
     if localizedClass == iction.L['priest'] then
@@ -605,22 +624,7 @@ function iction.specChanged()
 
         DEFAULT_CHAT_FRAME:AddMessage(iction.L['specChangeMSG'], 15, 25, 35)
         -- Cleanup various elements now.
-        if iction.targetFrames[iction.playerGUID] ~= nil then
-            for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonFrames"]) do
-                if iction.targetButtons[iction.playerGUID]["buttonFrames"][i] ~= nil then
-                    iction.targetButtons[iction.playerGUID]["buttonFrames"][i]:Hide()
-                    iction.targetButtons[iction.playerGUID]["buttonFrames"][i] = nil
-                end
-            end
-            for i=1, iction.tablelength(iction.targetButtons[iction.playerGUID]["buttonText"]) do
-                if iction.targetButtons[iction.playerGUID]["buttonText"][i] ~= nil then
-                    iction.targetButtons[iction.playerGUID]["buttonText"][i]:Hide()
-                    iction.targetButtons[iction.playerGUID]["buttonText"][i] = nil
-                end
-            end
-            iction.targetFrames[iction.playerGUID]:Hide()
-            iction.targetFrames[iction.playerGUID] = nil
-        end
+        iction.removeBuffButtons()
 
         iction.shardFrame = nil
         iction.highlightFrameTexture = nil

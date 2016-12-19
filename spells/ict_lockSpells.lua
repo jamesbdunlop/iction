@@ -12,7 +12,7 @@ iction.lockspells = {
                 [3] = {PhantomSingularity = {name = "Phantom Singularity",
                     insert = false, isTalentSpell = true, vis = false, tid = 205179, id = 205179, duration = 13.9, maxTime = 13.9}},
                 [4] = {DrainLife = {name = "Drain Life",
-                    insert = true, isTalentSpell = false, vis = true, tid = nil, id = 234153, duration = 4.6, maxTime = 4.6}},
+                    insert = true, isTalentSpell = false, vis = true, tid = nil, id = 689, duration = 4.6, maxTime = 4.6}},
                 [5] = {DrainSoul = {name = "Drain Soul",
                     insert = false, isTalentSpell = true, vis = false, tid = 198590, id = 198590, duration = 14, maxTime = 4.75}},
                 [6] = {SiphonLife  = {name = "Siphon Life",

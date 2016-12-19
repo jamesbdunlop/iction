@@ -98,7 +98,11 @@ function iction.ictionLockFrameWatcher(mainFrame)
                     if eventName == "SPELL_AURA_APPLIED" and spellID ~= 196447 then --- ignore channelDemonfire here
                         if iction.debug then print("SPELL_AURA_APPLIED") end
                         if spellID == 234153 or spellID == 198590 or spellID == 689 then iction.clearChannelData() end
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        if spellID == 27243 then
+                            iction.addSeeds(mobGUID, spellName, "DEBUFF", 27243)
+                        else
+                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
+                        end
 
                     elseif eventName == "SPELL_ENERGIZE" then
                         if iction.debug then print("SPELL_AURA_APPLIED") end

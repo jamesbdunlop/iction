@@ -1,10 +1,18 @@
 --- version Release 1.3.1
 -- Fixed buff bar to be hard set middle of the line when in Horizontal
+-- Changing option for vertical and horizontal buffBar now rebuilds the buff bar dynamically
+-- Fixed vertical buff frame not showing buttons. (And not one report of this being an issue :P grr)
+
 -- Fixed the stackframe number for spells other than swd to be more in their frames
--- Added google translate for korean locale
 -- Fixed the annoying 0 left after doing an unlock ui on the insanity bar
--- Fixed vertical buff frame not showing buttons. And not one report of this being an issue :P grr
--- Added option for SWD Frame size (Took a while due to popping on frame scaling when moving frames)
+-- Added option to change SWD Frame size (Took a while due to popping on frame scaling when moving frames)
+-- Added option to change VoidBolt Frame size
+
+-- Added google translate for korean locale cause wth why not..
+-- Fixed Sow the Seeds again. This was entirely overlooked
+   ---Note that the proc of Corruption will tick on nontargeted frames if you have Absolute Corruption. If you target it will refresh to reflect infinity duration. Not bothering to fix this for now.
+-- changed drain life spellID back to 689 for affliction which isn't swapping correctly. Destro wants to use 234153 grrrr!
+--That'll be the last update for a wee while I think.
 
 
 local min,max,abs = min,max,abs
