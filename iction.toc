@@ -13,6 +13,8 @@
 ##SavedVariablesPerCharacter: ictionGlobalScale
 ##SavedVariablesPerCharacter: ictionSkin
 ##SavedVariablesPerCharacter: ictionLegacy
+##SavedVariablesPerCharacter: ictionSWDScale
+##SavedVariablesPerCharacter: ictionVoidBoltScale
 ##
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml
@@ -22,6 +24,7 @@ Libs\AceLocale-3.0\AceLocale-3.0.xml
 ##---Locales
 locales\english_ui.lua
 locales\german_ui.lua
+locales\korean_ui.lua
 
 ##-- Core Stuff
 core\ict_core.lua

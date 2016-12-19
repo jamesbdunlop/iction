@@ -258,14 +258,22 @@ function iction.updateTimers()
                                         if endTime < GetTime() or endTime == GetTime() then
                                             --- Spell has ended
                                             iction.spellHasEnded(guid, spellName, spellID)
-                                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                            if localizedClass == iction.L['priest'] then
+                                                iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                            else
+                                                iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                            end
                                         elseif endTime > GetTime() then
                                             --- Spell is still active
                                             --- Fetch the remaining time for the spell now
                                             local remainingT = tonumber(string.format("%.1f", (endTime - GetTime())))
                                             if count and count ~= 0 then
                                                 --- Set the current stack count for active
-                                                iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                                if localizedClass == iction.L['priest'] then
+                                                    iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                                else
+                                                    iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                                end
                                             end
 
                                             if remainingT <= 3 then
@@ -283,9 +291,17 @@ function iction.updateTimers()
                                 elseif endTime == nil and coolDown ~= nil and not iction.infinite then
                                     if count and count ~= 0 then
                                         --- Set the current stack count for active
-                                        iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                        if localizedClass == iction.L['priest'] then
+                                            iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                        else
+                                            iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                        end
                                     else
-                                        iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                        if localizedClass == iction.L['priest'] then
+                                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
+                                        else
+                                            iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
+                                        end
                                     end
                                     --- Spell On Cooldown. We have an active cooldown set in the tables already
                                     if coolDown > GetTime() then

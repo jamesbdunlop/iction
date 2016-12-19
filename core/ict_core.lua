@@ -38,7 +38,8 @@ iction.frameData = nil
 iction.vbID = 205448
 iction.swdID = 32379
 iction.spec = GetSpecialization()
-
+iction.SWDScale = 2
+iction.VoidboltScale = 2
 
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
@@ -73,6 +74,18 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.ict_maxTargets = 2
         else
             iction.ict_maxTargets = ictionTargetCount
+        end
+
+        if not ictionSWDScale then
+            iction.SWDScale = 2
+        else
+            iction.SWDScale = ictionSWDScale
+        end
+
+        if not ictionVoidBoltScale then
+            iction.VoidboltScale = 1.5
+        else
+            iction.VoidboltScale = ictionVoidBoltScale
         end
 
         --- Initialize castBarPosition

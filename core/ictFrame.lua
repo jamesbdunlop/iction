@@ -17,6 +17,7 @@ function iction.UIElement.create(self, data)
     self.data = data
     -- Create the frame --
     self.frame = CreateFrame(self.data['uiType'], self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
+    self.frame.isMoving = false
     self.setPoints(self)
     self.frame:SetResizable(true)
     self.frame:SetMovable(self.data['movable'])
@@ -51,10 +52,11 @@ end
 function iction.UIElement.setPoints(self)
     local attrName = self.data['nameAttr']
     self.frame:ClearAllPoints()
-    self.frame:SetPoint(self.data["point"]['pos'], self.data["point"]['p'], self.data["point"]['x'], self.data["point"]['y'])
+    self.frame:SetPoint(self.data["point"]["pos"], self.data["point"]["p"], self.data["point"]["x"], self.data["point"]["y"])
 end
 
 function iction.UIElement.setMoveScript(self, f, relativeF)
+    --- This is used to move the main skin frame only relative to the UIPARENT
     local fname = f:GetAttribute("name")
     ---Note this works on setting the move action on f not self so if you want to move the same frame self and f should be the same ---
     self:SetScript("OnMouseDown", function(self, button)

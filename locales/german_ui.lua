@@ -42,3 +42,7 @@ L['close'] = "Schließen"
 L['warlock'] = 'Warlock'
 L['priest'] = 'Priest'
 L['specChangeMSG'] = "\124c00FFFF44[ictionInfo] Iction hat eine Spezifikationsänderung erkannt. Wenn Sie die Dinge ein bisschen seltsam. Laden Sie die ui mit / reload ui!"
+L['scaleSWD'] = 'Rahmen SWD frm:'
+L['scaleSWDTT'] = 'Rahmen Shadow Word: Death frm'
+L['scaleVB'] = 'Rahmen VBlt Frm:'
+L['scaleVBTT'] = 'Rahmen VoidBolt frm'

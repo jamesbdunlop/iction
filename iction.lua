@@ -1,8 +1,14 @@
 --- version Release 1.3.1
 -- Fixed buff bar to be hard set middle of the line when in Horizontal
 -- Fixed the stackframe number for spells other than swd to be more in their frames
+-- Added google translate for korean locale
+-- Fixed the annoying 0 left after doing an unlock ui on the insanity bar
+-- Fixed vertical buff frame not showing buttons. And not one report of this being an issue :P grr
+-- Added option for SWD Frame size (Took a while due to popping on frame scaling when moving frames)
 
 
+local min,max,abs = min,max,abs
+local UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown
 local iction = iction
 local localizedClass, _, _ = UnitClass("Player")
 
@@ -222,6 +228,7 @@ function iction.createInsanityFrame()
     iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 106, iction.bh/1.8, "BACKGROUND", nil, "LEFT", -3, 0, "Interface\\ChatFrame\\ChatFrameBackground", 0, 0, 0, 1)
     table.insert(insanityBar, iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 1, iction.bh/2, "ARTWORK", nil, "LEFT", 0, 0, "Interface\\ChatFrame\\ChatFrameBackground", .5, .1, 1, 1))
     iction.insanityFrame.text = iction.insanityFrameBldr.addFontSring(iction.insanityFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 16, 1, 1, 1, 1)
+
     local function _updateInsanity()
         local insanity = UnitPower("player", SPELL_POWER_INSANITY)
         if insanity ~= 0 then
@@ -345,7 +352,6 @@ function iction.createSWDFrame()
     iction.SWDFrameBldr = iction.UIElement
     iction.SWDFrame = iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
     iction.SWDFrame.texture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
-
     --- CREATE SPECIAL BUTTON
     local swd = {}
     local swdID = iction.swdID
@@ -353,6 +359,7 @@ function iction.createSWDFrame()
     iction.SWDButtonFrame, iction.SWDButtonText = iction.buttonBuild(iction.SWDFrame, 'nil', swd, 0, 0, False, 42)
     iction.SWDButtonFrame[swdID]:SetWidth(SWDData["w"])
     iction.SWDButtonFrame[swdID]:SetHeight(SWDData["h"])
+    iction.SWDFrame:SetScale(iction.SWDScale)
     table.insert(iction.SWDUIElements, iction.SWDFrame)
     table.insert(iction.SWDUIElements, iction.SWDButtonFrame)
     table.insert(iction.SWDUIElements, iction.SWDButtonText)
@@ -374,6 +381,7 @@ function iction.createVoidFrame()
     iction.vBoltButtonFrame, iction.vBoltButtonText = iction.buttonBuild(iction.voidFrame, 'nil', vblt, 0, 0, False, 24)
     iction.vBoltButtonFrame[vbltID]:SetWidth(VFData["w"])
     iction.vBoltButtonFrame[vbltID]:SetHeight(VFData["h"])
+    iction.SWDFrame:SetScale(iction.VoidboltScale)
     table.insert(iction.voidBoltUIElements, iction.voidFrame)
     table.insert(iction.voidBoltUIElements, iction.vBoltButtonFrame)
     table.insert(iction.voidBoltUIElements, iction.vBoltButtonText)
@@ -394,9 +402,9 @@ function iction.unlockUIElements(isMovable)
             iction.setMovable(iction.shardFrame, isMovable, false)
             if iction.conflagFrame ~= nil then iction.setMovable(iction.conflagFrame, isMovable, false) end
         elseif localizedClass == iction.L['priest'] then
-            if  iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false) end
-            if  iction.SWDFrame ~= nil then iction.setMovable(iction.SWDFrame, isMovable, false) end
-            if  iction.voidFrame ~= nil then iction.setMovable(iction.voidFrame, isMovable, false) end
+            if iction.insanityFrame ~= nil then iction.setMovable(iction.insanityFrame, isMovable, false) end
+            if iction.SWDFrame ~= nil then iction.setMovable(iction.SWDFrame, isMovable, false) end
+            if iction.voidFrame ~= nil then iction.setMovable(iction.voidFrame, isMovable, false) end
         end
     else
         -- override colors for special frames
@@ -433,34 +441,40 @@ function iction.setMovable(f, isMovable, hideDefault, color)
             f:SetParent(iction.ictionMF)
             ---Name font string ---
             if frameName ~= "Artifact" then
-                local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
-                    -- Create the fontString for the button
-                      fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
-                      fntStr:SetPoint("CENTER", f, 0, 0)
-                      fntStr:SetTextColor(.1, 1, .1, 1)
-                      fntStr:SetText(string.gsub(frameName, "iction_", ""))
-                    f.text = fntStr
+                if f.text ~= nil then
+                    f.text:SetText(string.gsub(frameName, "iction_", ""))
+                else
+                    local fntStr = f:CreateFontString(nil, "OVERLAY","GameFontGreen")
+                        -- Create the fontString for the button
+                          fntStr:SetFont(iction.font, 14, "OVERLAY", "THICKOUTLINE")
+                          fntStr:SetPoint("CENTER", f, 0, 0)
+                          fntStr:SetTextColor(.1, 1, .1, 1)
+                          fntStr:SetText(string.gsub(frameName, "iction_", ""))
+                        f.text = fntStr
+                end
             end
             ---Scripts for moving---
             f:SetScript("OnMouseDown", function(self, button)
-              if button == "LeftButton" and not f.isMoving then
-               f:StartMoving();
-               f.isMoving = true;
-              end
+                if button == "LeftButton" and not f.isMoving then
+                    f:StartMoving()
+                    f.isMoving = true
+                end
             end)
 
             f:SetScript("OnMouseUp", function(self, button)
-              if button == "LeftButton" and f.isMoving then
-               f:StopMovingOrSizing()
-               f.isMoving = false
-               f:SetParent(iction.ictionMF)
-               local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
-               local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
-               ictionFramePos[frameName]['point']['x'] = xOffset-MFxOffset
-               ictionFramePos[frameName]['point']['y'] = yOffset-MFyOffset
-               ictionFramePos[frameName]['point']['pos'] = point
-               f:SetPoint(point, iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
-              end
+                if button == "LeftButton" and f.isMoving then
+                    f:StopMovingOrSizing()
+                    f.isMoving = false
+                    f:SetParent(iction.ictionMF)
+                    local s = f:GetScale()
+                    local point, relativeTo, relativePoint, xOffset, yOffset = f:GetPoint(1)
+                    local MFpoint, MFrelativeTo, MFrelativePoint, MFxOffset, MFyOffset = iction.ictionMF:GetPoint(1)
+                    ictionFramePos[frameName]['point']['x'] = xOffset-(MFxOffset/s)
+                    ictionFramePos[frameName]['point']['y'] = yOffset-(MFyOffset/s)
+                    ictionFramePos[frameName]['point']['pos'] = point
+                    f:ClearAllPoints()
+                    f:SetPoint(point, iction.ictionMF, ictionFramePos[frameName]['point']['x'], ictionFramePos[frameName]['point']['y'])
+                end
             end)
         else
             f:EnableMouse(false)

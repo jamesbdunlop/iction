@@ -44,7 +44,8 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff, fon
                 b:SetPoint("LEFT", fPFrame, paddingX, 20)
                 paddingY = paddingY
                 paddingX = paddingX + iction.bh + iction.ictionButtonFramePad
-            else
+            elseif not  ictionBuffBarBarH and buff then
+                 b:SetPoint("Bottom", fPFrame, paddingX, paddingY)
                 paddingY = paddingY + iction.bh + iction.ictionButtonFramePad
                 paddingX = paddingX
             end
