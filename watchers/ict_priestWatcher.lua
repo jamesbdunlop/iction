@@ -25,6 +25,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         else
             spellType = sufx6
         end
+        ---if spellID == 222074 then return end
 
         --------------------------------------------------------------------------------------
         if event == "PLAYER_SPECIALIZATION_CHANGED" and mobGUID ~= ""  then
