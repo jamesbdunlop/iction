@@ -9,6 +9,7 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff, fon
     for key, value in pairs(buttons) do
         if value['vis'] then
             local spellID = value['id']
+            if spellID == 104773 or spellID == 47585 then fontSize = 18 end --- Change the size of unending for greater than 2min cool down
             -- Create the button frame
             local fPFrame = pFrame
             local bw = iction.bw

@@ -120,7 +120,7 @@ function iction.createButtons(frm, guid, spellType)
         padX = iction.ictionButtonFramePad
         padY = 0
         if frm:GetAttribute("name") == 'ictionBuffFrame' then
-            b, fnt = iction.buttonBuild(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true)
+            b, fnt = iction.buttonBuild(frm, guid, iction.uiPlayerBuffButtons, padX, padY, true, 24)
         end
     end
     iction.targetButtons[guid]["buttonFrames"] = b

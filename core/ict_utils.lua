@@ -349,39 +349,29 @@ end
 
 function iction.currentBuffExpires()
     if (UnitName("Player")) then
-        if iction.targetData[iction.playerGUID] ~= nil then
-            local mobInfo = iction.targetData[iction.playerGUID]['spellData']
-            if mobInfo ~= nil then
-                for spellID, spellDetails in pairs(mobInfo) do
-                    if iction.spellIDActive(iction.playerGUID, spellDetails['id']) then
-                        local _, _, _, count, _, _, expires, _, _, _, spellID, _, _, _, _, _, _, _, _  = UnitBuff("Player", spellDetails['spellName'])
-                        if expires ~= nil then
-                            if iction.targetData[iction.playerGUID]['spellData'][spellID] then
-                                iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = expires
-                            end
-                        end
+        if not iction.targetData[iction.playerGUID] then
+            iction.createTargetData(iction.playerGUID, "Player")
+        end
+        for _, spellData in pairs(iction.uiPlayerBuffButtons) do
+            local spellID = spellData['id']
+            local spellName = spellData['name']
+            local rspellName, rcount, rexpires, rspellID
+            if not iction.isSpellOnCooldown(spellID) then
+                if spellID == 205372 then
+                    rspellName, _, _, rcount, _, _, rexpires, _, _, _, rspellID, _, _, _, _, _, _, _, _  = UnitBuff("Player", spellName)
+                else
+                    rspellName, _, _, rcount, _, _, rexpires, _, _, _, rspellID, _, _, _, _, _, _, _, _  = UnitBuff("Player", spellID)
+                end
+                if rexpires ~= nil then
+                    if iction.targetData[iction.playerGUID]['spellData'][spellID] then
+                        iction.targetData[iction.playerGUID]['spellData'][spellID]['endTime'] = rexpires
+                    else
+                        iction.createTarget(iction.playerGUID, "", spellName, "BUFF", rspellID)
                     end
                 end
+            elseif iction.isSpellOnCooldown(spellID) then
+                iction.createTarget(iction.playerGUID, "None", spellName, "BUFF", spellID)
             end
-        end
-    end
-    --- Insanity handler
-    if iction.targetButtons[iction.playerGUID] ~= nil and iction.targetButtons[iction.playerGUID]["buttonFrames"] ~= nil then
-        local insanity = UnitPower("player", SPELL_POWER_INSANITY)
-        local shortVoid = false
-        for x=1, 7 do
-            for c=1, 3 do
-                local _, name, _, selected, _, spellid = GetTalentInfo(x, c, 1)
-                if spellid == 193225 and selected then shortVoid = true end
-            end
-        end
-
-        if shortVoid and insanity >= 70 then
-            iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)
-        elseif insanity == 100 then
-            iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)
-        else
-            iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(.3,.3,.3,.5)
         end
     end
 end

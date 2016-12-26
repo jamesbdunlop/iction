@@ -93,7 +93,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                     --- SPELL AURA APPLIED
                     if eventName == "SPELL_AURA_APPLIED" and mobGUID ~= iction.playerGUID and mobGUID ~= "" then
                         if spellID == 15407 then iction.clearChannelData() end      --- MindFlay
-                        if spellID == 194249 and UnitGUID("Target") ~= iction.playerGUID then
+                        if spellID == 194249 and UnitGUID("Target") ~= iction.playerGUID then -- 194249 is voidForm
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
                         else
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)

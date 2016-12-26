@@ -193,6 +193,7 @@ function iction.ictionLockFrameWatcher(mainFrame)
             iction.oocCleanup()
             iction.setMTapBorder()
             iction.currentTargetDebuffExpires()
+            iction.currentBuffExpires()
             iction.updateTimers()
         end
     end

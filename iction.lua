@@ -1,6 +1,10 @@
 --- version Release 1.3.2
---- hard return on Zabra Hexx SWD
---- hard check added for warlock and priest
+--- Hard irgnore on Zabra Hexx SWD (not sure if this is working dumped this assist)
+--- Hard check added for warlock and priest to avoid errors on other classes
+--- Check for buff cooldowns on reload should now bring up cooldowns correctly
+--- Dispersion added
+--- Fade added
+--- VoidEruption frame alpha gains with insanity
 
 local min,max,abs = min,max,abs
 local UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown

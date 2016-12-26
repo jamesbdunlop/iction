@@ -3,17 +3,19 @@
 
 function iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
     if iction.debugTimers then print("spellActiveCooldown") end
-    local TL = tonumber(string.format("%.1f", (remainingT)))
+    local rt = remainingT
+    local TL = tonumber(string.format("%.1f", (rt)))
     if TL > 60.0 then
-        remainingT = tostring(tonumber(string.format("%.2d", remainingT/60.0))) .. "m"
+        rt = tostring(tonumber(string.format("%.1f", rt/60.0))) .. "m"
     else
-        remainingT = tonumber(string.format("%.1d", remainingT))
+        rt = tonumber(string.format("%.1d", rt))
     end
+
     if guid then
         iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], true)
-        iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID], true, {1,.8,.8, 1})
+        iction.setButtonText(rt, false, iction.targetButtons[guid]['buttonText'][spellID], true, {1,.8,.8, 1})
     else
-        return remainingT
+        return rt
     end
 end
 
@@ -78,17 +80,10 @@ function iction.isSpellOnCooldown(spellID)
 end
 
 function iction.fetchCooldownET(spellID)
-
     if iction.debugTimers then print("fetchCooldownET") end
     local start, duration, _ = GetSpellCooldown(spellID)
     local actualFinish = start+duration
     local et = (actualFinish - GetTime()) + GetTime()
-    if spellID == 104773 then
-        print("start: " .. tostring(start))
-        print("duration: " .. tostring(duration))
-        print("actualFinish: " .. tostring(actualFinish))
-        print("et: " .. tostring(et))
-    end
     if start == 0 then
         return false
     else
@@ -241,7 +236,7 @@ function iction.updateTimers()
                         local isDead = data['dead']
                         local spells = data['spellData']
                         if not isDead then
-                        --- Now process the spells
+                            --- Now process the spells
                             for spellID, spellData in pairs(spells) do
                                 local endTime = spellData['endTime']
                                 local coolDown = spellData['coolDown']
@@ -348,7 +343,7 @@ function iction.updateTimers()
                             end
                         end
                     else
-                        for spellID, _ in pairs(spells) do
+                        for spellID, _ in pairs(iction.spells) do
                             iction.targetData[guid]['spellData'][spellID]['endTime'] = nil
                         end
                     end
@@ -359,7 +354,7 @@ function iction.updateTimers()
     end
     runTimers()
 
-    --- PRIEST MINDBLAST PROCS
+    --- PRIEST MINDBLAST PROCS and Insanity
     if localizedClass == iction.L['priest'] then
         if iction.targetData ~= nil then
             for guid, data in pairs(iction.targetData) do
@@ -381,6 +376,29 @@ function iction.updateTimers()
                             end
                         end
                     end
+                end
+            end
+        end
+        --- Insanity handler
+        if iction.targetButtons[iction.playerGUID] ~= nil and iction.targetButtons[iction.playerGUID]["buttonFrames"] ~= nil then
+            local insanity = UnitPower("player", SPELL_POWER_INSANITY)
+            local shortVoid = false
+            for x=1, 7 do
+                for c=1, 3 do
+                    local _, name, _, selected, _, spellid = GetTalentInfo(x, c, 1)
+                    if spellid == 193225 and selected then shortVoid = true end
+                end
+            end
+            if not iction.buffActive(194249) then
+                if shortVoid and insanity >= 70 then
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][228260]:SetBackdropColor(1, 1, 1, 1)
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)
+                elseif insanity == 100 then
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][228260]:SetBackdropColor(1, 1, 1, 1)
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)
+                else
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][228260]:SetBackdropColor(1, 1, 1, 1)
+                    iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(.3,.3,.3, .1+(insanity/100))
                 end
             end
         end
