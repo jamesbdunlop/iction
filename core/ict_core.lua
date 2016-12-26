@@ -40,63 +40,65 @@ iction.swdID = 32379
 iction.spec = GetSpecialization()
 iction.SWDScale = 2
 iction.VoidboltScale = 2
-
+local localizedClass, _, _ = UnitClass("Player")
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
-local sframe = CreateFrame("Frame", 'ictionRoot')
---- Triggers attached to dummy frame for intial load of addon
-sframe:RegisterEvent("ADDON_LOADED")
-sframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-sframe:SetScript("OnEvent", function(self, event, arg1)
-    if( event == "ADDON_LOADED" ) and arg1 == "iction" then
-        --- Locale check
-        if iction.L == nil then print("Unsupported Locale!") end
+if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest'] then
+    local sframe = CreateFrame("Frame", 'ictionRoot')
+    --- Triggers attached to dummy frame for intial load of addon
+    sframe:RegisterEvent("ADDON_LOADED")
+    sframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    sframe:SetScript("OnEvent", function(self, event, arg1)
+        if( event == "ADDON_LOADED" ) and arg1 == "iction" then
+            --- Locale check
+            if iction.L == nil then print("Unsupported Locale!") end
 
-        --- Legacy check for globals cleanup
-        if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
+            --- Legacy check for globals cleanup
+            if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
 
-        --- Initialize frame position table
-        if not ictionFramePos then ictionFramePos = {} end
+            --- Initialize frame position table
+            if not ictionFramePos then ictionFramePos = {} end
 
-        --- Initialize skin
-        if not ictionSkin then iction.skin = 03 else iction.skin = ictionSkin end
+            --- Initialize skin
+            if not ictionSkin then iction.skin = 03 else iction.skin = ictionSkin end
 
-        --- Initialize buffBar layout
-        if ictionBuffBarBarH == nil then
-            ictionBuffBarBarH = true
+            --- Initialize buffBar layout
+            if ictionBuffBarBarH == nil then
+                ictionBuffBarBarH = true
+            end
+
+            --- Initialize globalScale
+            if ictionGlobalScale == nil then iction.ictionScale = 1 else iction.ictionScale = ictionGlobalScale end
+
+            --- Initialize targetCount
+            if not ictionTargetCount then
+                iction.ict_maxTargets = 2
+            else
+                iction.ict_maxTargets = ictionTargetCount
+            end
+
+            if not ictionSWDScale then
+                iction.SWDScale = 2
+            else
+                iction.SWDScale = ictionSWDScale
+            end
+
+            if not ictionVoidBoltScale then
+                iction.VoidboltScale = 1.5
+            else
+                iction.VoidboltScale = ictionVoidBoltScale
+            end
+
+            --- Initialize castBarPosition
+            if ictionSetCastBar == nil then
+                iction.setCastBar = false
+            else
+                iction.setCastBar = ictionSetCastBar
+                if iction_cbx ~= nil then iction.cbX = iction_cbx end
+                if iction_cby ~= nil then iction.cbY = iction_cby end
+            end
+        elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
+            if not iction.MF then iction.specChanged() end
         end
-
-        --- Initialize globalScale
-        if ictionGlobalScale == nil then iction.ictionScale = 1 else iction.ictionScale = ictionGlobalScale end
-
-        --- Initialize targetCount
-        if not ictionTargetCount then
-            iction.ict_maxTargets = 2
-        else
-            iction.ict_maxTargets = ictionTargetCount
-        end
-
-        if not ictionSWDScale then
-            iction.SWDScale = 2
-        else
-            iction.SWDScale = ictionSWDScale
-        end
-
-        if not ictionVoidBoltScale then
-            iction.VoidboltScale = 1.5
-        else
-            iction.VoidboltScale = ictionVoidBoltScale
-        end
-
-        --- Initialize castBarPosition
-        if ictionSetCastBar == nil then
-            iction.setCastBar = false
-        else
-            iction.setCastBar = ictionSetCastBar
-            if iction_cbx ~= nil then iction.cbX = iction_cbx end
-            if iction_cby ~= nil then iction.cbY = iction_cby end
-        end
-    elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
-        if not iction.MF then iction.specChanged() end
-    end
-end)
+    end)
+end

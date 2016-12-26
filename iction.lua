@@ -1,5 +1,6 @@
 --- version Release 1.3.2
 --- hard return on Zabra Hexx SWD
+--- hard check added for warlock and priest
 
 local min,max,abs = min,max,abs
 local UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown
@@ -84,35 +85,38 @@ SlashCmdList["ICTION"] = ictionArgs
 ----------------------------------------------------------------------------------------------
 --- BEGIN UI NOW ---
 function iction.initMainUI()
-    if iction.debug then print("initMainUI") end
-    --- Setup the mainFrame and Eventwatcher ---
-    local mainFrame = iction.UIElement
-    iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
-    if localizedClass == iction.L['warlock'] then
-        iction.ictionLockFrameWatcher(iction.ictionMF)
-    elseif localizedClass == iction.L['priest'] then
-        iction.ictionPriestFrameWatcher(iction.ictionMF)
-    end
+    if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest'] then
+        if iction.debug then print("initMainUI") end
+        --- Setup the mainFrame and Eventwatcher ---
+        local mainFrame = iction.UIElement
+        iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
 
-    iction.ictionMF:SetScale(iction.ictionScale)
-    --- Now fire off all the other build functions ---
-    iction.createBottomBarArtwork()
-    iction.setMTapBorder()
-
-    if localizedClass == iction.L['warlock'] then
-        iction.createShardFrame()
-        if iction.spec == 3 then iction.createConflagFrame() end
-    elseif localizedClass == iction.L['priest'] then
-        if iction.spec == 3 then
-            iction.createInsanityFrame()
-            iction.createSWDFrame()
-            iction.createVoidFrame()
+        if localizedClass == iction.L['warlock'] then
+            iction.ictionLockFrameWatcher(iction.ictionMF)
+        elseif localizedClass == iction.L['priest'] then
+            iction.ictionPriestFrameWatcher(iction.ictionMF)
         end
+
+        iction.ictionMF:SetScale(iction.ictionScale)
+        --- Now fire off all the other build functions ---
+        iction.createBottomBarArtwork()
+        iction.setMTapBorder()
+
+        if localizedClass == iction.L['warlock'] then
+            iction.createShardFrame()
+            if iction.spec == 3 then iction.createConflagFrame() end
+        elseif localizedClass == iction.L['priest'] then
+            if iction.spec == 3 then
+                iction.createInsanityFrame()
+                iction.createSWDFrame()
+                iction.createVoidFrame()
+            end
+        end
+        iction.createArtifactFrame()
+        iction.createBuffFrame()
+        iction.createDebuffColumns()
+        iction.setcastbar()
     end
-    iction.createArtifactFrame()
-    iction.createBuffFrame()
-    iction.createDebuffColumns()
-    iction.setcastbar()
 end
 
 ----------------------------------------------------------------------------------------------
@@ -430,6 +434,10 @@ function iction.setMovable(f, isMovable, hideDefault, color)
         if isMovable then
             f:SetParent(iction.ictionMF)
             f.texture:SetVertexColor(.1, 1, .1, .25)
+            insanityMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+            SWDMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+            VOIDMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+            ARTIFACTMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
             f:EnableMouse(true)
             f:SetMovable(true)
             f:SetParent(iction.ictionMF)
@@ -478,6 +486,10 @@ function iction.setMovable(f, isMovable, hideDefault, color)
                 if color == nil then
                     f.texture:SetVertexColor(1, 1, 1, 1)
                 else
+                    insanityMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                    SWDMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                    VOIDMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                    ARTIFACTMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
                     f.texture:SetVertexColor(color[1], color[2], color[3], color[4])
                 end
             end

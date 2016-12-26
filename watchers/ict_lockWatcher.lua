@@ -9,6 +9,7 @@ function iction.ictionLockFrameWatcher(mainFrame)
     mainFrame:RegisterEvent("SPELL_DAMAGE")
     mainFrame:RegisterEvent("SPELL_CAST_SUCCESS")
     mainFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    mainFrame:RegisterEvent("UNIT_DIED")
     local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1, prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
         local event = event
         local eventName = eventName

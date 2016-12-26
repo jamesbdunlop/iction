@@ -5,7 +5,7 @@ function iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
     if iction.debugTimers then print("spellActiveCooldown") end
     local TL = tonumber(string.format("%.1f", (remainingT)))
     if TL > 60.0 then
-        remainingT = tostring(tonumber(string.format("%.1d", remainingT/60.0))) .. "m"
+        remainingT = tostring(tonumber(string.format("%.2d", remainingT/60.0))) .. "m"
     else
         remainingT = tonumber(string.format("%.1d", remainingT))
     end
@@ -78,10 +78,17 @@ function iction.isSpellOnCooldown(spellID)
 end
 
 function iction.fetchCooldownET(spellID)
+
     if iction.debugTimers then print("fetchCooldownET") end
     local start, duration, _ = GetSpellCooldown(spellID)
     local actualFinish = start+duration
     local et = (actualFinish - GetTime()) + GetTime()
+    if spellID == 104773 then
+        print("start: " .. tostring(start))
+        print("duration: " .. tostring(duration))
+        print("actualFinish: " .. tostring(actualFinish))
+        print("et: " .. tostring(et))
+    end
     if start == 0 then
         return false
     else
