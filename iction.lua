@@ -1,10 +1,5 @@
---- version Release 1.3.2
---- Hard irgnore on Zabra Hexx SWD (not sure if this is working dumped this assist)
---- Hard check added for warlock and priest to avoid errors on other classes
---- Check for buff cooldowns on reload should now bring up cooldowns correctly
---- Dispersion added
---- Fade added
---- VoidEruption frame alpha gains with insanity
+--- version Release 1.3.3
+
 
 local min,max,abs = min,max,abs
 local UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown
@@ -438,9 +433,11 @@ function iction.setMovable(f, isMovable, hideDefault, color)
         if isMovable then
             f:SetParent(iction.ictionMF)
             f.texture:SetVertexColor(.1, 1, .1, .25)
-            insanityMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
-            SWDMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
-            VOIDMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+            if localizedClass == iction.L['priest'] then
+                insanityMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+                SWDMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+                VOIDMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
+            end
             ARTIFACTMOVEFRAME:SetVertexColor(.1, 1, .1, .25)
             f:EnableMouse(true)
             f:SetMovable(true)
@@ -490,9 +487,11 @@ function iction.setMovable(f, isMovable, hideDefault, color)
                 if color == nil then
                     f.texture:SetVertexColor(1, 1, 1, 1)
                 else
-                    insanityMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
-                    SWDMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
-                    VOIDMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                    if localizedClass == iction.L['priest'] then
+                        insanityMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                        SWDMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                        VOIDMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
+                    end
                     ARTIFACTMOVEFRAME:SetVertexColor(.1, 1, .1, 0)
                     f.texture:SetVertexColor(color[1], color[2], color[3], color[4])
                 end
