@@ -91,13 +91,11 @@ function iction.ictionLockFrameWatcher(mainFrame)
 
                     --- UPDATE SPELL COUNT
                     if eventName == "SPELL_AURA_APPLIED_DOSE" and sufx6 == "DEBUFF" then
-                        if iction.debug then print("SPELL_AURA_APPLIED_DOSE") end
                         if iction.spellIDActive(mobGUID, spellID) then iction.targetData[mobGUID]['spellData'][spellID]['count'] = sufx7 end
                     end
 
                     --- SPELL AURA APPLIED
                     if eventName == "SPELL_AURA_APPLIED" and spellID ~= 196447 then --- ignore channelDemonfire here
-                        if iction.debug then print("SPELL_AURA_APPLIED") end
                         if spellID == 234153 or spellID == 198590 or spellID == 689 then iction.clearChannelData() end
                         if spellID == 27243 then
                             iction.addSeeds(mobGUID, spellName, "DEBUFF", 27243)
@@ -106,8 +104,6 @@ function iction.ictionLockFrameWatcher(mainFrame)
                         end
 
                     elseif eventName == "SPELL_ENERGIZE" then
-                        if iction.debug then print("SPELL_AURA_APPLIED") end
-                        if iction.debug then print("spellID: " ..tostring(spellID)) end
                         --- CONFLAG OPENING CAST
                         if spellID == 17962 then
                             iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
@@ -115,13 +111,11 @@ function iction.ictionLockFrameWatcher(mainFrame)
                         end
 
                     elseif eventName == "SPELL_AURA_REFRESH" then
-                        if iction.debug then print("SPELL_AURA_REFRESH") end
                         iction.setMTapBorder()
                         iction.clearChannelData()
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_CAST_SUCCESS" then
-                        if iction.debug then print("SPELL_CAST_SUCCESS") end
                         if spellID == 980 then                              --- AGONY
                             iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
                         elseif spellID == 196447 then                       --- CHANNEL DEMON FIRE
@@ -134,13 +128,11 @@ function iction.ictionLockFrameWatcher(mainFrame)
                         end
 
                     elseif eventName == "SPELL_PERIODIC_DAMAGE" then
-                        if iction.debug then print("SPELL_PERIODIC_DAMAGE") end
                         if spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID ==  233499 then  --- UA
                             iction.createTarget(mobGUID, mobName, spellName, spellType, 233490)
                         end
 
                     elseif eventName == "SPELL_AURA_REMOVED" then
-                        if iction.debug then print("SPELL_AURA_REMOVED") end
                         local channeledSpellID, cexpires = iction.getChannelSpell()
                         local isChannelActive, channelguid = iction.channelActive(channeledSpellID)
                         if not isChannelActive then
@@ -175,8 +167,7 @@ function iction.ictionLockFrameWatcher(mainFrame)
 
                     --- DESTRO ARTIFACT OPENING CAST
                     if eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Summon Darkglare" or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
-                        if iction.debug then print("SPELL_SUMMON") end
-                        iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID) -- wow thte GUID for this isn't the freaking targeted mob.. wtf
+                        iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID) -- wow the GUID for this isn't the freaking targeted mob.. wtf
                     end
                 end
             end

@@ -15,14 +15,12 @@ function iction.createTarget(guid, creatureName, spellName, spellType, spellID)
         iction.createTargetData(guid, creatureName)
         iction.createTargetSpellData(guid, spellName, spellType, spellID)
         iction.createExpiresData(guid, spellName, spellType, spellID)
-        if iction.debug then print("DONE") end
     end
 end
 
 ----------------------------------------------------------------------------------------------
 --- CREATE CRETURE TABLE ENTRY ------------------------------------------------------------------
 function iction.createTargetData(guid, creatureName)
-    if iction.debug then print("CreateTargetData") end
     --- Create the base target info tables if they don't exist
     if iction.targetData[guid] then
         return
@@ -36,7 +34,6 @@ function iction.createTargetData(guid, creatureName)
 end
 
 function iction.createTargetSpellData(guid, spellName, spellType, spellID)
-    if iction.debug then print("createTargetSpellData") end
     --- Create the base target spell timer tables for the spell cast if they don't exist
     if iction.spellIDActive(guid, spellID) then
         return
@@ -54,7 +51,6 @@ function iction.createTargetSpellData(guid, spellName, spellType, spellID)
 end
 
 function iction.createExpiresData(guid, spellName, spellType, spellID)
-    if iction.debug then print("createExpiresData: " .. tostring(spellName)) end
     --- This is the inital setup for the spell data heading into the timers. Once this has fired
     --- the rest is taken care of by iction_utils.currentTargetDebuffExpires on update.
     if iction.targetData[guid]['spellData'] ~= nil then -- death handler as this freaks on res
@@ -105,7 +101,6 @@ function iction.createExpiresData(guid, spellName, spellType, spellID)
 end
 
 function iction.createButtons(frm, guid, spellType)
-    if iction.debug then print("createButtons") end
     --- If we've created a new frame add the buttons
     iction.targetButtons[guid] = {}
     local padX, padY

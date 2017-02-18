@@ -1,5 +1,5 @@
---- version Release 1.3.3
-
+--- version Release 1.3.21
+-- quick patch for warlock move frames error
 
 local min,max,abs = min,max,abs
 local UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent,GetScreenWidth,GetScreenHeight,IsAltKeyDown
@@ -85,7 +85,6 @@ SlashCmdList["ICTION"] = ictionArgs
 --- BEGIN UI NOW ---
 function iction.initMainUI()
     if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest'] then
-        if iction.debug then print("initMainUI") end
         --- Setup the mainFrame and Eventwatcher ---
         local mainFrame = iction.UIElement
         iction.ictionMF = mainFrame.create(mainFrame, iction.ictMainFrameData)
@@ -121,7 +120,6 @@ end
 ----------------------------------------------------------------------------------------------
 --- UI BUILDERS ------------------------------------------------------------------------------
 function iction.createBottomBarArtwork()
-    if iction.debug then print("createBottomBarArtwork") end
     -- clear previous
     if iction.uiBotBarArt then
         for i = 1, iction.tablelength(iction.uiBotBarArt) do
@@ -145,7 +143,6 @@ function iction.createBottomBarArtwork()
 end
 
 function iction.createBuffFrame()
-    if iction.debug then print("createBuffFrame") end
     local fw, fh
     if ictionBuffBarBarH == true then
         _, fw = iction.calcFrameSize(iction.uiPlayerBuffButtons)
@@ -163,7 +160,6 @@ function iction.createBuffFrame()
 end
 
 function iction.createDebuffColumns()
-    if iction.debug then print("createDebuffColumns") end
     iction.debuffColumns = {}
     local x, y
     x = -(iction.bw*2 + iction.ictionMFW)
@@ -188,7 +184,6 @@ function iction.createDebuffColumns()
 end
 
 function iction.createShardFrame()
-    if iction.debug then print("createShardFrame") end
     iction.soulShards = {}
     local shardData = iction.ictShardData
     shardData["uiParentFrame"] = iction.ictionMF
@@ -203,7 +198,6 @@ function iction.createShardFrame()
 end
 
 function iction.createConflagFrame()
-    if iction.debug then print("createConflagFrame") end
     iction.conflags = {}
     local conflagData = iction.ictConflagData
     conflagData["uiParentFrame"] = iction.ictionMF
@@ -215,7 +209,6 @@ function iction.createConflagFrame()
 end
 
 function iction.createInsanityFrame()
-    if iction.debug then print("createInsanityFrame") end
     local insanityBar = {}
     local insanityData = iction.ictInsanityData
     insanityData["uiParentFrame"] = iction.ictionMF
@@ -242,7 +235,6 @@ function iction.createInsanityFrame()
 end
 
 function iction.createArtifactFrame()
-    if iction.debug then print("createArtifactFrame") end
     if iction.artifactFrame~= nil then
         iction.artifactFrame:Hide()
         iction.artifactFrame = nil
@@ -327,7 +319,6 @@ function iction.createArtifactFrame()
 end
 
 function iction.createHighlightFrame()
-    if iction.debug then print("createHighlightFrame") end
     local fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
     local highlightData = iction.ictHighLightFrameData
     highlightData["uiParentFrame"] = iction.ictionMF
@@ -342,7 +333,6 @@ end
 
 function iction.createSWDFrame()
     iction.SWDUIElements = {}
-    if iction.debug then print("createSWDFrame") end
     local SWDData = iction.ictSWDData
     SWDData["uiParentFrame"] = iction.ictionMF
     SWDData["point"]["p"] = iction.ictionMF
@@ -364,7 +354,6 @@ end
 
 function iction.createVoidFrame()
     iction.voidBoltUIElements = {}
-    if iction.debug then print("createVoidFrame") end
     local VFData = iction.ictVoidData
     VFData["uiParentFrame"] = iction.ictionMF
     VFData["point"]["p"] = iction.ictionMF
@@ -387,7 +376,6 @@ end
 ----------------------------------------------------------------------------------------------
 --- UI CUSTOMIZE -----------------------------------------------------------------------------
 function iction.unlockUIElements(isMovable)
-    if iction.debug then print("unlockUIElements") end
     local cols = iction.debuffColumns
     if isMovable then
         -- override colors for special frames
@@ -427,7 +415,6 @@ function iction.unlockUIElements(isMovable)
 end
 
 function iction.setMovable(f, isMovable, hideDefault, color)
-    if iction.debug then print("setMovable") end
     if f then
         local frameName = f:GetAttribute("name")
         if isMovable then

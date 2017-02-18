@@ -16,6 +16,7 @@ function iction.buttonBuild(pFrame, guid, buttons, paddingX, paddingY, buff, fon
             local bh = iction.bh
                 local b = CreateFrame("Button", value['name'], fPFrame, value["inherits"])
                   b:SetAttribute("name", value['id'])
+                  if iction.debug then print(value['name']) end
                   b:SetAttribute("spellName", value['name'])
                   b:SetFrameStrata("MEDIUM")
                   b:EnableMouse(false)
