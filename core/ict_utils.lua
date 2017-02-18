@@ -500,7 +500,6 @@ function iction.currentTargetDebuffExpires()
             local spec = GetSpecialization()
             if spec == 3 then return end
         end
-        -- Now handle UA cause it's a nightmare
         if iction.targetData[guid] ~= nil then
             local mobInfo = iction.targetData[guid]['spellData']
             if mobInfo ~= nil then

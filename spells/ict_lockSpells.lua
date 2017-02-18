@@ -102,6 +102,8 @@ iction.lockspells = {
                     insert = false, isTalentSpell = true, vis = false, tid = 111400, id = 111400, duration = 999, maxTime = 999}},
                 [7] = {SoulLeech = {name = "Soul Leech",
                     insert = true, isTalentSpell = false, vis = true, tid = nil, id = 108366, duration = 15, maxTime = 15}},
+                [9] = {Roaringblaze = {name = "Roaring blaze",
+                    insert = true, isTalentSpell = true, vis = true, tid = 205184, id = 205184, duration = 15, maxTime = 15}},
                 },
        artifact = {name = "Dimensional Rift",
            insert = true, isArtifact = true, isTalentSpell = false, vis = true, id = 196586, duration = 4, maxTime = 8}
