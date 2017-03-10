@@ -31,7 +31,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         elseif localizedClass == iction.L['priest'] then
             iction.spec = GetSpecialization()
             if iction.spec == 3 then
-                iction.spells = iction.priestspells
+                --iction.spells = iction.priestspells
                 loadUI()
             end
         end

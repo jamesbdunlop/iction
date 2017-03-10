@@ -2,34 +2,21 @@ local localizedClass, _, _ = UnitClass("Player")
 local iction = iction
 ----------------------------------------------------------------------------------------------
 --- CREATE TARGET SPELLS UI  ---
-function iction.createSpellFrame(creatureName, guid, bgFile)
+function iction.createSpellFrame(guid)
     local freeSlot, colID = iction.findSlot(guid)
-    if freeSlot and not iction.targetFrames[guid] then
-        iction.targetFrames[guid] = CreateFrame("Frame", "aFrame", iction.debuffColumns[colID])
-        iction.targetFrames[guid]:SetAttribute("name", 'ictionDeBuffFrame')
-        iction.targetFrames[guid]:EnableMouse(false)
-        iction.targetFrames[guid]:SetFrameStrata("HIGH")
-        iction.targetFrames[guid]:SetBackdropColor(0, 0, 0, 0)
-        iction.targetFrames[guid]:SetClampedToScreen(true)
-        -- Set draw for frame
-        local bg = iction.targetFrames[guid]:CreateTexture(nil, "ARTWORK")
-              bg:SetAllPoints(true)
-              bg:SetTexture(bgFile)
-              bg:SetVertexColor(0, 0, 0, 0)
-        iction.targetFrames[guid].texture = bg
-        -- Set the height of the frame based on the number of buttons
-        local fw, fh = iction.calcFrameSize(iction.uiPlayerSpellButtons)
-        if localizedClass == iction.L['priest'] then
-            local num = (iction.bh*2) - (iction.ictionButtonFramePad *2)
-            fh = (fh - num) - 53
-        end
-        iction.targetFrames[guid]:SetHeight(fh)
-        iction.targetFrames[guid]:SetWidth(fw)
+    if not freeSlot then return false end --- return early
+
+    if not iction.targetFrames[guid] then --- Build a new frame
+        local frmData = iction.ictSpellFrameData
+        local fw, fh = iction.calcFrameSize(iction.getAllSpells()[1]['spells'])
+        frmData['w'] = fw
+        frmData['h'] = fh
+        local f = iction.UIElement
+        iction.targetFrames[guid] = f.create(f, iction.ictSpellFrameData)
 
         -- Set frame to be an active column in the debuff columns table
         iction.targetCols[colID]['guid'] = guid
         iction.targetCols[colID]['active'] = true
-
         iction.targetFrames[guid]:SetPoint("CENTER", iction.debuffColumns[colID])
         iction.targetFrames[guid]:SetPoint("BOTTOM", iction.debuffColumns[colID])
         return iction.targetFrames[guid]
@@ -41,6 +28,7 @@ end
 ----------------------------------------------------------------------------------------------
 --- CREATE PLAYER BUFF UI  ---
 function iction.createPlayerBuffFrame()
+    -- work out h w from active buff count
     local fw, fh
     if not iction.targetFrames[iction.playerGUID] then
         local offset

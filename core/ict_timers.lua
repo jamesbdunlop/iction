@@ -2,7 +2,6 @@
 --- MAIN TIMER UPDATE ------------------------------------------------------------------------
 
 function iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
-    if iction.debugTimers then print("spellActiveCooldown") end
     local rt = remainingT
     local TL = tonumber(string.format("%.1f", (rt)))
     if TL > 60.0 then
@@ -20,7 +19,6 @@ function iction.spellActiveCooldown(guid, spellName, remainingT, spellID)
 end
 
 function iction.spellInfinite(guid, spellName, infinite, spellID)
-    if iction.debugTimers then print("spellInfinite") end
     if infinite then
         iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID])
         iction.setButtonText("∞", false, iction.targetButtons[guid]['buttonText'][spellID])
@@ -31,7 +29,6 @@ function iction.spellInfinite(guid, spellName, infinite, spellID)
 end
 
 function iction.spellActiveTimer(guid, spellName, remainingT, spellID)
-    if iction.debugTimers then print("spellActiveTimer") end
     local TL = remainingT - GetTime()
     if TL > 60 then
         remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
@@ -47,14 +44,12 @@ function iction.spellActiveTimer(guid, spellName, remainingT, spellID)
 end
 
 function iction.spellFadingTimer(guid, spellName, remainingT, spellID)
-    if iction.debugTimers then print("spellFadingTimer") end
     local remainingT = tonumber(string.format("%.1f", remainingT))
     iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][spellID], true)
     iction.setButtonText(remainingT, false, iction.targetButtons[guid]['buttonText'][spellID], true, {1,0,0,1})
 end
 
 function iction.isValidButtonFrame(guid)
-    if iction.debugTimers then print("isValidButtonFrame") end
     if iction.targetButtons[guid] then
         if iction.targetButtons[guid]['buttonFrames'] then
             return true
@@ -67,7 +62,6 @@ function iction.isValidButtonFrame(guid)
 end
 
 function iction.isSpellOnCooldown(spellID)
-    if iction.debugTimers then print("isSpellOnCooldown") end
     if spellID ~= nil then
         local start, duration, enabled = GetSpellCooldown(spellID)
         if enabled == 0 then
@@ -80,7 +74,6 @@ function iction.isSpellOnCooldown(spellID)
 end
 
 function iction.fetchCooldownET(spellID)
-    if iction.debugTimers then print("fetchCooldownET") end
     local start, duration, _ = GetSpellCooldown(spellID)
     local actualFinish = start+duration
     local et = (actualFinish - GetTime()) + GetTime()
@@ -92,7 +85,6 @@ function iction.fetchCooldownET(spellID)
 end
 
 function iction.spellHasEnded(guid, spellName, spellID)
-    if iction.debugTimers then print("spellHasEnded") end
     iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][spellID])
     iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][spellID])
     iction.targetData[guid]['spellData'][spellID]['endTime'] = nil

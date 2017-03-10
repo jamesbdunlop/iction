@@ -1,6 +1,7 @@
 --- Core frame class
 local iction = iction
 iction.UIElement = {}
+iction.UIButtonElement = {}
 function iction.UIElement.create(self, data)
     local attrName = data['nameAttr']
     if not ictionFramePos[attrName] then
@@ -32,6 +33,7 @@ function iction.UIElement.create(self, data)
     -- Texture
     self.texture = self.createTexture(self, self.data['texture'])
     self.frame.texture = self.texture
+    print("Built a frame successfully! ")
     return self.frame
 end
 
@@ -96,6 +98,60 @@ function iction.UIElement.addTexture(self, name, w, h, strata, allPoints, anchor
 end
 
 function iction.UIElement.addFontSring(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
+    local Addfnt = self:CreateFontString(nil, strata)
+        if allPoints then
+            Addfnt:SetAllPoints(true)
+        else
+            Addfnt:SetPoint(anchorPoint, x, y)
+        end
+        Addfnt:SetFont(iction.font, size, strata, outline)
+        Addfnt:SetFontObject("GameFontWhite")
+        Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
+    self.text = Addfnt
+    return Addfnt
+end
+
+function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
+    --- Extract data
+    self.data = data
+    local name = self.data['name']
+    local id = self.data['id']
+    local rank = self.data['rank']
+    local castingTime = self.data['castingTime']
+    local minRange = self.data['minRange']
+    local maxRange = self.data['maxRange']
+    local icon = self.data['icon']
+    local insert = self.data['insert']
+    local isArtifact = self.data['isArtifact']
+    local isTalentSpell = self.data['isTalentSpell']
+    local vis = self.data['vis']
+
+    local butParentFrame = pFrame
+    local bw = iction.bw
+    local bh = iction.bh
+    local b = CreateFrame("Button", name, butParentFrame, nil)
+      b:SetAttribute("name", id)
+      b:SetAttribute("id", id)
+      b:SetAttribute("spellName", name)
+      b:SetFrameStrata("MEDIUM")
+      b:EnableMouse(false)
+      b:SetDisabledFontObject("GameFontDisable")
+      b:SetNormalFontObject("GameFontNormalSmall");
+      b:SetHighlightFontObject("GameFontHighlight");
+      b:SetPoint(align, butParentFrame, posX, posY)
+      b:SetWidth(bw)
+      b:SetHeight(bh)
+    local but = b:CreateTexture(nil, "ARTWORK")
+          but:SetAllPoints(true)
+          but:SetTexture(icon)
+          but:SetVertexColor(0.9,0.3,0.3, .5)
+    b.texture = but
+    -- Create the fontString for the button
+    local fnt = self.addFontString(b, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
+    return b, fnt
+end
+
+function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
     local Addfnt = self:CreateFontString(nil, strata)
         if allPoints then
             Addfnt:SetAllPoints(true)
