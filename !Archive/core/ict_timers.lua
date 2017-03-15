@@ -96,7 +96,6 @@ function iction.spellHasEnded(guid, spellName, spellID)
 end
 
 function iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, w, h, px, py)
-    local localizedClass, _, _ = UnitClass("Player")
     if not iction.stackFrames[guid] then
         iction.stackFrames[guid] = {}
     end
@@ -112,10 +111,10 @@ function iction.createStackFrame(guid, spellName, count, timerText, timerButtonF
         stackFrameData['point']['p'] = timerButtonFrame
         stackFrameData['w'] = w
         stackFrameData['h'] = h
-        local stackFrameBldr = iction.UIElement
+        local stackFrameBldr = iction.UIFrameElement
         local stackFrame = stackFrameBldr.create(stackFrameBldr, stackFrameData)
         stackFrame.text = stackFrameBldr.addFontSring(stackFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 10, 1, 1, 1, 1)
-        if localizedClass == iction.L['priest'] then
+        if iction.class == iction.L['Priest'] then
             stackFrame:SetPoint("TOP", timerButtonFrame, 0, py)
             stackFrame:SetPoint("RIGHT", timerButtonFrame, px, 0)
         else
@@ -150,7 +149,6 @@ function iction.createStackFrame(guid, spellName, count, timerText, timerButtonF
     end
 end
 
-local localizedClass, _, _ = UnitClass("Player")
 function iction.updateTimers()
     local function swdupdate()
         --- PRIEST SHADOW WORD DEATH SPECIAL FRAME HANDLER
@@ -161,7 +159,7 @@ function iction.updateTimers()
         local swdButtonFrame = iction.SWDUIElements[2][swdID]
         local swdButtonText = iction.SWDUIElements[3][swdID]
         if tguid and tguid ~= iction.playerGUID then
-            if iction.getTargetHP() then
+            if iction.reaper_getTargetHP() then
                 iction.setButtonState(true, false, swdButtonFrame, false, true)
             else
                 iction.setButtonState(false, false, swdButtonFrame, false, false)
@@ -193,7 +191,7 @@ function iction.updateTimers()
         local vbFrame = iction.voidBoltUIElements[1]
         local vbButtonFrame = iction.voidBoltUIElements[2][vbID]
         local vbButtonText = iction.voidBoltUIElements[3][vbID]
-        if iction.buffActive(194249) and not iction.isSpellOnCooldown(vbID) then
+        if iction.blizz_buffActive(194249) and not iction.isSpellOnCooldown(vbID) then
             iction.setButtonText("", false, vbButtonText, true, {0,0,0,0})
             iction.setButtonState(true, false, vbButtonFrame, false, true)
         elseif iction.isSpellOnCooldown(vbID) then
@@ -211,7 +209,7 @@ function iction.updateTimers()
     end
 
 
-    if localizedClass == iction.L['priest'] then
+    if iction.class == iction.L['Priest'] then
         swdupdate()
         vbupdate()
     end
@@ -252,7 +250,7 @@ function iction.updateTimers()
                                         if endTime < GetTime() or endTime == GetTime() then
                                             --- Spell has ended
                                             iction.spellHasEnded(guid, spellName, spellID)
-                                            if localizedClass == iction.L['priest'] then
+                                            if iction.class == iction.L['Priest'] then
                                                 iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                             else
                                                 iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
@@ -263,7 +261,7 @@ function iction.updateTimers()
                                             local remainingT = tonumber(string.format("%.1f", (endTime - GetTime())))
                                             if count and count ~= 0 then
                                                 --- Set the current stack count for active
-                                                if localizedClass == iction.L['priest'] then
+                                                if iction.class == iction.L['Priest'] then
                                                     iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                                 else
                                                     iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
@@ -285,13 +283,13 @@ function iction.updateTimers()
                                 elseif endTime == nil and coolDown ~= nil and not iction.infinite then
                                     if count and count ~= 0 then
                                         --- Set the current stack count for active
-                                        if localizedClass == iction.L['priest'] then
+                                        if iction.class == iction.L['Priest'] then
                                             iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                         else
                                             iction.createStackFrame(guid, spellName, count, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
                                         end
                                     else
-                                        if localizedClass == iction.L['priest'] then
+                                        if iction.class == iction.L['Priest'] then
                                             iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5, stackFrameX, stackFrameY)
                                         else
                                             iction.createStackFrame(guid, spellName, nil, timerText, timerButtonFrame, spellID, iction.bw/2.5, iction.bh/2.5)
@@ -347,7 +345,7 @@ function iction.updateTimers()
     runTimers()
 
     --- PRIEST MINDBLAST PROCS and Insanity
-    if localizedClass == iction.L['priest'] then
+    if iction.class == iction.L['Priest'] then
         if iction.targetData ~= nil then
             for guid, data in pairs(iction.targetData) do
                 if iction.isValidButtonFrame(guid) then
@@ -355,13 +353,13 @@ function iction.updateTimers()
                         local isDead = data['dead']
                         local spells = data['spellData']
                         if not isDead then
-                            if iction.buffActive(124430) then
+                            if iction.blizz_buffActive(124430) then
                                 if iction.targetData[guid]['spellData'][8092] == nil then
                                     iction.createTarget(guid, "", "Mind Flay", "DEBUFF", 8092)
                                 end
                                 iction.spellHasEnded(guid, "Mind Flay", 8092)
                                 iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][8092], false, true)
-                            elseif iction.buffActive(194249) and not iction.isSpellOnCooldown(205448) then
+                            elseif iction.blizz_buffActive(194249) and not iction.isSpellOnCooldown(205448) then
                                 iction.setButtonState(true, false, iction.targetButtons[guid]['buttonFrames'][205448], false, true)
                             else
                                 iction.setButtonState(false, true, iction.targetButtons[guid]['buttonFrames'][205448], false, false)
@@ -381,7 +379,7 @@ function iction.updateTimers()
                     if spellid == 193225 and selected then shortVoid = true end
                 end
             end
-            if not iction.buffActive(194249) then
+            if not iction.blizz_buffActive(194249) then
                 if shortVoid and insanity >= 70 then
                     iction.targetButtons[iction.playerGUID]["buttonFrames"][228260]:SetBackdropColor(1, 1, 1, 1)
                     iction.targetButtons[iction.playerGUID]["buttonFrames"][228260].texture:SetVertexColor(1, 1, 1, 2)

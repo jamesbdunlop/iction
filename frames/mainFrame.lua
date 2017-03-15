@@ -1,3 +1,4 @@
+local iction = iction
 iction.ictMainFrameData = { uiType = "Frame",
                             uiName = "iction_MF",
                             nameAttr = "iction_MF",
@@ -12,6 +13,9 @@ iction.ictMainFrameData = { uiType = "Frame",
                             strata = "LOW",
                             texture = {name = nil, allPoints = true, level = "ARTWORK",
                                        texture= "Interface\\ChatFrame\\ChatFrameBackground",
-                                       vr = 1, vg = 1, vb = 1, va = 0},
-                            point = {pos = "CENTER", x = 0, y = -20},
+                                       vr = 0, vg = 0, vb = 0, va = 0},
+                            pointPosition = {point = "CENTER",
+                                     relativeTo = UIParent,
+                                     relativePoint = "CENTER",
+                                     x = 0, y = 0},
                             }

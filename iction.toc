@@ -1,6 +1,6 @@
 ﻿## Interface: 70100
 ## Title: iction
-## Version: 1.00
+## Version: 2.00
 ## Author: Macky kaz`goroth
 ## Notes: MOAR DOTS!
 ##
@@ -26,27 +26,26 @@ locales\english_ui.lua
 locales\german_ui.lua
 locales\korean_ui.lua
 
-##-- Core Stuff
-core\ict_core.lua
-core\ictFrame.lua
-core\ict_options.lua
-core\ict_utils.lua
-core\ict_button.lua
-core\ict_timers.lua
-core\ict_spellFrame.lua
-core\ict_target.lua
-core\ict_insanity.lua
+##-- CoreApp Stuff
+ict_core.lua
+coreApplication\ict_utils.lua
+coreApplication\ict_target.lua
+coreApplication\ict_options.lua
 
-##--- Frame watchers
-watchers\ict_lockWatcher.lua
-watchers\ict_PriestWatcher.lua
+##-- CoreUI Stuff
+coreUI\ict_ui.lua
+coreUI\ict_uiUtils.lua
+coreUI\ict_spellLoader.lua
+coreUI\ict_frameUtils.lua
+coreUI\ict_Frame.lua
 
 ##--- Spell Lists
 spells\ict_lockSpells.lua
-spells\ict_priestSpells.lua
+
+##--- Spell Watchers
+watchers\ict_lockWatcher.lua
 
 ##--- Final UI Stuff
-core\ict_spellLoader.lua
 frames\mainFrame.lua
 frames\buffFrame.lua
 frames\debuffFrame.lua
@@ -60,4 +59,5 @@ frames\highlightFrame.lua
 frames\spellFrame.lua
 frames\stackFrame.lua
 frames\skins.lua
+
 iction.lua

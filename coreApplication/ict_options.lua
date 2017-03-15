@@ -14,7 +14,6 @@ local scaleUILabel = voidBoxTop - 33
 local scaleUIBoxTop = scaleUILabel - 15
 
 local chxboxW = 24
-local localizedClass, _, _ = UnitClass("Player")
 
 function iction.setOptionsFrame()
     --- Now do the global options default setups
@@ -54,75 +53,6 @@ function iction.setOptionsFrame()
             end)
         end
         createOptionsFrame()
-
-        local function createCastBarOptions()
-            ---------------------
-            --- Move CastBar ----
-            ict_moveCastBarButton = CreateFrame("CheckButton", "ict_moveCastBarButton", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-            ict_moveCastBarButton.tooltip = iction.L['MoveCastBarTT']
-            icttext = _G["ict_moveCastBarButtonText"]
-            if ictionSetCastBar then ict_moveCastBarButton:SetChecked(true) end
-            ict_moveCastBarButton:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            ict_moveCastBarButton:SetPoint("TOP", iction.OptionsFrame, 0, -10)
-            icttext:SetText(iction.L['MoveCastBarText'])
-            ict_moveCastBarButton:SetScript("OnClick", function()
-                                    if ict_moveCastBarButton:GetChecked() then
-                                        PlaySound("igMainMenuOptionCheckBoxOn")
-                                        ictionSetCastBar = true
-                                        CastingBarFrame:EnableMouse(true)
-                                        CastingBarFrame:SetMovable(true)
-                                        CastingBarFrame:SetAlpha(1)
-                                        --- FRAMES MOUSE CLICK AND DRAG ---
-                                        CastingBarFrame:SetScript("OnMouseDown", function(self, button)
-                                                    if button == "LeftButton" and not CastingBarFrame.isMoving then
-                                                        CastingBarFrame:StartMoving();
-                                                        CastingBarFrame.isMoving = true;
-                                                    end
-                                                end)
-                                        CastingBarFrame:SetScript("OnMouseUp", function(self, button)
-                                                    if button == "LeftButton" and CastingBarFrame.isMoving then
-                                                        CastingBarFrame:StopMovingOrSizing()
-                                                        CastingBarFrame.isMoving = false
-                                                        local point, relativeTo, relativePoint, xOffset, yOffset = CastingBarFrame:GetPoint(1)
-                                                        iction_cbx = xOffset
-                                                        iction_cby = yOffset
-                                                    end
-                                                end)
-                                        CastingBarFrame:Show()
-                                    else
-                                        CastingBarFrame:Hide()
-                                        ictionSetCastBar = false
-                                        PlaySound("igMainMenuOptionCheckBoxOff")
-                                    end
-                                end)
-        end
-        createCastBarOptions()
-
-        local function createHorizontalBarOptions()
-            ----------------------------------------------------------------------------------------------------------
-            --- HORIZONTAL BUFF BAR
-            ict_BBarHorizontalButton = CreateFrame("CheckButton", "ict_BBarHorizontalButton", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
-            ict_BBarHorizontalButton.tooltip = iction.L['setBuffBar']
-            bbhtext = _G["ict_BBarHorizontalButtonText"]
-            if ictionBuffBarBarH then ict_BBarHorizontalButton:SetChecked(true) end
-            ict_BBarHorizontalButton:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            ict_BBarHorizontalButton:SetPoint("TOP", iction.OptionsFrame, 0, -40)
-            bbhtext:SetText(iction.L['HorizontalBuffBar'])
-            ict_BBarHorizontalButton:SetScript("OnClick", function()
-                if ict_BBarHorizontalButton:GetChecked() then
-                    ictionBuffBarBarH = true
-                    iction.removeBuffButtons()
-                    iction.setBuffButtonLib()
-                    DEFAULT_CHAT_FRAME:AddMessage(iction.L['HorizontalBuffBarText'], 100, 35, 35)
-                else
-                    ictionBuffBarBarH = false
-                    iction.removeBuffButtons()
-                    iction.setBuffButtonLib()
-                    DEFAULT_CHAT_FRAME:AddMessage(iction.L['VerticalBuffBarText'], 100, 35, 35)
-                end
-            end)
-        end
-        createHorizontalBarOptions()
 
         local function createMaxTargetsOptions()
             ----------------------------------------------------------------------------------------------------------
@@ -322,7 +252,7 @@ function iction.setOptionsFrame()
                       insets = { left = 3, right = 3, top = 6, bottom = 6 }})
             iction.ict_Scale:SetScript("OnValueChanged", function(self, event, arg1)
                                 ictionGlobalScale = tonumber(string.format("%.1f", event))
-                                iction.ictionMF:SetScale(tonumber(string.format("%.1f", event)))
+                                iction.mainFrameBldr.frame:SetScale(tonumber(string.format("%.1f", event)))
                                 iction.ict_scaleIDXLabel:SetText(string.format("%.1f", ictionGlobalScale))
                                 end)
         end
@@ -363,7 +293,7 @@ function iction.setOptionsFrame()
                                 iction.ict_swdIDXScaleLabel:SetText(string.format("%.1f", ictionSWDScale))
                                 end)
         end
-        if localizedClass == iction.L['priest'] then
+        if iction.class == iction.L['Priest'] then
             createSWDOptions()
         end
         local function createVoidOptions()
@@ -401,7 +331,7 @@ function iction.setOptionsFrame()
                                 iction.ict_voidBoltIDXScaleLabel:SetText(string.format("%.1f", ictionVoidBoltScale))
                                 end)
         end
-        if localizedClass == iction.L['priest'] then
+        if iction.class == iction.L['Priest'] then
             createVoidOptions()
         end
         ----------------------------------------------------------------------------------------------------------

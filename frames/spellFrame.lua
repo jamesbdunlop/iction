@@ -1,3 +1,4 @@
+local iction = iction
 iction.ictSpellFrameData = { uiType = "Frame",
                             uiName = nil,
                             nameAttr = "ictionDeBuffFrame",
@@ -13,5 +14,8 @@ iction.ictSpellFrameData = { uiType = "Frame",
                             texture = {name = nil, allPoints = true, level = "ARTWORK",
                                        texture= "Interface\\ChatFrame\\ChatFrameBackground",
                                        vr = 0, vg = 0, vb = 0, va = 0},
-                            point = {pos = "BOTTOM", x = 0, y = -20},
+                            pointPosition = {point = "BOTTOM",
+                                     relativeTo = nil,
+                                     relativePoint = "CENTER",
+                                     x = 0, y = -20},
                             }

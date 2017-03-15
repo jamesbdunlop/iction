@@ -15,7 +15,7 @@ iction.skin01Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/bg1",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", x = -96, y = 0 }
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -96, y = 0 }
                     },
 
                     {uiType = "Frame",
@@ -34,7 +34,7 @@ iction.skin01Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/bg2",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = -32, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -32, y = 0}
                     },
 
                     {uiType = "Frame",
@@ -53,7 +53,7 @@ iction.skin01Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/bg3",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = 32, y = 0 }
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 32, y = 0 }
                     },
 
                     {uiType = "Frame",
@@ -72,7 +72,7 @@ iction.skin01Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/bg4",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = 96, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 96, y = 0}
                     }
 }
 table.insert(iction.skinData, iction.skin01Data)
@@ -82,8 +82,8 @@ iction.skin02Data = {
                     uiName = "iction_bg1",
                     nameAttr = "iction_bg1",
                     uiInherits = nil,
-                    userPlaced = true,
-                    movable = true,
+                    userPlaced = false,
+                    movable = false,
                     enableMouse = false,
                     SetClampedToScreen = true,
                     w = 64,
@@ -93,7 +93,7 @@ iction.skin02Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin02_1",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", x = -96, y = 0 }
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -96, y = 0}
                     },
 
                     {uiType = "Frame",
@@ -101,8 +101,8 @@ iction.skin02Data = {
                     uiParentFrame = nil,
                     nameAttr = "iction_bg2",
                     uiInherits = nil,
-                    userPlaced = true,
-                    movable = true,
+                    userPlaced = false,
+                    movable = false,
                     enableMouse = false,
                     SetClampedToScreen = true,
                     w = 64,
@@ -112,7 +112,7 @@ iction.skin02Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin02_2",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = -32, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -32, y = 0}
                     },
 
                     {uiType = "Frame",
@@ -120,8 +120,8 @@ iction.skin02Data = {
                     uiParentFrame = nil,
                     nameAttr = "iction_bg3",
                     uiInherits = nil,
-                    userPlaced = true,
-                    movable = true,
+                    userPlaced = false,
+                    movable = false,
                     enableMouse = false,
                     SetClampedToScreen = true,
                     w = 64,
@@ -131,7 +131,7 @@ iction.skin02Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin02_3",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = 32, y = 0 }
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 32, y = 0 }
                     },
 
                     {uiType = "Frame",
@@ -139,8 +139,8 @@ iction.skin02Data = {
                     uiParentFrame = nil,
                     nameAttr = "iction_bg4",
                     uiInherits = nil,
-                    userPlaced = true,
-                    movable = true,
+                    userPlaced = false,
+                    movable = false,
                     enableMouse = false,
                     SetClampedToScreen = true,
                     w = 64,
@@ -150,7 +150,7 @@ iction.skin02Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin02_4",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = 96, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 96, y = 0}
                     }
 }
 table.insert(iction.skinData, iction.skin02Data)
@@ -171,7 +171,7 @@ iction.skin03Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin03_1",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", x = -96, y = 0 }
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -96, y = 0 }
                     },
 
                     {uiType = "Frame",
@@ -190,7 +190,7 @@ iction.skin03Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin03_2",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = -32, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -32, y = 0}
                     },
 
                     {uiType = "Frame",
@@ -209,7 +209,7 @@ iction.skin03Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin03_3",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = 32, y = 0 }
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 32, y = 0 }
                     },
 
                     {uiType = "Frame",
@@ -228,7 +228,7 @@ iction.skin03Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin03_4",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", p = nil, x = 96, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 96, y = 0}
                     }
 }
 table.insert(iction.skinData, iction.skin03Data)
@@ -249,7 +249,7 @@ iction.skin04Data = {
                     texture = {name = nil, allPoints = true, level = "ARTWORK",
                                texture= "Interface/AddOns/iction/media/bg/skin04",
                                vr = 1, vg = 1, vb = 1, va = 1},
-                    point = {pos = "CENTER", x = 0, y = 0}
+                    pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 0, y = 0}
                     },
 }
 table.insert(iction.skinData, iction.skin04Data)

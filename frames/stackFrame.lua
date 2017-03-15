@@ -1,3 +1,4 @@
+local iction = iction
 iction.ictStackFrameData = { uiType = "Frame",
                             uiName = nil,
                             nameAttr = "ictionStackFrame",
@@ -13,5 +14,5 @@ iction.ictStackFrameData = { uiType = "Frame",
                             texture = {name = nil, allPoints = true, level = "ARTWORK",
                                        texture= "Interface\\ChatFrame\\ChatFrameBackground",
                                        vr = 0, vg = 0, vb = 0, va = 1},
-                            point = {pos = "TOP", x = 20, y = 10},
+                            pointPosition = {point = "TOP", p = nil, x = 20, y = 10},
                             }

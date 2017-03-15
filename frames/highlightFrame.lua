@@ -1,3 +1,4 @@
+local iction = iction
 iction.ictHighLightFrameData = { uiType = "Frame",
                                 uiName = "iction_highlightFrame",
                                 nameAttr = "iction_highlightFrame",
@@ -12,6 +13,9 @@ iction.ictHighLightFrameData = { uiType = "Frame",
                                 strata = "BACKGROUND",
                                 texture = {name = nil, allPoints = true, level = "BACKGROUND",
                                            texture= "Interface\\ChatFrame\\ChatFrameBackground",
-                                           vr = 1, vg = 1, vb = 1, va = 0},
-                                point = {pos = "CENTER", x = 0, y = 0},
+                                           vr = 1, vg = 1, vb = 1, va = 0.5},
+                                pointPosition = {point = "CENTER",
+                                 relativeTo = nil,
+                                 relativePoint = "CENTER",
+                                 x = 0, y = 0},
                                 }

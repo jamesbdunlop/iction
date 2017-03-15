@@ -39,8 +39,8 @@ L['HorizontalBuffBarText'] = "\124c00FFFF44Set BuffBar to Horizontal"
 L['VerticalBuffBarText'] = "\124c00FFFF44Set BuffBar to Vertical"
 L['close'] = "Close"
 --- UI stuff
-L['warlock'] = 'Warlock'
-L['priest'] = 'Priest'
+L['Warlock'] = 'Warlock'
+L['Priest'] = 'Priest'
 L['specChangeMSG'] = "\124c00FFFF44[ictionInfo] Iction has detected a spec change. If you find things going a bit weird. Reload the ui using /reload ui!"
 L['scaleSWD'] = 'Scale SWD frm:'
 L['scaleSWDTT'] = 'Scale Shadow Word: Death frame'

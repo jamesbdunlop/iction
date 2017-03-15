@@ -109,7 +109,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                         iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
 
                     elseif eventName == "SPELL_AURA_REMOVED" and mobGUID ~= "" then
-                        local channeledSpellID, cexpires = iction.getChannelSpell()
+                        local channeledSpellID, cexpires = iction.blizz_getChannelSpellInfo()
                         local isChannelActive, channelguid = iction.channelActive(channeledSpellID)
                         if not isChannelActive then
                             iction.clearChannelData()
@@ -139,7 +139,7 @@ function iction.ictionPriestFrameWatcher(mainFrame)
                             local timerText = iction.targetButtons[mobGUID]["buttonText"][swdID]
                             local timerButtonFrame = iction.targetButtons[mobGUID]["buttonFrames"][swdID]
                             local charges, _, _, _ = GetSpellCharges(swdID)
-                            if charges ~= nil and charges ~= 0 and iction.getTargetHP() then
+                            if charges ~= nil and charges ~= 0 and iction.reaper_getTargetHP() then
                                 iction.targetData[mobGUID]['spellData'][swdID]['count'] = charges
                                 iction.createStackFrame(mobGUID, "SWD", charges, timerText, timerButtonFrame, swdID, iction.bw/2.5, iction.bh/2.5)
                             end
@@ -157,8 +157,8 @@ function iction.ictionPriestFrameWatcher(mainFrame)
         if last >= .15 then
             iction.currentTargetDebuffExpires()
             iction.oocCleanup()
-            iction.setMTapBorder()
-            iction.currentBuffExpires()
+            local color = {0, 1, 0, 1}
+            iction.setMTapBorder(color)
         end
         iction.updateTimers()
     end

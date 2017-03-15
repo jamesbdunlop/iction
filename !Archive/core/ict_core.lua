@@ -1,4 +1,5 @@
 iction = {}
+local localizedClass, _, _ = UnitClass("Player")
 ----------------------------------------------------------------------------------------------
 --- GLOBALS ----------------------------------------------------------------------------------
 iction.SharedMedia = LibStub("LibSharedMedia-3.0");
@@ -13,6 +14,7 @@ iction.ictionSpellAnchorOffset = 65
 iction.ictionButtonFramePad = 3
 iction.targetData = {}     -- {GUID = {name = creatureName, spellData = {spellName = {name=spellName, endtime=float}}}}
 iction.targetButtons = {}  -- {GUID = {buttonFrames = {spellName = ButtonFrame}, buttonText = {spellName = fontString}}}
+iction.moveableUIFrames = {}
 iction.targetFrames = {}
 iction.stackFrames = {}
 iction.highlightFrame = ''
@@ -27,7 +29,7 @@ iction.uiPlayerBuffs = nil
 iction.uiPlayerArtifact = {}
 iction.uiBotBarArt = {}
 iction.playerGUID = UnitGUID("Player")
-iction.debug = false
+iction.debugUI = true
 iction.debugTimers = false
 iction.font = iction.SharedMedia:Fetch("font", "FRIZQT__")
 iction.setCastBar = true
@@ -38,12 +40,12 @@ iction.frameData = nil
 iction.vbID = 205448
 iction.swdID = 32379
 iction.spec = GetSpecialization()
+iction.class = localizedClass
 iction.SWDScale = 2
 iction.VoidboltScale = 2
-local localizedClass, _, _ = UnitClass("Player")
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---
-if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest'] then
+if iction.class == iction.L['Warlock'] or iction.class == iction.L['Priest'] then
     local sframe = CreateFrame("Frame", 'ictionRoot')
     --- Triggers attached to dummy frame for intial load of addon
     sframe:RegisterEvent("ADDON_LOADED")
@@ -101,4 +103,5 @@ if localizedClass == iction.L['warlock'] or localizedClass == iction.L['priest']
             if not iction.MF then iction.specChanged() end
         end
     end)
+    if iction.debugUI then print("iction core success!") end
 end

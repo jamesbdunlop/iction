@@ -1,4 +1,6 @@
 local last = 0
+local iction = iction
+
 function iction.ictionLockFrameWatcher(mainFrame)
     mainFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -10,164 +12,62 @@ function iction.ictionLockFrameWatcher(mainFrame)
     mainFrame:RegisterEvent("SPELL_CAST_SUCCESS")
     mainFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     mainFrame:RegisterEvent("UNIT_DIED")
-    local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1, prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
-        local event = event
-        local eventName = eventName
+    local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1,
+                                prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
+        --- CATCH REGEN AND EXIT EARLY
+        if not sourceGUID == iction.playerGUID then return end
+--        if not UnitAffectingCombat("player") then
+--            iction.oocCleanup()
+--            return
+--        end
         local spellName, mobName, mobGUID, spellType, spellID
-        local validSpell = false
-        mobGUID = prefix2
-        if mobGUID ~= nil then if string.find(mobGUID, "Pet", 1) then return end end
-        mobName = prefix3
         spellName = sufx4
+        mobName = prefix3
+        mobGUID = prefix2
+        spellType = sufx6
         spellID = sufx3
-        if eventName == "SPELL_CAST_SUCCESS" or eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
+        if iction.debugUITimers then print("#############") end
+        if iction.debugUITimers then print("event: " .. tostring(event)) end
+        if iction.debugUITimers then print("eventName: " .. tostring(eventName)) end
+        if iction.debugUITimers then print("sourceGUID: " .. tostring(sourceGUID)) end
+        if iction.debugUITimers then print("spellName: " .. tostring(spellName)) end
+        if iction.debugUITimers then print("mobName: " .. tostring(mobName)) end
+        if iction.debugUITimers then print("mobGUID: " .. tostring(mobGUID)) end
+        if iction.debugUITimers then print("spellType: " .. tostring(spellType)) end
+        if iction.debugUITimers then print("spellID: " .. tostring(spellID)) end
+        if iction.debugUITimers then print("prefix1: " .. tostring(spellID)) end
+        if iction.debugUITimers then print("sufx1: " .. tostring(sufx1)) end
+        if iction.debugUITimers then print("sufx2: " .. tostring(sufx2)) end
+        if iction.debugUITimers then print("sufx3: " .. tostring(sufx3)) end
+        if iction.debugUITimers then print("sufx4: " .. tostring(sufx4)) end
+        if iction.debugUITimers then print("sufx5: " .. tostring(sufx5)) end
+        if iction.debugUITimers then print("sufx6: " .. tostring(sufx6)) end
+        if iction.debugUITimers then print("sufx7: " .. tostring(sufx7)) end
+        if iction.debugUITimers then print("sufx8: " .. tostring(sufx8)) end
+        if iction.debugUITimers then print("sufx9: " .. tostring(sufx9)) end
+        if iction.debugUITimers then print("#############") end
+
+        --- Ignore pet spells
+        if mobGUID ~= nil then if string.find(mobGUID, "Pet", 1) then return end end
+
+        if eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
             spellType = "DEBUFF"
-        else
-            spellType = sufx6
-        end
-        --------------------------------------------------------------------------------------
-        if event == "PLAYER_SPECIALIZATION_CHANGED" then
-            iction.specChanged()
         end
 
         --------------------------------------------------------------------------------------
-        if event == "PLAYER_TARGET_CHANGED" then
-            iction.highlightTargetSpellframe(UnitGUID("Target"))
-        end
-
-        --------------------------------------------------------------------------------------
-        --- UNIT DIED
-        if eventName == "UNIT_DIED" then
-            local function removeDead()
-                --- Remove unit from the table if it died.
-                if mobGUID ~= iction.playerGIUD then
-                    iction.tagDeadTarget(mobGUID)
-                    iction.targetData[mobGUID] = nil
-                    --- Hide all button stack frames that were built
-                    if iction.stackFrames[mobGUID] then
-                        for k, v in pairs(iction.stackFrames[mobGUID]) do
-                            for p, q in pairs(v) do
-                                if p == 'frame' then
-                                    q:SetBackdropColor(0,0,0,0)
-                                    q.texture:SetVertexColor(0,0,0,0)
-                                elseif p == 'font' then
-                                    q:SetText("")
-                                end
-                            end
-                        end
+        --- COMBAT LOG USER CAST SPELLS ONLY
+        if event == 'COMBAT_LOG_EVENT_UNFILTERED' and mobGUID ~= iction.playerGIUD then
+            if eventName ~= "SPELL_CAST_SUCCESS" then
+                local function createTarget(mobGUID, spellType, spellID)
+                    iction.createTarget(mobGUID)
+                    if iction.debuffColumns_GUIDExists(mobGUID) then
+                        iction.createTargetSpellData(mobGUID, spellType, spellID)
                     end
-                    iction.highlightTargetSpellframe(UnitGUID("Target"))
-                    return
                 end
-            end
-            removeDead()
-        --- PLAYER DIED
-        elseif sourceGUID == iction.playerGUID and eventName == "PLAYER_DEAD" then
-            local buttonTexts = iction.targetButtons[iction.playerGUID]["buttonText"]
-            for i = 1, iction.tablelength(buttonTexts) do
-                if buttonTexts[i] ~= nil then buttonTexts[i]:SetText("") end
-            end
-        end
 
-        --------------------------------------------------------------------------------------
-        if sourceGUID == iction.playerGUID then
-            if event == "PLAYER_REGEN_ENABLED" then iction.oocCleanup() return
-            elseif event == 'COMBAT_LOG_EVENT_UNFILTERED' then
-                --- Check for valid spell
-                for _, v in pairs(iction.uiPlayerSpellButtons) do
-                    if v['id'] == spellID then validSpell = true end
-                end
-                for _, v in pairs(iction.uiPlayerBuffButtons) do
-                    if v['id'] == spellID then validSpell = true end
-                end
-                --- Exit early if it is not a valid spell
-                if not validSpell then
-                    return
-                else
-                    --- CANCEL CHANNEL DATA ON SPELL CAST START
-                    if eventName == "SPELL_CAST_START" then
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                    end
-
-                    --- UPDATE SPELL COUNT
-                    if eventName == "SPELL_AURA_APPLIED_DOSE" and sufx6 == "DEBUFF" then
-                        if iction.spellIDActive(mobGUID, spellID) then iction.targetData[mobGUID]['spellData'][spellID]['count'] = sufx7 end
-                    end
-
-                    --- SPELL AURA APPLIED
-                    if eventName == "SPELL_AURA_APPLIED" and spellID ~= 196447 then --- ignore channelDemonfire here
-                        if spellID == 234153 or spellID == 198590 or spellID == 689 then iction.clearChannelData() end
-                        if spellID == 27243 then
-                            iction.addSeeds(mobGUID, spellName, "DEBUFF", 27243)
-                        else
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                        end
-
-                    elseif eventName == "SPELL_ENERGIZE" then
-                        --- CONFLAG OPENING CAST
-                        if spellID == 17962 then
-                            iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID)
-                            iction.setConflagCount()
-                        end
-
-                    elseif eventName == "SPELL_AURA_REFRESH" then
-                        iction.setMTapBorder()
-                        iction.clearChannelData()
-                        iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-
-                    elseif eventName == "SPELL_CAST_SUCCESS" then
-                        if spellID == 980 then                              --- AGONY
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                        elseif spellID == 196447 then                       --- CHANNEL DEMON FIRE
-                            iction.clearChannelData()
-                            iction.createTarget(UnitGUID("Target"), mobName, spellName, spellType, spellID)
-                        elseif spellID == 5782 then                       --- Fear
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, spellID)
-                        elseif spellID == 17962 then
-                            iction.setConflagCount()
-                        end
-
-                    elseif eventName == "SPELL_PERIODIC_DAMAGE" then
-                        if spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID ==  233499 then  --- UA
-                            iction.createTarget(mobGUID, mobName, spellName, spellType, 233490)
-                        end
-
-                    elseif eventName == "SPELL_AURA_REMOVED" then
-                        local channeledSpellID, cexpires = iction.getChannelSpell()
-                        local isChannelActive, channelguid = iction.channelActive(channeledSpellID)
-                        if not isChannelActive then
-                            iction.clearChannelData()
-                        end
-
-                        if spellID == 111400 then                           --- BURNING RUSH
-                            iction.createTarget(mobGUID, mobName, spellName, "BUFF", spellID)
-                        elseif spellID == 27243 then                        --- SEED
-                            iction.clearAllSeeds(mobGUID)
-                        elseif spellID == 118699 then
-                            iction.targetData[mobGUID]['spellData'][spellID]['endTime'] = nil
-                        elseif spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID == 233499 then --- UA
-                            local count = iction.targetData[mobGUID]['spellData'][233490]['count']
-                            if count ~= nil then
-                                count = count -1
-                            end
-                                iction.targetData[mobGUID]['spellData'][233490]['count'] = count
-                        else
-                            --- check for stack frames
-                            if iction.stackFrames[mobGUID] and iction.stackFrames[mobGUID][spellID] then
-                                iction.stackFrames[mobGUID][spellID]['font']:SetText("")
-                                iction.stackFrames[mobGUID][spellID]['frame'].texture:SetVertexColor(0,0,0,0)
-                                if iction.targetData[mobGUID]['spellData'] then
-                                    if iction.targetData[mobGUID]['spellData'][spellID] and spellID == 233490 then
-                                        iction.targetData[mobGUID]['spellData'][spellID]['count'] = 0
-                                    end
-                                end
-                            end
-                        end
-                    end
-
-                    --- DESTRO ARTIFACT OPENING CAST
-                    if eventName == "SPELL_SUMMON" and spellName == 'ShadowyTear' or spellName == "Summon Darkglare" or spellName == "Chaos Tear" or spellName == "Unstable Tear" and event == "COMBAT_LOG_EVENT_UNFILTERED" then
-                        iction.createTarget(UnitGUID("Target"), mobName, spellName, "DEBUFF", spellID) -- wow the GUID for this isn't the freaking targeted mob.. wtf
+                if eventName == "SPELL_CAST_START" then
+                    if iction.debugUITimers then
+                        createTarget(mobGUID, spellType, spellID)
                     end
                 end
             end
@@ -179,15 +79,12 @@ function iction.ictionLockFrameWatcher(mainFrame)
         last = last + elapsed
         if last >= .15 then
             local shards = UnitPower("Player", 7)
-            iction.setSoulShards(shards)
-            iction.setConflagCount()
-            iction.oocCleanup()
-            iction.setMTapBorder()
-            iction.currentTargetDebuffExpires()
-            iction.currentBuffExpires()
-            iction.updateTimers()
+--            iction.setSoulShards(shards)
+--            iction.setConflagCount()
+--            iction.oocCleanup()
+--            iction.currentTargetDebuffExpires()
+--            iction.updateTimers()
         end
     end
     mainFrame:SetScript("OnUpdate", _onUpdate)
-    mainFrame:UnregisterEvent("ADDON_LOADED")
 end

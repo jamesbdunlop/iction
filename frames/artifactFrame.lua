@@ -1,3 +1,4 @@
+local iction = iction
 iction.ictArtifactFrameData = { uiType = "Button",
                             uiName = "iction_artifactFrame",
                             nameAttr = "Artifact",
@@ -13,5 +14,8 @@ iction.ictArtifactFrameData = { uiType = "Button",
                             texture = {name = "ARTIFACTMOVEFRAME", allPoints = true, level = "ARTWORK",
                                        texture= "Interface\\ChatFrame\\ChatFrameBackground",
                                        vr = 1, vg = 1, vb = 1, va = 0},
-                            point = {pos = "BOTTOM", x = -2, y = 5},
+                            pointPosition = {point = "BOTTOM",
+                                     relativeTo = nil,
+                                     relativePoint = "CENTER",
+                                     x = 2, y = 5},
                             }

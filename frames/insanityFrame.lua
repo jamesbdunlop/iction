@@ -1,3 +1,4 @@
+local iction = iction
 iction.ictInsanityData = {  uiType = "Frame",
                             uiName = "iction_insanityFrame",
                             nameAttr = "iction_insanityFrame",
@@ -13,5 +14,8 @@ iction.ictInsanityData = {  uiType = "Frame",
                             texture = {name = "insanityMOVEFRAME", allPoints = true, level = "ARTWORK",
                                        texture= "Interface\\ChatFrame\\ChatFrameBackground",
                                        vr = 1, vg = 1, vb = 1, va = .1},
-                            point = {pos = "BOTTOM", x = 0, y = 80},
+                            pointPosition = {point = "BOTTOM",
+                                     relativeTo = nil,
+                                     relativePoint = "CENTER",
+                                     x = 0, y = 80},
                             }
