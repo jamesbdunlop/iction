@@ -12,9 +12,11 @@ iction.skin01Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/bg1",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/bg1",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                                },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -96, y = 0 }
                     },
 
@@ -31,9 +33,11 @@ iction.skin01Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/bg2",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/bg2",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -32, y = 0}
                     },
 
@@ -50,9 +54,11 @@ iction.skin01Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/bg3",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                       texture= "Interface/AddOns/iction/media/bg/bg3",
+                                       vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 32, y = 0 }
                     },
 
@@ -69,9 +75,11 @@ iction.skin01Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/bg4",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                       texture= "Interface/AddOns/iction/media/bg/bg4",
+                                       vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 96, y = 0}
                     }
 }
@@ -90,9 +98,11 @@ iction.skin02Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin02_1",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin02_1",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -96, y = 0}
                     },
 
@@ -109,9 +119,11 @@ iction.skin02Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin02_2",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin02_2",
+                                       vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -32, y = 0}
                     },
 
@@ -128,9 +140,11 @@ iction.skin02Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin02_3",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin02_3",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 32, y = 0 }
                     },
 
@@ -147,9 +161,11 @@ iction.skin02Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin02_4",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                       texture= "Interface/AddOns/iction/media/bg/skin02_4",
+                                       vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 96, y = 0}
                     }
 }
@@ -168,9 +184,11 @@ iction.skin03Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin03_1",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin03_1",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -96, y = 0 }
                     },
 
@@ -187,9 +205,11 @@ iction.skin03Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin03_2",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                       texture= "Interface/AddOns/iction/media/bg/skin03_2",
+                                       vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = -32, y = 0}
                     },
 
@@ -206,9 +226,11 @@ iction.skin03Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin03_3",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin03_3",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 32, y = 0 }
                     },
 
@@ -225,9 +247,11 @@ iction.skin03Data = {
                     h = 64,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin03_4",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin03_4",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 96, y = 0}
                     }
 }
@@ -246,9 +270,11 @@ iction.skin04Data = {
                     h = 128,
                     bgCol = {r = 0, g = 1, b= 0, a = 0},
                     strata = "BACKGROUND",
-                    texture = {name = nil, allPoints = true, level = "ARTWORK",
-                               texture= "Interface/AddOns/iction/media/bg/skin04",
-                               vr = 1, vg = 1, vb = 1, va = 1},
+                    textures = { [0] = nil,
+                                 [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                        texture= "Interface/AddOns/iction/media/bg/skin04",
+                                        vr = 1, vg = 1, vb = 1, va = 1 }
+                    },
                     pointPosition = {point =  "CENTER", relativeTo = nil, relativePoint = "CENTER", x = 0, y = 0}
                     },
 }

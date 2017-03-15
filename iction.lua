@@ -90,10 +90,11 @@ function iction.initMainUI()
 
     --- Setup the frame watcher for spells etc
     if iction.class == iction.L['Warlock'] then
-        iction.ictionLockFrameWatcher(iction.mainFrameBldr.frame)
+        iction.watcher(iction.mainFrameBldr.frame)
     elseif iction.class == iction.L['Priest'] then
         iction.ictionPriestFrameWatcher(iction.mainFrameBldr.frame)
     end
 
     if iction.debugUI then print("iction.initMainUI success!") end
+    iction.playerGUID = UnitGUID("Player")
 end

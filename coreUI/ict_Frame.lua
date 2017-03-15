@@ -23,31 +23,51 @@ function iction.UIFrameElement.create(self, data)
     self.frame:SetAttribute('name', self.data['nameAttr'])
     self.frame:SetBackdropColor(self.data['bgCol']['r'], self.data['bgCol']['g'], self.data['bgCol']['b'], self.data['bgCol']['a'])
     -- Texture
-    self.frame.texture = self.createTexture(self)
+    self.textures = {}
+    self.createTexture(self)
+    self.frame.texture = self.textures[0]
     self.setPoints(self)
     self.frame:Show()
-
-
 end
 
-function iction.UIFrameElement.createTexture(self)
-    local textureData = self.data['texture']
-    self.FTexture = self.frame:CreateTexture(textureData['name'], textureData['level'])
-    self.FTexture:SetAllPoints(textureData['allPoints'])
-    self.FTexture:SetTexture(textureData['texture'])
-    self.FTexture:SetVertexColor(textureData['vr'], textureData['vg'], textureData['vb'], textureData['va'])
-    table.insert(self.textures, self.FTexture)
-    return self.FTexture
+function iction.UIFrameElement.createTexture(self, data)
+    local t = self.data['textures']
+    local itr = iction.list_iter(t)
+    while true do
+        local textureData = itr()
+        if textureData == nil then break end
+        local texture = self.frame:CreateTexture(textureData['name'], textureData['level'])
+        -- POINTS
+        if textureData['allPoints'] then
+            texture:SetAllPoints(textureData['allPoints'])
+        else
+            texture:SetPoint(textureData['anchorPoint'], textureData['apX'], textureData['apY'])
+        end
+
+        -- WIDTH / HEIGHT
+        if textureData['w'] then texture:SetWidth(textureData['w']) end
+        if textureData['h'] then texture:SetHeight(textureData['h']) end
+
+        -- TEXTURE PATH
+        texture:SetTexture(textureData['texture'])
+        texture:SetVertexColor(textureData['vr'], textureData['vg'], textureData['vb'], textureData['va'])
+
+        -- ADD TO THE TABLE
+        table.insert(self.textures, texture)
+
+    end
 end
 
 function iction.UIFrameElement.setTextureVertexColor(self, vtxR, vtxG, vtxB, vtxA)
     -- Will change the vertex color for ALL textures in a frame
     if self.textures then
-        for _, t in pairs(self.textures) do
-            if t ~= nil then
-                t:SetVertexColor(vtxR, vtxG, vtxB, vtxA)
-            end
-    end end
+        local itr = iction.list_iter(self.textures)
+        while true do
+            local texture = itr()
+            texture:SetVertexColor(vtxR, vtxG, vtxB, vtxA)
+            if texture == nil then break end
+        end
+    end
 end
 
 function iction.UIFrameElement.setTextureBGColor(self, vtxR, vtxG, vtxB, vtxA)
@@ -57,7 +77,7 @@ end
 
 function iction.UIFrameElement.setBaseTexturePath(self, texturePath)
     self.data['texture']['texture'] = texturePath
-    self.FTexture:SetTexture(texturePath)
+    self.textures[0]:SetTexture(texturePath)
 end
 
 function iction.UIFrameElement.setPoints(self)
@@ -177,20 +197,6 @@ function iction.UIFrameElement.setVisibility(self, visible)
         self.setTextureVertexColor(self, 0,0,0,0)
     end
     if iction.debugUI then print("iction.UIFrameElement.setVisibility success!") end
-end
-
-function iction.UIFrameElement.addTexture(self, name, w, h, strata, allPoints, anchorPoint, x, y, texturePath, vtxR, vtxG, vtxB, vtxA)
-    local addT = self.frame:CreateTexture(name, strata)
-        if allPoints then
-            addT:SetAllPoints(true)
-        else
-            addT:SetPoint(anchorPoint, x, y)
-        end
-        addT:SetWidth(w)
-        addT:SetHeight(h)
-        addT:SetTexture(texturePath)
-        addT:SetVertexColor(vtxR, vtxG, vtxB, vtxA)
-    return addT
 end
 
 function iction.UIFrameElement.addFontSring(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)

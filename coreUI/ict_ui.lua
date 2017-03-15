@@ -147,7 +147,7 @@ function iction.createDebuffColumns()
         local debuffColumnBldr = {}
         setmetatable(debuffColumnBldr, {__index = iction.UIFrameElement})
         debuffColumnBldr.create(debuffColumnBldr, colData)
-        debuffColumnBldr.addTexture(debuffColumnBldr, "iction_col" .. i .. '_bg', 32, 28, "ARTWORK", true, nil, nil, nil, "Interface/AddOns/iction/media/"..i, .1, .5, .1, 0)
+--        debuffColumnBldr.addTexture(debuffColumnBldr, "iction_col" .. i .. '_bg', 32, 28, "ARTWORK", true, nil, nil, nil, "Interface/AddOns/iction/media/"..i, .1, .5, .1, 0)
         x = x + 75
 
         iction.debuffColumns["col_" ..i] = debuffColumnBldr
@@ -163,18 +163,20 @@ function iction.createShardFrame()
     local shardData = iction.ictShardData
     shardData["uiParentFrame"] = iction.mainFrameBldr.frame
     shardData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+
     iction.shardFrameBldr = {}
     setmetatable(iction.shardFrameBldr, {__index = iction.UIFrameElement})
-
-    iction.shardFrame = iction.shardFrameBldr.create(iction.shardFrameBldr, shardData)
-    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-01", 32, 22, "ARTWORK", nil, "LEFT", 5, 0, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
-    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-02", 32, 28, "ARTWORK", nil, "LEFT", 28, 3, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
-    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-03", 32, 32, "ARTWORK", nil, "LEFT", 51, 5, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
-    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-04", 32, 36, "ARTWORK", nil, "LEFT", 74, 7, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
-    table.insert(iction.soulShards, iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-05", 32, 42, "ARTWORK", nil, "LEFT", 95, 9, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1))
+    iction.shardFrameBldr.create(iction.shardFrameBldr, shardData)
+--                                                                name,       w, h, strata, allPoints, anchorPoint, x, y, texturePath, vtxR, vtxG, vtxB, vtxA)
+--    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-01", 32, 22, "ARTWORK", nil, "LEFT", 5, 0, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
+--    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-02", 32, 28, "ARTWORK", nil, "LEFT", 28, 3, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
+--    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-03", 32, 32, "ARTWORK", nil, "LEFT", 51, 5, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
+--    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-04", 32, 36, "ARTWORK", nil, "LEFT", 74, 7, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
+--    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-05", 32, 42, "ARTWORK", nil, "LEFT", 95, 9, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
 
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.shardFrameBldr)
+    table.insert(iction.soulShards,  iction.shardFrameBldr)
 end
 
 function iction.createConflagFrame()
@@ -185,8 +187,8 @@ function iction.createConflagFrame()
     iction.conflagFrameBldr = {}
     setmetatable(iction.conflagFrameBldr, {__index = iction.UIFrameElement})
     iction.conflagFrameBldr.create(iction.conflagFrameBldr, conflagData)
-    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-01", 15, 15, "ARTWORK", nil, "LEFT", 15, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
-    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
+--    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-01", 15, 15, "ARTWORK", nil, "LEFT", 15, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
+--    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.conflagFrameBldr)
 end
@@ -200,7 +202,7 @@ function iction.createInsanityFrame()
     setmetatable(iction.insanityFrameBldr, {__index = iction.UIFrameElement})
     iction.insanityFrame = iction.insanityFrameBldr.create(iction.insanityFrameBldr, insanityData)
     iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 106, iction.bh/1.8, "BACKGROUND", nil, "LEFT", -3, 0, "Interface\\ChatFrame\\ChatFrameBackground", 0, 0, 0, 1)
-    table.insert(insanityBar, iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 1, iction.bh/2, "ARTWORK", nil, "LEFT", 0, 0, "Interface\\ChatFrame\\ChatFrameBackground", .5, .1, 1, 1))
+--    table.insert(insanityBar, iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 1, iction.bh/2, "ARTWORK", nil, "LEFT", 0, 0, "Interface\\ChatFrame\\ChatFrameBackground", .5, .1, 1, 1))
     iction.insanityFrame.text = iction.insanityFrameBldr.addFontSring(iction.insanityFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 16, 1, 1, 1, 1)
 
     local function _updateInsanity()
@@ -230,7 +232,7 @@ function iction.createHighlightFrame()
     iction.highlightFrameBldr = {}
     setmetatable(iction.highlightFrameBldr, {__index = iction.UIFrameElement})
     iction.highlightFrame = iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
-    iction.highlightFrameBldr.addTexture(iction.highlightFrameBldr, "ict_highlightTexture", 1, 1, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+--    iction.highlightFrameBldr.addTexture(iction.highlightFrameBldr, "ict_highlightTexture", 1, 1, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
 
     return iction.highlightFrameBldr
 end
@@ -243,7 +245,7 @@ function iction.createSWDFrame()
     iction.SWDFrameBldr = {}
     setmetatable(iction.SWDFrameBldr, {__index = iction.UIFrameElement})
     iction.SWDFrame = iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
-    iction.SWDFrame.texture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+--    iction.SWDFrame.texture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
     --- CREATE SPECIAL BUTTON
     local swd = {}
     local swdID = iction.swdID

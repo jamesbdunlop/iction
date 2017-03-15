@@ -37,10 +37,10 @@ iction.targetFrames = {}
 
 --- DEBUG
 iction.debugUI = false
-iction.debugUITimers = true
+iction.debugUITimers = false
 
 
-iction.playerGUID = UnitGUID("Player")
+iction.playerGUID = nil
 iction.spec = GetSpecialization()
 iction.font = iction.SharedMedia:Fetch("font", "FRIZQT__")
 
