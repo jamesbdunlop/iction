@@ -32,13 +32,12 @@ iction.spellTable = {}
 --- COMBAT
 iction.spells = {}
 iction.targetData = {}
-iction.targetButtons = {}
-iction.targetFrames = {}
 
 --- DEBUG
 iction.debugUI = false
-iction.debugUITimers = false
-
+iction.debugUITimers = true
+iction.debugUITargetSpell = false
+iction.debugRunningTimers = false
 
 iction.playerGUID = nil
 iction.spec = GetSpecialization()

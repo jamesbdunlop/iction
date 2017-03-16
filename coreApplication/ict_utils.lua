@@ -77,29 +77,6 @@ end
 
 ----------------------------------------------------------------------------------------------
 --- CACHE DATA ---
-function iction.targetTableExists()
-    if iction.targetData then
-        if next(iction.targetData) ~= nil then
-            return true
-        else return false
-    end end
-end
-
-function iction.spellIDActive(guid, spellID)
-    --- Returns if we have an active spell in the tables or if the target is no longer valid to the addon
-    local next = next
-    -- {GUID = {name = creatureName, spellData = {spellName = {name=spellName, endtime=float}}}}
-    if iction.targetData[guid] ~= nil then
-        if iction.targetData[guid]["spellData"] ~= nil then
-            if next(iction.targetData[guid]["spellData"]) ~= nil then
-                if iction.targetData[guid]["spellData"][spellID] ~= nil then
-                    return true
-                else return false end
-            else return false end
-        else return false end
-    else return false end
-end
-
     --- CACHE DATA DEBUFF COLUMNS ---
 function iction.debuffColumns_setMax()
     for i=1, iction.ict_maxTargets, 1 do
@@ -169,15 +146,16 @@ end
 
     --- CACHE DATA COMBAT STUFF ---
 function iction.oocCleanup()
-    --- Clear target all data as we exited combat except buffs that might be running
     if UnitAffectingCombat("player") then return end
-    if iction.targetTableExists() then
-        for guid, data in pairs(iction.targetData) do
-            data['frame'].setVisibility(data['frame'], false)
-            iction.targetData[guid] = nil
-        end
-        iction.targetData = {}
+
+    local itr = iction.list_iter(iction.targetData)
+    while true do
+        local target = itr()
+        if target == nil then break end
+        target['frame'].setVisibility(target['frame'], false)
+        target = nil
     end
+    iction.targetData = {}
     iction.debuffColumns_clearAll()
     if iction.debugUITimers then print("Cleaned tables due to exiting combat.") end
 end

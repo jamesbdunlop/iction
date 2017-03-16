@@ -159,7 +159,6 @@ function iction.createDebuffColumns()
 end
 
 function iction.createShardFrame()
-    iction.soulShards = {}
     local shardData = iction.ictShardData
     shardData["uiParentFrame"] = iction.mainFrameBldr.frame
     shardData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
@@ -167,16 +166,8 @@ function iction.createShardFrame()
     iction.shardFrameBldr = {}
     setmetatable(iction.shardFrameBldr, {__index = iction.UIFrameElement})
     iction.shardFrameBldr.create(iction.shardFrameBldr, shardData)
---                                                                name,       w, h, strata, allPoints, anchorPoint, x, y, texturePath, vtxR, vtxG, vtxB, vtxA)
---    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-01", 32, 22, "ARTWORK", nil, "LEFT", 5, 0, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
---    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-02", 32, 28, "ARTWORK", nil, "LEFT", 28, 3, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
---    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-03", 32, 32, "ARTWORK", nil, "LEFT", 51, 5, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
---    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-04", 32, 36, "ARTWORK", nil, "LEFT", 74, 7, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
---    iction.shardFrameBldr.addTexture(iction.shardFrameBldr, "shard-05", 32, 42, "ARTWORK", nil, "LEFT", 95, 9, "Interface/AddOns/iction/media/icons/soulShard", 1, 1, 1, 1)
-
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.shardFrameBldr)
-    table.insert(iction.soulShards,  iction.shardFrameBldr)
 end
 
 function iction.createConflagFrame()

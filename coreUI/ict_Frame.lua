@@ -27,6 +27,8 @@ function iction.UIFrameElement.create(self, data)
     self.createTexture(self)
     self.frame.texture = self.textures[0]
     self.setPoints(self)
+    -- Default fontString
+    self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 12, .1, 1, .1, 1)
     self.frame:Show()
 end
 
@@ -64,14 +66,14 @@ function iction.UIFrameElement.setTextureVertexColor(self, vtxR, vtxG, vtxB, vtx
         local itr = iction.list_iter(self.textures)
         while true do
             local texture = itr()
-            texture:SetVertexColor(vtxR, vtxG, vtxB, vtxA)
             if texture == nil then break end
+            texture:SetVertexColor(vtxR, vtxG, vtxB, vtxA)
         end
     end
 end
 
 function iction.UIFrameElement.setTextureBGColor(self, vtxR, vtxG, vtxB, vtxA)
-    -- Will change the vertex backdropColor for the frame
+    -- Will change the vertex backdropColor for the base frame
     self.frame:SetBackdropColor(vtxR, vtxG, vtxB, vtxA)
 end
 
@@ -199,8 +201,8 @@ function iction.UIFrameElement.setVisibility(self, visible)
     if iction.debugUI then print("iction.UIFrameElement.setVisibility success!") end
 end
 
-function iction.UIFrameElement.addFontSring(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
-    local Addfnt = self:CreateFontString(nil, strata)
+function iction.UIFrameElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
+    local Addfnt = self.frame:CreateFontString(nil, strata)
         if allPoints then
             Addfnt:SetAllPoints(true)
         else
@@ -218,45 +220,34 @@ end
 function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     --- Extract data
     self.data = data
-    local name = self.data['name']
-    local id = self.data['id']
-    local rank = self.data['rank']
-    local castingTime = self.data['castingTime']
-    local minRange = self.data['minRange']
-    local maxRange = self.data['maxRange']
-    local icon = self.data['icon']
-    local insert = self.data['insert']
-    local isArtifact = self.data['isArtifact']
-    local isTalentSpell = self.data['isTalentSpell']
-    local vis = self.data['vis']
+    self.name = self.data['name']
+    self.ID = self.data['id']
+    self.rank = self.data['rank']
+    self.castingTime = self.data['castingTime']
+    self.minRange = self.data['minRange']
+    self.maxRange = self.data['maxRange']
+    self.icon = self.data['icon']
 
-    local butParentFrame = pFrame
-    local bw = iction.bw
-    local bh = iction.bh
-    local b = CreateFrame("Button", name, butParentFrame, nil)
-      b:SetAttribute("name", id)
-      b:SetAttribute("id", id)
-      b:SetAttribute("spellName", name)
-      b:SetFrameStrata("MEDIUM")
-      b:EnableMouse(false)
-      b:SetDisabledFontObject("GameFontDisable")
-      b:SetNormalFontObject("GameFontNormalSmall");
-      b:SetHighlightFontObject("GameFontHighlight");
-      b:SetPoint(align, butParentFrame, posX, posY)
-      b:SetWidth(bw)
-      b:SetHeight(bh)
-    local but = b:CreateTexture(nil, "ARTWORK")
+    self.buttonFrame = CreateFrame("Button", name, pFrame, nil)
+    self.buttonFrame:SetFrameStrata("MEDIUM")
+    self.buttonFrame:EnableMouse(false)
+    self.buttonFrame:SetDisabledFontObject("GameFontDisable")
+    self.buttonFrame:SetNormalFontObject("GameFontNormalSmall")
+    self.buttonFrame:SetHighlightFontObject("GameFontHighlight")
+    self.buttonFrame:SetPoint(align, pFrame, posX, posY)
+    self.buttonFrame:SetWidth(iction.bw)
+    self.buttonFrame:SetHeight(iction.bh)
+
+    local but = self.buttonFrame:CreateTexture(nil, "ARTWORK")
           but:SetAllPoints(true)
-          but:SetTexture(icon)
+          but:SetTexture(self.icon)
           but:SetVertexColor(0.9,0.3,0.3, .5)
-    b.texture = but
     -- Create the fontString for the button
-    local fnt = self.addFontString(b, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
-    return b, fnt
+    self.timerText = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
 end
 
 function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
-    local Addfnt = self:CreateFontString(nil, strata)
+    local Addfnt = self.buttonFrame:CreateFontString(nil, strata)
         if allPoints then
             Addfnt:SetAllPoints(true)
         else
@@ -265,42 +256,23 @@ function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, 
         Addfnt:SetFont(iction.font, size, strata, outline)
         Addfnt:SetFontObject("GameFontWhite")
         Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
-    self.text = Addfnt
     return Addfnt
 end
 
 function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, procced)
     if active and not refresh and not procced then
-        self:SetBackdropColor(1, 1, 1, 1)
-        self.texture:SetVertexColor(0.9,0.9,0.9, .9)
+        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
     elseif hidden then
-        self:SetBackdropColor(0,0,0, 0)
-        self.texture:SetVertexColor(0,0,0, 0)
+        self.buttonFrame:SetBackdropColor(0,0,0, 0)
     elseif active and refresh then
-        self:SetBackdropColor(1, 1, 1, 1)
-        self.texture:SetVertexColor(1, 0, 0, 1)
+        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
     elseif active and procced then
-        self:SetBackdropColor(1, 1, .1, 1)
-        self.texture:SetVertexColor(1, 1, .1, 1)
+        self.buttonFrame:SetBackdropColor(1, 1, .1, 1)
     else
-        self:SetBackdropColor(1, 1, 1, 1)
-        self.texture:SetVertexColor(0.9,0.3,0.3, .5)
-    end
-end
-
-function iction.UIButtonElement.setButtonText(self, text, hidden, colorize, color)
-    if hidden == true then
-        self:SetText("")
-    else
-        self:SetText(text)
-        if colorize then
-            self:SetTextColor(color[1], color[2], color[3], color[4])
-        else
-            self:SetTextColor(.1, 1, .1, 1)
-        end
+        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
     end
 end
 
 function iction.UIButtonElement.setButtonColor(self, color)
-    self:SetTextColor(color[1], color[2], color[3], color[4])
+    self.timerText:SetTextColor(color[1], color[2], color[3], color[4])
 end

@@ -37,6 +37,8 @@ function iction.UIFrameElement.create(self, data)
     -- Texture
     self.texture = self.createTexture(self, self.data['texture'])
     self.frame.texture = self.texture
+    self.text = self.frame:addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
+    self.text:SetText(self.frameName)
     self.frame:Show()
 end
 
@@ -140,8 +142,8 @@ function iction.UIFrameElement.addTexture(self, name, w, h, strata, allPoints, a
     return addT
 end
 
-function iction.UIFrameElement.addFontSring(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
-    local Addfnt = self:CreateFontString(nil, strata)
+function iction.UIFrameElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
+    local Addfnt = self.frame:CreateFontString(nil, strata)
         if allPoints then
             Addfnt:SetAllPoints(true)
         else
@@ -150,7 +152,7 @@ function iction.UIFrameElement.addFontSring(self, outline, strata, allPoints, an
         Addfnt:SetFont(iction.font, size, strata, outline)
         Addfnt:SetFontObject("GameFontWhite")
         Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
-    self.text = Addfnt
+
     return Addfnt
 end
 
@@ -200,8 +202,8 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     return b, fnt
 end
 
-function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
-    local Addfnt = self:CreateFontString(nil, strata)
+function iction.UIButtonElement.addFontString (self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
+    local Addfnt = self.frame:CreateFontString(nil, strata)
         if allPoints then
             Addfnt:SetAllPoints(true)
         else

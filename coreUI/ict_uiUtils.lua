@@ -4,13 +4,18 @@ local iction = iction
 function iction.unlockUIElements(unlock)
     if unlock then
         for _, frameBldr in pairs(iction.moveableUIFrames) do
+            print("frameName: " .. frameBldr.frameName)
             frameBldr.setFrameLockState(frameBldr, false)
+            frameBldr.text:SetText(frameBldr.frameName)
             frameBldr.setMoveScript(frameBldr)
             frameBldr.setMovedPosition(frameBldr)
+            frameBldr.textures[1]:SetVertexColor(.1, 1, 0, .1)
         end
     else
         for _, frameBldr in pairs(iction.moveableUIFrames) do
             frameBldr.setFrameLockState(frameBldr, true)
+            frameBldr.text:SetText("")
+            frameBldr.textures[1]:SetVertexColor(.1, 1, 0, 0)
             frameBldr.setRemoveMoveScript(frameBldr)
     end end
 end
@@ -25,14 +30,10 @@ function iction.setMTapBorder(color)
 end
 
 function iction.setSoulShards(shards)
-    if iction.soulShards then
-        for x = 1, 5 do
-            iction.soulShards[x].setTextureVertexColor(iction.soulShards[x], 1, 1, 1, 0)
-        end
-        for x = 1, shards do
-            if iction.soulShards[x] ~= nil then
-                iction.soulShards[x].setTextureVertexColor(iction.soulShards[x], 1, 1, 1, 1)
-    end end end
+    iction.shardFrameBldr.setTextureVertexColor(iction.shardFrameBldr, 1, 1, 1, 0)
+    for x = 1, shards do
+        iction.shardFrameBldr.textures[x]:SetVertexColor(1, 1, 1, 1)
+    end
 end
 
 function iction.setConflagCount()

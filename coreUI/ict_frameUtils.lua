@@ -3,8 +3,7 @@
 function iction.calcFrameSize(Tbl)
     local cfh, cfw
     local fsize = iction.ictionButtonFramePad *2
-
-    for key, value in pairs(Tbl) do
+    for _, value in pairs(Tbl) do
         if value['vis'] then
             fsize = fsize + iction.bw + iction.ictionButtonFramePad
         end

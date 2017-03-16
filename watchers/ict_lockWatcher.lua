@@ -23,6 +23,9 @@ function iction.watcher(self)
                 iction.createTargetSpellData(mobGUID, spellType, spellID)
             end
         end
+--        if iction.debugUITimers then print("******************") end
+--        if iction.debugUITimers then print("event: " .. tostring(event)) end
+--        if iction.debugUITimers then print("******************") end
         if event == 'PLAYER_REGEN_DISABLED' then
             ictonCombat = true
         elseif event == "PLAYER_REGEN_ENABLED" then
@@ -30,6 +33,7 @@ function iction.watcher(self)
             iction.oocCleanup()
             return
         end
+
         if ictonCombat then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
@@ -49,12 +53,12 @@ function iction.watcher(self)
                     if mobGUID ~= nil and string.find(mobGUID, "Player", 1) then return end
 
                     if iction.debugUITimers then print("#############") end
---                    if iction.debugUITimers then print("event: " .. tostring(event)) end
+                    if iction.debugUITimers then print("event: " .. tostring(event)) end
                     if iction.debugUITimers then print("eventName: " .. tostring(eventName)) end
---                    if iction.debugUITimers then print("sourceGUID: " .. tostring(sourceGUID)) end
-                    if iction.debugUITimers then print("spellName: " .. tostring(spellName)) end
+                    if iction.debugUITimers then print("sourceGUID: " .. tostring(sourceGUID)) end
+--                    if iction.debugUITimers then print("spellName: " .. tostring(spellName)) end
 --                    if iction.debugUITimers then print("mobName: " .. tostring(mobName)) end
-                    if iction.debugUITimers then print("mobGUID: " .. tostring(mobGUID)) end
+--                    if iction.debugUITimers then print("mobGUID: " .. tostring(mobGUID)) end
 --                    if iction.debugUITimers then print("spellType: " .. tostring(spellType)) end
 --                    if iction.debugUITimers then print("spellID: " .. tostring(spellID)) end
 --                    if iction.debugUITimers then print("prefix1: " .. tostring(spellID)) end
@@ -67,12 +71,10 @@ function iction.watcher(self)
 --                    if iction.debugUITimers then print("sufx7: " .. tostring(sufx7)) end
 --                    if iction.debugUITimers then print("sufx8: " .. tostring(sufx8)) end
 --                    if iction.debugUITimers then print("sufx9: " .. tostring(sufx9)) end
-                    if iction.debugUITimers then print("#############") end
+                    if iction.debugUITimers then print("-------") end
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
-                    if eventName ~= "SPELL_CAST_SUCCESS" then
-                        createTarget(mobGUID, spellType, spellID)
-                    end
+                    createTarget(mobGUID, spellType, spellID)
                 end
             end
         end
@@ -85,11 +87,11 @@ function iction.watcher(self)
         last = last + elapsed
         if last >= .5 then
             local shards = UnitPower("Player", 7)
---            iction.setSoulShards(shards)
+            iction.setSoulShards(shards)
 --            iction.setConflagCount()
 --            iction.oocCleanup()
 --            iction.currentTargetDebuffExpires()
---            iction.updateTimers()
+            iction.runTimers()
         end
     end
     self:SetScript("OnUpdate", _onUpdate)

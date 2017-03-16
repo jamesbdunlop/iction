@@ -31,6 +31,7 @@ ict_core.lua
 coreApplication\ict_utils.lua
 coreApplication\ict_target.lua
 coreApplication\ict_options.lua
+coreApplication\ict_timers.lua
 
 ##-- CoreUI Stuff
 coreUI\ict_ui.lua
