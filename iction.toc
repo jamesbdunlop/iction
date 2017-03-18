@@ -6,7 +6,6 @@
 ##
 ##SavedVariablesPerCharacter: ictionFramePos
 ##SavedVariablesPerCharacter: ictionTargetCount
-##SavedVariablesPerCharacter: ictionSetCastBar
 ##SavedVariablesPerCharacter: ictionBuffBarBarH
 ##SavedVariablesPerCharacter: iction_cbx
 ##SavedVariablesPerCharacter: iction_cby
@@ -15,6 +14,7 @@
 ##SavedVariablesPerCharacter: ictionLegacy
 ##SavedVariablesPerCharacter: ictionSWDScale
 ##SavedVariablesPerCharacter: ictionVoidBoltScale
+##SavedVariablesPerCharacter: ictionValidSpells
 ##
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml

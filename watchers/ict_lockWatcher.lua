@@ -88,9 +88,7 @@ function iction.watcher(self)
         if last >= .5 then
             local shards = UnitPower("Player", 7)
             iction.setSoulShards(shards)
---            iction.setConflagCount()
---            iction.oocCleanup()
---            iction.currentTargetDebuffExpires()
+            iction.setConflagCount()
             iction.runTimers()
         end
     end

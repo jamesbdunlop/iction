@@ -11,13 +11,11 @@ iction.ictBuffFrameData = { uiType = "Frame",
                             h = 32,
                             bgCol = {r = 1, g = 1, b= 0, a = 1},
                             strata = "HIGH",
-                            textures = { [0] = nil,
-                                         [1] = {name = nil, allPoints = true, level = "ARTWORK",
-                                                texture = "Interface\\ChatFrame\\ChatFrameBackground",
-                                                vr = 1, vg = 1, vb = 1, va = .25}
-                                        },
                             pointPosition = {point = "CENTER",
                                              relativeTo = nil,
                                              relativePoint = "CENTER",
                                              x = 0, y = 0},
-                            }
+                            textures = { [1] = {name = nil, allPoints = true, level = "ARTWORK",
+                                                texture = "Interface\\ChatFrame\\ChatFrameBackground",
+                                                vr = 1, vg = 1, vb = 1, va = .25} },
+                          }

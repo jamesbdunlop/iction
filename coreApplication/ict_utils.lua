@@ -76,6 +76,13 @@ function iction.blizz_buffActive(spellID)
 end
 
 ----------------------------------------------------------------------------------------------
+--- SPELL INFO ---
+function iction.getConflagCharges()
+    local currentCharges, maxCharges = GetSpellCharges("Conflagrate")
+    return currentCharges, maxCharges
+end
+
+----------------------------------------------------------------------------------------------
 --- CACHE DATA ---
     --- CACHE DATA DEBUFF COLUMNS ---
 function iction.debuffColumns_setMax()
@@ -156,8 +163,9 @@ function iction.oocCleanup()
         target = nil
     end
     iction.targetData = {}
+    iction.activeSpellTable = {}
     iction.debuffColumns_clearAll()
-    if iction.debugUITimers then print("Cleaned tables due to exiting combat.") end
+    if iction.debugUITimers then print("EXIT COMBAT DETECTED. TABLES CLEANED!") end
 end
 
 ----------------------------------------------------------------------------------------------
@@ -194,50 +202,6 @@ function iction.highlightTargetSpellframe(guid)
                     if iction.targetData[guid]['dead'] then
                         iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
                     end
-                end
-            end
-        end
-    end
-end
-
-function iction.clearAllSeeds(guid)
-    if iction.targetTableExists() then
-        if iction.targetButtons[guid] and iction.targetButtons[guid]['buttonFrames'] and iction.targetButtons[guid]['buttonFrames'][27243] and iction.targetData[guid]['spellData'][27243] ~= nil then
-            iction.setButtonState(false, false, iction.targetButtons[guid]['buttonFrames'][27243])
-            iction.setButtonText("", false, iction.targetButtons[guid]['buttonText'][27243])
-            iction.targetData[guid]['spellData'][27243]['endTime'] = nil
-        end
-    end
-end
-
-function iction.addSeeds(guid, spellName, spellType, spellID)
-    -- now check we have it in a column
-    if not iction.debuffColumns_GUIDExists(guid) then -- it isn't present as an active target column so try to make one now.
-        iction.createTarget(guid, 'nil', spellName, spellType, spellID)
-    end
-    if iction.debuffColumns_GUIDExists(guid) then
-        iction.createTargetSpellData(guid, spellName, spellType, spellID)
-        iction.createExpiresData(guid, spellName, spellType, spellID)
-    end
-end
-
-function iction.updateUACount(guid)
-    --- UA COUNT
-    local UACount = 0
-    for x = 1, 15 do
-        local  _, _, _, _, _, _, _, _, _, _, spellId, _, _, _, _, _ = UnitAura("target", x, "PLAYER HARMFUL")
-        if spellId == 233490 or spellId == 233496 or spellId ==  233497 or spellId == 233498 or spellId ==  233499 then
-            UACount = UACount + 1
-        end
-    end
-    if UACount ~= 0 then
-        if iction.targetData[guid] ~= nil then
-            if iction.targetData[guid]['spellData'] == nil then
-                iction.createTarget(guid, "aMob", "Unstable Afflction", "DEBUFF", 233490)
-            end
-            if iction.targetData[guid]['spellData'] ~= nil then
-                if iction.targetData[guid]['spellData'][233490] ~= nil then
-                    iction.targetData[guid]['spellData'][233490]['count'] = UACount
                 end
             end
         end

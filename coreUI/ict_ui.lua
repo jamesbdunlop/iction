@@ -11,14 +11,12 @@ function iction.createBottomBarArtwork()
                 iction.uiBotBarArt[i] = nil
     end end end
     local skin = iction.skinData[iction.skin]
-    for x = 1, iction.tablelength(skin) do
-        skin[x]["uiParentFrame"] = iction.mainFrameBldr.frame
-        skin[x]['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
-        local skinFrameBldr = {}
-        setmetatable(skinFrameBldr, {__index = iction.UIFrameElement})
-        skinFrameBldr.create(skinFrameBldr, skin[x])
-        table.insert(iction.uiBotBarArt, skinFrameBldr)
-    end
+          skin["uiParentFrame"] = iction.mainFrameBldr.frame
+          skin['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+    local skinFrameBldr = {}
+          setmetatable(skinFrameBldr, {__index = iction.UIFrameElement})
+          skinFrameBldr.create(skinFrameBldr, skin)
+    table.insert(iction.uiBotBarArt, skinFrameBldr)
 
     if iction.debugUI then print("Set skin to skin: " .. tostring(iction.skin)) end
     if iction.debugUI then print("iction.createBottomBarArtwork success!") end
@@ -29,7 +27,7 @@ function iction.createArtifactFrame()
         iction.artifactFrame:Hide()
         iction.artifactFrame = nil
     end
-    local fntSize
+    local fntSize, icon
     if iction.class == iction.L['Warlock'] then
         fntSize = 26
     elseif iction.class == iction.L['Priest'] then
@@ -37,31 +35,37 @@ function iction.createArtifactFrame()
     end
 
     local next = next
-    local icon
     local artifact = iction.uiPlayerArtifact
     if next(artifact) ~= nil then
         local artifactData = iction.ictArtifactFrameData
-        artifactData["uiParentFrame"] = iction.mainFrameBldr.frame
-        artifactData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+              artifactData["uiParentFrame"] = iction.mainFrameBldr.frame
+              artifactData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+              local artifactTexture = { name = "artifact-01",
+                                        allPoints = true,
+                                        anchorPoint = "LEFT",
+                                        apX = 0,
+                                        apY = 0,
+                                        w = 15,
+                                        h= 15,
+                                        level = "ARTWORK",
+                                        texture= GetSpellTexture(artifact['id']),
+                                        vr = 1, vg = 1, vb = 1, va = 1}
+              table.insert(artifactData['textures'], artifactTexture)
 
         iction.artifactFrameBldr = {}
-        setmetatable(iction.artifactFrameBldr, {__index = iction.UIFrameElement})
-        iction.artifactFrameBldr.create(iction.artifactFrameBldr, artifactData)
+              setmetatable(iction.artifactFrameBldr, {__index = iction.UIButtonElement})
+              iction.artifactFrameBldr.create(iction.artifactFrameBldr, artifactData)
+              iction.artifactFrameBldr.addFontString(iction.artifactFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, fntSize, 1, 1, 1, 1)
 
-        iction.artifactFrame = iction.artifactFrameBldr.frame
-        iction.artifactFrame.texture = iction.artifactFrameBldr.addTexture(iction.artifactFrame, "artifact-01", 15, 15, "ARTWORK", true, nil, nil, nil, GetSpellTexture(artifact['id']), 1, 1, 1, 1)
-        iction.artifactFrame.text = iction.artifactFrameBldr.addFontSring(iction.artifactFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, fntSize, 1, 1, 1, 1)
         local function _warlockUpdate()
             local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", artifact['name'])
             local charges, _, _, _ = GetSpellCharges(artifact['name'])
             if count == nil and charges == nil then
-                iction.setButtonText(0, true, iction.artifactFrame.text)
+                iction.artifactFrameBldr.timerText:SetText("")
             elseif count then
-                iction.setButtonText(count, false, iction.artifactFrame.text)
-            else
-                if charges then
-                    iction.setButtonText(charges, false, iction.artifactFrame.text)
-                end
+                iction.artifactFrameBldr.timerText:SetText(count)
+            elseif charges then
+                iction.artifactFrameBldr.timerText:SetText(charges)
             end
         end
 
@@ -105,13 +109,14 @@ function iction.createArtifactFrame()
         end
 
         if iction.class == iction.L['Warlock'] then
-            iction.artifactFrame:SetScript("OnUpdate", _warlockUpdate)
+            iction.artifactFrameBldr.buttonFrame:SetScript("OnUpdate", _warlockUpdate)
         elseif iction.class == iction.L['Priest'] and iction.spec == 3 then
-            iction.artifactFrame:SetScript("OnUpdate", _priestUpdate)
+            iction.artifactFrameBldr.buttonFrame:SetScript("OnUpdate", _priestUpdate)
         end
         -- Add to moveable frame table
         table.insert(iction.moveableUIFrames,  iction.artifactFrameBldr)
     end
+    if iction.debugUI then print("iction.createArtifactFrame success!") end
 end
 
 function iction.createBuffFrame()
@@ -160,26 +165,24 @@ end
 
 function iction.createShardFrame()
     local shardData = iction.ictShardData
-    shardData["uiParentFrame"] = iction.mainFrameBldr.frame
-    shardData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          shardData["uiParentFrame"] = iction.mainFrameBldr.frame
+          shardData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
 
     iction.shardFrameBldr = {}
-    setmetatable(iction.shardFrameBldr, {__index = iction.UIFrameElement})
+          setmetatable(iction.shardFrameBldr, {__index = iction.UIFrameElement})
     iction.shardFrameBldr.create(iction.shardFrameBldr, shardData)
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.shardFrameBldr)
 end
 
 function iction.createConflagFrame()
-    iction.conflags = {}
     local conflagData = iction.ictConflagData
-    conflagData["uiParentFrame"] = iction.mainFrameBldr.frame
-    conflagData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          conflagData["uiParentFrame"] = iction.mainFrameBldr.frame
+          conflagData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+
     iction.conflagFrameBldr = {}
-    setmetatable(iction.conflagFrameBldr, {__index = iction.UIFrameElement})
+          setmetatable(iction.conflagFrameBldr, {__index = iction.UIFrameElement})
     iction.conflagFrameBldr.create(iction.conflagFrameBldr, conflagData)
---    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-01", 15, 15, "ARTWORK", nil, "LEFT", 15, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
---    table.insert(iction.conflags, iction.conflagFrameBldr.addTexture(iction.conflagFrame, "conflag-02", 15, 15, "ARTWORK", nil, "LEFT", 35, 0, "Interface/AddOns/iction/media/icons/conflag", 1, 1, 1, 0))
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.conflagFrameBldr)
 end
@@ -187,10 +190,10 @@ end
 function iction.createInsanityFrame()
     local insanityBar = {}
     local insanityData = iction.ictInsanityData
-    insanityData["uiParentFrame"] = iction.mainFrameBldr.frame
-    insanityData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          insanityData["uiParentFrame"] = iction.mainFrameBldr.frame
+          insanityData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
     iction.insanityFrameBldr = {}
-    setmetatable(iction.insanityFrameBldr, {__index = iction.UIFrameElement})
+          setmetatable(iction.insanityFrameBldr, {__index = iction.UIFrameElement})
     iction.insanityFrame = iction.insanityFrameBldr.create(iction.insanityFrameBldr, insanityData)
     iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 106, iction.bh/1.8, "BACKGROUND", nil, "LEFT", -3, 0, "Interface\\ChatFrame\\ChatFrameBackground", 0, 0, 0, 1)
 --    table.insert(insanityBar, iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 1, iction.bh/2, "ARTWORK", nil, "LEFT", 0, 0, "Interface\\ChatFrame\\ChatFrameBackground", .5, .1, 1, 1))

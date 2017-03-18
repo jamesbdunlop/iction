@@ -27,15 +27,15 @@ iction.swdID = 32379
 iction.class = localizedClass
 iction.SWDScale = 2
 iction.VoidboltScale = 2
-iction.spellTable = {}
 
 --- COMBAT
-iction.spells = {}
+iction.spellTable = {}
 iction.targetData = {}
+iction.activeSpellTable = {}
 
 --- DEBUG
-iction.debugUI = false
-iction.debugUITimers = true
+iction.debugUI = true
+iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
 
@@ -93,13 +93,10 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.VoidboltScale = ictionVoidBoltScale
         end
 
-        --- Initialize castBarPosition
-        if ictionSetCastBar == nil then
-            iction.setCastBar = false
+        if not ictionValidSpells then
+            iction.validSpells = {}
         else
-            iction.setCastBar = ictionSetCastBar
-            if iction_cbx ~= nil then iction.cbX = iction_cbx end
-            if iction_cby ~= nil then iction.cbY = iction_cby end
+            iction.validSpells = ictionValidSpells
         end
     end
 end)

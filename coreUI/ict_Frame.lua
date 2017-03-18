@@ -24,7 +24,7 @@ function iction.UIFrameElement.create(self, data)
     self.frame:SetBackdropColor(self.data['bgCol']['r'], self.data['bgCol']['g'], self.data['bgCol']['b'], self.data['bgCol']['a'])
     -- Texture
     self.textures = {}
-    self.createTexture(self)
+    self.createTextures(self)
     self.frame.texture = self.textures[0]
     self.setPoints(self)
     -- Default fontString
@@ -32,7 +32,7 @@ function iction.UIFrameElement.create(self, data)
     self.frame:Show()
 end
 
-function iction.UIFrameElement.createTexture(self, data)
+function iction.UIFrameElement.createTextures(self, data)
     local t = self.data['textures']
     local itr = iction.list_iter(t)
     while true do
@@ -56,7 +56,7 @@ function iction.UIFrameElement.createTexture(self, data)
 
         -- ADD TO THE TABLE
         table.insert(self.textures, texture)
-
+        print("Added texture: " .. tostring(textureData['name']))
     end
 end
 
@@ -75,11 +75,6 @@ end
 function iction.UIFrameElement.setTextureBGColor(self, vtxR, vtxG, vtxB, vtxA)
     -- Will change the vertex backdropColor for the base frame
     self.frame:SetBackdropColor(vtxR, vtxG, vtxB, vtxA)
-end
-
-function iction.UIFrameElement.setBaseTexturePath(self, texturePath)
-    self.data['texture']['texture'] = texturePath
-    self.textures[0]:SetTexture(texturePath)
 end
 
 function iction.UIFrameElement.setPoints(self)
@@ -220,8 +215,8 @@ end
 function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     --- Extract data
     self.data = data
-    self.name = self.data['name']
-    self.ID = self.data['id']
+    self.name = self.data['name'] -- use this to match activeSpells to as id is fickle
+    self.id = self.data['id']  -- note here the spell id from the spell book for corruption is 172 but cast its 146739
     self.rank = self.data['rank']
     self.castingTime = self.data['castingTime']
     self.minRange = self.data['minRange']
@@ -238,12 +233,48 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     self.buttonFrame:SetWidth(iction.bw)
     self.buttonFrame:SetHeight(iction.bh)
 
-    local but = self.buttonFrame:CreateTexture(nil, "ARTWORK")
-          but:SetAllPoints(true)
-          but:SetTexture(self.icon)
-          but:SetVertexColor(0.9,0.3,0.3, .5)
+    self.texture = self.buttonFrame:CreateTexture(nil, "ARTWORK")
+        self.texture:SetAllPoints(true)
+        self.texture:SetTexture(self.icon)
+        self.texture:SetVertexColor(0.9,0.3,0.3, .5)
     -- Create the fontString for the button
     self.timerText = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
+end
+
+function iction.UIButtonElement.createTextures(self, data)
+    local t = self.data['textures']
+    local itr = iction.list_iter(t)
+    while true do
+        local textureData = itr()
+        if textureData == nil then break end
+        local texture = self.frame:CreateTexture(textureData['name'], textureData['level'])
+        -- POINTS
+        if textureData['allPoints'] then
+            texture:SetAllPoints(textureData['allPoints'])
+        else
+            texture:SetPoint(textureData['anchorPoint'], textureData['apX'], textureData['apY'])
+        end
+
+        -- WIDTH / HEIGHT
+        if textureData['w'] then texture:SetWidth(textureData['w']) end
+        if textureData['h'] then texture:SetHeight(textureData['h']) end
+
+        -- TEXTURE PATH
+        texture:SetTexture(textureData['texture'])
+        texture:SetVertexColor(textureData['vr'], textureData['vg'], textureData['vb'], textureData['va'])
+
+        -- ADD TO THE TABLE
+        table.insert(self.textures, texture)
+        print("Added texture: " .. tostring(textureData['name']))
+    end
+end
+
+function iction.UIButtonElement.addCountFrame(self)
+    self.countFrame = self.frame:CreateTexture(self.name .. "_count", "MEDIUM")
+    self.countFrame:EnableMouse(false)
+    self.buttonFrame:SetPoint("RIGHT", self.buttonFrame, iction.bw, iction.bh)
+    self.buttonFrame:SetWidth(16)
+    self.buttonFrame:SetHeight(16)
 end
 
 function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
@@ -262,14 +293,19 @@ end
 function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, procced)
     if active and not refresh and not procced then
         self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
+        self.texture:SetVertexColor(0.9,0.9,0.9, .9)
     elseif hidden then
         self.buttonFrame:SetBackdropColor(0,0,0, 0)
+        self.texture:SetVertexColor(0,0,0, 0)
     elseif active and refresh then
         self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
+        self.texture:SetVertexColor(1, 0, 0, 1)
     elseif active and procced then
         self.buttonFrame:SetBackdropColor(1, 1, .1, 1)
+        self.texture:SetVertexColor(1, 1, .1, 1)
     else
         self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
+        self.texture:SetVertexColor(0.9,0.3,0.3, .5)
     end
 end
 

@@ -1,5 +1,5 @@
 local iction = iction
-local UnitBuff, UnitDebuff, UnitGUID = UnitBuff, UnitDebuff, UnitGUID
+local UnitBuff, UnitDebuff, UnitGUID, GetSpellInfo = UnitBuff, UnitDebuff, UnitGUID, GetSpellInfo
 ----------------------------------------------------------------------------------------------
 --- CREATE AN ICTION TARGET CACHE ENTRY  ---
 function iction.createTarget(guid)
@@ -13,13 +13,12 @@ function iction.createTarget(guid)
     if not freeCol then return end --- return early
 
     --- Create New target
-    local newTargetData = {}
-          newTargetData["guid"] = guid
-          newTargetData["dead"] = false
-          newTargetData["spellData"] = {}
-          newTargetData["colID"] = {}
-          newTargetData["colID"]['guid'] = guid
-          newTargetData["colID"]['active'] = true
+    local targetData = {}
+          targetData["guid"] = guid
+          targetData["dead"] = false
+          targetData["colID"] = {}
+          targetData["colID"]['guid'] = guid
+          targetData["colID"]['active'] = true
           if iction.debugUITimers then print("NEW TARGET TABLE ENTRY: " .. tostring(guid)) end
           if iction.debugUITimers then print("NEW TARGET COLID: " .. tostring(colID)) end
 
@@ -38,13 +37,13 @@ function iction.createTarget(guid)
           targetFrameBldr.frame:SetPoint("CENTER", iction.debuffColumns[colID].frame)
           targetFrameBldr.frame:SetPoint("BOTTOM", iction.debuffColumns[colID].frame)
 
-    newTargetData["frame"] = targetFrameBldr
-    newTargetData["buttons"] = iction.createButtons(targetFrameBldr.frame, guid)
-    table.insert(iction.targetData, newTargetData)
+    targetData["frame"] = targetFrameBldr
+    targetData["buttons"] = iction.createButtons(targetFrameBldr.frame)
+    table.insert(iction.targetData, targetData)
 end
 
 local padX, padY
-function iction.createButtons(frm, guid)
+function iction.createButtons(frm)
     local buttons = {}
     local itr = iction.list_iter(iction.getAllSpells())
     padX = 0
@@ -67,65 +66,78 @@ end
 ----------------------------------------------------------------------------------------------
 --- CREATE CRETURE CACHE TABLE ENTRY  ---
 function iction.createTargetSpellData(guid, spellType, spellID)
-    --- Put the spell into the spell tables now
-    local name, rank, icon, castingTime, minRange, maxRange, spellID2  = GetSpellInfo(spellID)
-
-    local itr = iction.list_iter(iction.targetData)
+    local targetDataTable = iction.list_iter(iction.targetData)
     while true do
-        local creatureTable = itr()
-        if creatureTable == nil then break end
-        if creatureTable['guid'] == guid then
-            local function isSpellActive(spellData, spellID)
-                local spells = iction.list_iter(spellData)
+        local targetData = targetDataTable()
+        if targetData == nil then break end
+
+        if targetData['guid'] == guid then
+            local function isSpellActive(activeSpellTable, guid, spellID)
+                local activeSpellTables = iction.list_iter(activeSpellTable)
                 while true do
-                    local spellInfo = spells()
-                    if spellInfo == nil then break end
-                    if spellInfo['id'] == spellID then
-                        return true
+                    local spellTable = activeSpellTables()
+                    if spellTable == nil then break end
+                    -- Check for id and guid match and return table associated with the spell
+                    if spellTable['id'] == spellID and spellTable['guid'] == guid then
+                        if iction.debugUITimers then print("SPELL IS ACTIVE...") end
+                        return true, spellTable
                     end
                 end
-                return false
+                if iction. debugUITimers then print("SPELL IS NOT ACTIVE...") end
+                return false, nil
             end
 
-            local function updateExpiresInfo(table)
-                if iction.debugUITimers then print("Updating endtime") end
+            local function getExpiresInfo(spellName)
+                local expiresData = {}
+                      expiresData['endTime'] = 0
+                      expiresData['isChanneled'] = false
+                      expiresData['count'] = 0
+                if not spellName then return expiresData end
+
+                if iction.debugUITimers then print("...FETCHING ENDTIME...") end
                 -- EXPIRES
                 local channelSpellID, cexpires = iction.blizz_getChannelSpellInfo()
-                if cexpires ~= nil then
-                    table['endTime'] = cexpires
-                    table['isChanneled'] = true
-                    table['id'] = channelSpellID
+                if channelSpellID == spellID then
+                    expiresData['endTime'] = cexpires
+                    expiresData['isChanneled'] = true
                     if iction.debugUITargetSpell then print("cexpires: " .. tostring(cexpires)) end
                 else
-                    local nme, _, _, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellid, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3  = UnitDebuff("TARGET", name, nil, "PLAYER")
+                    local nme, _, _, count, _, duration, expires, _, _, _, _, _, _, _, _, _, _, _, _  = UnitDebuff("TARGET", spellName, nil, "PLAYER")
                     if iction.debugUITargetSpell then print("nme: " .. tostring(nme)) end
                     if iction.debugUITargetSpell then print("expires: " .. tostring(expires)) end
-                    if iction.debugUITargetSpell then print("expires: " .. tostring(expires)) end
                     if iction.debugUITargetSpell then print("duration: " .. tostring(duration)) end
-                    if iction.debugUITargetSpell then print("value1: " .. tostring(value1)) end
-                    if iction.debugUITargetSpell then print("value2: " .. tostring(value2)) end
-                    if iction.debugUITargetSpell then print("timeMod: " .. tostring(timeMod)) end
-                    table['endTime'] = expires
-                    table['count'] = count
+                    expiresData['endTime'] = expires
+                    expiresData['count'] = count
                 end
-                return table
+                if iction.debugUITargetSpell then print("#############") end
+                return expiresData
             end
 
-            if not isSpellActive(creatureTable['spellData'], spellID) then
-                if iction.debugUITimers then print("Adding NEW spell: " .. tostring(name)) end
+            -- If the target has been marked as dead move on.
+            if targetData["dead"] then return end
+            if not targetData["colID"]['active'] then return end
+
+            -- Is the spell cast in the currently active spell table?
+            local active, activeTable = isSpellActive(iction.activeSpellTable, guid, spellID)
+            local spellName, _, _, _, _, _, _  = GetSpellInfo(spellID)
+            if not active then
+                -- Create a new active spell in the activeSpellTable
                 local spellInfo = {}
+                      spellInfo['guid'] = guid
                       spellInfo['spellType'] = spellType
-                      spellInfo['spellName'] = name
+                      spellInfo['spellName'] = spellName
                       spellInfo['id'] = spellID
                       spellInfo['count'] = 0
-                      spellInfo['isChanneled'] = false
-                      updateExpiresInfo(spellInfo)
-                      table.insert(creatureTable['spellData'], spellInfo)
+                      spellInfo['buttons'] = targetData["buttons"]
+                      spellInfo['expires'] = getExpiresInfo(spellName)
+                table.insert(iction.activeSpellTable, spellInfo)
+                if iction.debugUITimers then print("ADDED NEW SPELL TABLE: " .. tostring(name)) end
             else
-                updateExpiresInfo(creatureTable['spellData'])
+                -- spell is active update the expires for timers
+                -- Find the active spelltable for guid and update the expires
+                activeTable['expires'] = getExpiresInfo(spellName)
             end
-
             if iction.debugUITimers then print("#############") end
-            break
-    end end
+        end
+    end
 end
