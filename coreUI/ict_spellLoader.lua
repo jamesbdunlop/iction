@@ -11,7 +11,7 @@ function iction.getAllSpells()
               local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(x, "spell")
                   if name and spellID and not IsPassiveSpell(spellID) then
                       local spellData = {}
-                      spellData['name'] = name
+                      spellData['uiName'] = name
                       spellData['id'] = spellID
                       spellData['rank'] = rank
                       spellData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
@@ -20,21 +20,27 @@ function iction.getAllSpells()
                       spellData['icon'] = icon
                       table.insert(spells, spellData)
     end end end end
-    --- Artifact
-    table.insert(spells, iction.artifact())
     return spells
 end
 
+local localizedClass, _, _ = UnitClass("Player")
 function iction.artifact()
     local artifact = {}
-    if iction.class == 'Warlock' then
-        if iction.spec == 1 then
-             artifact = {artifact = {name = "Tormented Souls", insert = true,
-                                     isArtifact = true, isTalentSpell = false,
-                                     vis = true, id = 216708,
-                                     duration = 30, maxTime = 30
-                                     }
-                        }
+    if localizedClass == 'Warlock' then
+        if GetSpecialization() == 1 then
+             artifact = {uiName = "Tormented Souls", id = 216695}
+        elseif GetSpecialization() == 2 then
+             artifact = {uiName = "Thal`kiel's Consumption", id = 211714}
+        elseif GetSpecialization() == 3 then
+             artifact = {uiName = "Dimensional Rift", id = 196586}
+        end
+    elseif localizedClass == 'Priest' then
+        if GetSpecialization() == 1 then
+             artifact = {uiName = "", id = 1}
+        elseif GetSpecialization() == 2 then
+             artifact = {uiName = "", id = 1}
+        elseif GetSpecialization() == 3 then
+             artifact = {uiName = "Void Torrent", id = 205065}
         end
     end
     return artifact

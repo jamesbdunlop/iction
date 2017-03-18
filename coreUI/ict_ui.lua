@@ -23,9 +23,9 @@ function iction.createBottomBarArtwork()
 end
 
 function iction.createArtifactFrame()
-    if iction.artifactFrame~= nil then
-        iction.artifactFrame:Hide()
-        iction.artifactFrame = nil
+    if iction.artifactFrameBldr then
+        iction.artifactFrameBldr.frame:Hide()
+        iction.artifactFrameBldr = nil
     end
     local fntSize, icon
     if iction.class == iction.L['Warlock'] then
@@ -34,88 +34,88 @@ function iction.createArtifactFrame()
         fntSize = 20
     end
 
-    local next = next
-    local artifact = iction.uiPlayerArtifact
-    if next(artifact) ~= nil then
-        local artifactData = iction.ictArtifactFrameData
-              artifactData["uiParentFrame"] = iction.mainFrameBldr.frame
-              artifactData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
-              local artifactTexture = { name = "artifact-01",
-                                        allPoints = true,
-                                        anchorPoint = "LEFT",
-                                        apX = 0,
-                                        apY = 0,
-                                        w = 15,
-                                        h= 15,
-                                        level = "ARTWORK",
-                                        texture= GetSpellTexture(artifact['id']),
-                                        vr = 1, vg = 1, vb = 1, va = 1}
-              table.insert(artifactData['textures'], artifactTexture)
+    local artifact = iction.artifact()
+    local artifactData = iction.ictArtifactFrameData
+          artifactData["uiParentFrame"] = iction.mainFrameBldr.frame
+          artifactData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          local artifactTexture = { name = "artifact-01",
+                                    allPoints = true,
+                                    anchorPoint = "LEFT",
+                                    apX = 0,
+                                    apY = 0,
+                                    w = 15,
+                                    h= 15,
+                                    level = "ARTWORK",
+                                    texture= GetSpellTexture(artifact['id']),
+                                    vr = 1, vg = 1, vb = 1, va = 1}
+          table.insert(artifactData['textures'], artifactTexture)
 
-        iction.artifactFrameBldr = {}
-              setmetatable(iction.artifactFrameBldr, {__index = iction.UIButtonElement})
-              iction.artifactFrameBldr.create(iction.artifactFrameBldr, artifactData)
-              iction.artifactFrameBldr.addFontString(iction.artifactFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, fntSize, 1, 1, 1, 1)
+    iction.artifactFrameBldr = {}
+          setmetatable(iction.artifactFrameBldr, {__index = iction.UIFrameElement})
+          iction.artifactFrameBldr.create(iction.artifactFrameBldr, artifactData)
+          iction.artifactFrameBldr.addFontString(iction.artifactFrameBldr, "THICK", "MEDIUM", true, nil, nil, nil, fntSize, 1, 1, 1, 1)
 
-        local function _warlockUpdate()
-            local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", artifact['name'])
-            local charges, _, _, _ = GetSpellCharges(artifact['name'])
+    local function _warlockUpdate()
+        local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(artifact['id'])
+        if artifact['id'] then
+            local _, _, _, count, _, _, _, _, _, _, _ = UnitBuff("Player", name)
+            local charges, _, _, _ = GetSpellCharges(name)
             if count == nil and charges == nil then
-                iction.artifactFrameBldr.timerText:SetText("")
+                iction.artifactFrameBldr.text:SetText("")
             elseif count then
-                iction.artifactFrameBldr.timerText:SetText(count)
+                iction.artifactFrameBldr.text:SetText(count)
             elseif charges then
-                iction.artifactFrameBldr.timerText:SetText(charges)
+                iction.artifactFrameBldr.text:SetText(charges)
             end
         end
+    end
 
-        local function _priestUpdate()
-            if iction.blizz_buffActive(194249) then
-                iction.artifactFrame.texture:SetVertexColor(1, 1, 1, 1)
+    local function _priestUpdate()
+        if iction.blizz_buffActive(194249) then
+            iction.artifactFrame.texture:SetVertexColor(1, 1, 1, 1)
+        else
+            iction.artifactFrame.texture:SetVertexColor(1, .1, .1, .7)
+        end
+
+        --- Update channeled timer for artifact channel
+        local channeledSpellID, cexpires = iction.blizz_getChannelSpellInfo()
+        if channeledSpellID == 205065 then
+            local remainingT = cexpires - GetTime()
+            local TL = tonumber(string.format("%.1f", (remainingT)))
+            if TL > 3 then
+                iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
             else
-                iction.artifactFrame.texture:SetVertexColor(1, .1, .1, .7)
+                iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
             end
+            iction.artifactFrame.text:SetText(tostring(TL))
 
-            --- Update channeled timer for artifact channel
-            local channeledSpellID, cexpires = iction.blizz_getChannelSpellInfo()
-            if channeledSpellID == 205065 then
-                local remainingT = cexpires - GetTime()
-                local TL = tonumber(string.format("%.1f", (remainingT)))
+        elseif iction.isSpellOnCooldown(205065) then
+            local start, duration, _ = GetSpellCooldown(205065)
+            if duration > 1.5 then
+                local cdET = iction.fetchCooldownET(205065)
+                local remainingT = cdET - GetTime()
+                local TL = tonumber(string.format("%.1d", (remainingT)))
+                iction.artifactFrame.texture:SetVertexColor(.55, .1, .1, 1)
                 if TL > 3 then
                     iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
                 else
                     iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
                 end
-                iction.artifactFrame.text:SetText(tostring(TL))
-
-            elseif iction.isSpellOnCooldown(205065) then
-                local start, duration, _ = GetSpellCooldown(205065)
-                if duration > 1.5 then
-                    local cdET = iction.fetchCooldownET(205065)
-                    local remainingT = cdET - GetTime()
-                    local TL = tonumber(string.format("%.1d", (remainingT)))
-                    iction.artifactFrame.texture:SetVertexColor(.55, .1, .1, 1)
-                    if TL > 3 then
-                        iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
-                    else
-                        iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
-                    end
-                    iction.artifactFrame.text:SetText(TL)
-                end
-            else
-                iction.artifactFrame.text:SetText("")
+                iction.artifactFrame.text:SetText(TL)
             end
-            --- Sparkle on insanity
+        else
+            iction.artifactFrame.text:SetText("")
         end
-
-        if iction.class == iction.L['Warlock'] then
-            iction.artifactFrameBldr.buttonFrame:SetScript("OnUpdate", _warlockUpdate)
-        elseif iction.class == iction.L['Priest'] and iction.spec == 3 then
-            iction.artifactFrameBldr.buttonFrame:SetScript("OnUpdate", _priestUpdate)
-        end
-        -- Add to moveable frame table
-        table.insert(iction.moveableUIFrames,  iction.artifactFrameBldr)
+        --- Sparkle on insanity
     end
+
+    if iction.class == iction.L['Warlock'] then
+        iction.artifactFrameBldr.frame:SetScript("OnUpdate", _warlockUpdate)
+    elseif iction.class == iction.L['Priest'] and iction.spec == 3 then
+        iction.artifactFrameBldr.frame:SetScript("OnUpdate", _priestUpdate)
+    end
+    -- Add to moveable frame table
+    table.insert(iction.moveableUIFrames,  iction.artifactFrameBldr)
     if iction.debugUI then print("iction.createArtifactFrame success!") end
 end
 

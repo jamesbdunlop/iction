@@ -34,7 +34,7 @@ iction.targetData = {}
 iction.activeSpellTable = {}
 
 --- DEBUG
-iction.debugUI = true
+iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false

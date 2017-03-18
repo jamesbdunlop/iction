@@ -56,7 +56,6 @@ function iction.UIFrameElement.createTextures(self, data)
 
         -- ADD TO THE TABLE
         table.insert(self.textures, texture)
-        print("Added texture: " .. tostring(textureData['name']))
     end
 end
 
@@ -215,7 +214,7 @@ end
 function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     --- Extract data
     self.data = data
-    self.name = self.data['name'] -- use this to match activeSpells to as id is fickle
+    self.frameName = self.data['uiName'] -- use this to match activeSpells to as id is fickle
     self.id = self.data['id']  -- note here the spell id from the spell book for corruption is 172 but cast its 146739
     self.rank = self.data['rank']
     self.castingTime = self.data['castingTime']
@@ -238,39 +237,11 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
         self.texture:SetTexture(self.icon)
         self.texture:SetVertexColor(0.9,0.3,0.3, .5)
     -- Create the fontString for the button
-    self.timerText = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
-end
-
-function iction.UIButtonElement.createTextures(self, data)
-    local t = self.data['textures']
-    local itr = iction.list_iter(t)
-    while true do
-        local textureData = itr()
-        if textureData == nil then break end
-        local texture = self.frame:CreateTexture(textureData['name'], textureData['level'])
-        -- POINTS
-        if textureData['allPoints'] then
-            texture:SetAllPoints(textureData['allPoints'])
-        else
-            texture:SetPoint(textureData['anchorPoint'], textureData['apX'], textureData['apY'])
-        end
-
-        -- WIDTH / HEIGHT
-        if textureData['w'] then texture:SetWidth(textureData['w']) end
-        if textureData['h'] then texture:SetHeight(textureData['h']) end
-
-        -- TEXTURE PATH
-        texture:SetTexture(textureData['texture'])
-        texture:SetVertexColor(textureData['vr'], textureData['vg'], textureData['vb'], textureData['va'])
-
-        -- ADD TO THE TABLE
-        table.insert(self.textures, texture)
-        print("Added texture: " .. tostring(textureData['name']))
-    end
+    self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
 end
 
 function iction.UIButtonElement.addCountFrame(self)
-    self.countFrame = self.frame:CreateTexture(self.name .. "_count", "MEDIUM")
+    self.countFrame = self.frame:CreateTexture(self.frameName .. "_count", "MEDIUM")
     self.countFrame:EnableMouse(false)
     self.buttonFrame:SetPoint("RIGHT", self.buttonFrame, iction.bw, iction.bh)
     self.buttonFrame:SetWidth(16)
@@ -310,5 +281,5 @@ function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, pr
 end
 
 function iction.UIButtonElement.setButtonColor(self, color)
-    self.timerText:SetTextColor(color[1], color[2], color[3], color[4])
+    self.text:SetTextColor(color[1], color[2], color[3], color[4])
 end

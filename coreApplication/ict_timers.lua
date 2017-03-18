@@ -17,7 +17,7 @@ function iction.runTimers()
                     local button = buttonTable()
                     if button == nil then break end
 
-                    if button.name == spellTable['spellName'] then
+                    if button.frameName == spellTable['spellName'] then
                         return button
                     end
                 end
@@ -27,10 +27,10 @@ function iction.runTimers()
             local spellButton = fetchButton(spellTable['buttons'])
             if spellButton then
                 if remainingT >= 0 then
-                    spellButton.timerText:SetText(remainingT)
+                    spellButton.text:SetText(remainingT)
                     spellButton.setButtonState(spellButton, true, false, false, false)
                 elseif remainingT <= 0.1 then
-                    spellButton.timerText:SetText("")
+                    spellButton.text:SetText("")
                     spellButton.setButtonState(spellButton, false, false, false, false)
                 end
             end

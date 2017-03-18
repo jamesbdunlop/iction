@@ -33,6 +33,7 @@ function iction.watcher(self)
             iction.oocCleanup()
             return
         end
+        if event == 'PLAYER_SPECIALIZATION_CHANGED' then iction.specChanged() end
 
         if ictonCombat then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then

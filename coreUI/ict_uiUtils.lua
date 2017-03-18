@@ -52,7 +52,7 @@ function iction.specChanged()
         iction.highlightFrameTexture = nil
 
         if iction.class == iction.L['Warlock'] then
-            if GetSpecialization() == 3 then
+            if spec == 3 then
                 iction.conflagFrameBldr = nil
                 iction.createConflagFrame()
             end
@@ -69,8 +69,11 @@ function iction.specChanged()
                 iction.spec = spec
                 return
         end end
+
         -- Change the artifact frame
         iction.createArtifactFrame()
+        print("spec changed.")
+
         -- Reset highlightframe size for buttons changes
         iction.highlightFrameTexture = iction.createHighlightFrame()
     end
