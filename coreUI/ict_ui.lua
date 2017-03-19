@@ -211,18 +211,6 @@ function iction.createInsanityFrame()
     table.insert(iction.moveableUIFrames,  iction.insanityFrameBldr)
 end
 
-function iction.createHighlightFrame()
-    local highlightData = iction.ictHighLightFrameData
-          highlightData["uiParentFrame"] = iction.mainFrameBldr.frame
-          highlightData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
-
-    iction.highlightFrameBldr = {}
-            setmetatable(iction.highlightFrameBldr, {__index = iction.UIFrameElement})
-            iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
-
-    return iction.highlightFrameBldr
-end
-
 function iction.createSWDFrame()
     local SWDData = iction.ictSWDData
     SWDData["uiParentFrame"] = iction.mainFrameBldr.frame

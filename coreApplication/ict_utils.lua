@@ -19,7 +19,12 @@ end
 
 function iction.tablelength(T)
   local count = 0
-  for _ in pairs(T) do count = count + 1 end
+  local itr = iction.list_iter(T)
+  while true do
+      local t = itr()
+      if not t then break end
+      count = count + 1
+  end
   return count
 end
 
@@ -100,13 +105,17 @@ function iction.debuffColumns_GUIDExists(guid)
     return exists
 end
 
-function iction.debuffColumns_FetchGUIDCol(guid)
-    for colID, colData in pairs(iction.targetCols) do
-        if colData["guid"] == guid then
-            if iction.debugIU then print("Found a highlight match guid!!!") end
-            return colID
-    end end
-    return false
+function iction.debuffColumns_currentTargetFrameBldr(guid)
+    local tgIter = iction.list_iter(iction.targetData)
+    while true do
+        local target = tgIter()
+        if not target then break end
+
+        if target["guid"] == guid and target["colID"]['active'] then
+            return target['frame']
+        end
+    end
+    return nil
 end
 
 function iction.debuffColumns_slotAvailable()

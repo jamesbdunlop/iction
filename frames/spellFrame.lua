@@ -1,5 +1,5 @@
 local iction = iction
-iction.ictSpellFrameData = { uiType = "Frame",
+iction.ictSpellFrameData = {
                             uiName = nil,
                             nameAttr = "ictionDeBuffFrame",
                             uiInherits = nil,
@@ -10,12 +10,12 @@ iction.ictSpellFrameData = { uiType = "Frame",
                             w = 1,
                             h = 1,
                             bgCol = {r = 0, g = 0, b= 0, a = 0},
-                            strata = "HIGH",
+                            strata = "BACKGROUND",
                             pointPosition = {point = "BOTTOM",
                                              relativeTo = nil,
                                              relativePoint = "CENTER",
                                              x = 0, y = -20},
-                            textures = { [1] = {name = 'default', allPoints = true, level = "ARTWORK",
+                            textures = { [1] = {name = 'default', allPoints = true, level = "BACKGROUND",
                                                 texture= "Interface\\ChatFrame\\ChatFrameBackground",
                                                 vr = 0, vg = 0, vb = 0, va = 0 } },
                             }

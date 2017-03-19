@@ -25,16 +25,17 @@ function iction.createTarget(guid)
           targetData["guid"] = guid
           targetData["dead"] = false
           targetData["colID"] = {}
+          targetData["colID"]['id'] = colID
           targetData["colID"]['guid'] = guid
           targetData["colID"]['active'] = true
           if iction.debugUITimers then print("NEW TARGET TABLE ENTRY: " .. tostring(guid)) end
           if iction.debugUITimers then print("NEW TARGET COLID: " .. tostring(colID)) end
 
     --- Build frame
-    local frmData = iction.ictSpellFrameData
     local fh = iction.tablelength(iction.getAllSpells())
+    local frmData = iction.ictSpellFrameData
           frmData['w'] = iction.bw + iction.ictionButtonFramePad
-          frmData['h'] = fh
+          frmData['h'] = fh * iction.bh
           frmData['pointPosition']["point"] = "BOTTOM"
           frmData['pointPosition']['relativeTo'] = iction.debuffColumns[colID].frame
           frmData['uiParentFrame'] = iction.debuffColumns[colID].frame

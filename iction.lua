@@ -13,7 +13,6 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
     local function loadUI()
         iction.debuffColumns_setMax()
         iction.initMainUI()
-        iction.highlightFrameTexture = iction.createHighlightFrame()
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG1"], 15, 25, 35)
         DEFAULT_CHAT_FRAME:AddMessage(iction.L["LOGIN_MSG2"], 15, 25, 35)
         local bf

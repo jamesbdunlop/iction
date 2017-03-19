@@ -49,7 +49,6 @@ function iction.specChanged()
         iction.spec = spec
         DEFAULT_CHAT_FRAME:AddMessage(iction.L['specChangeMSG'], 15, 25, 35)
         -- Reset the UI now
-        iction.highlightFrameTexture = nil
 
         if iction.class == iction.L['Warlock'] then
             if spec == 3 then
@@ -72,8 +71,5 @@ function iction.specChanged()
 
         -- Change the artifact frame
         iction.createArtifactFrame()
-
-        -- Reset highlightframe size for buttons changes
-        iction.highlightFrameTexture = iction.createHighlightFrame()
     end
 end
