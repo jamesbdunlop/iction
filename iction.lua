@@ -65,11 +65,12 @@ SlashCmdList["ICTION"] = ictionArgs
 function iction.initMainUI()
     if iction.debugUI then print("iction.initMainUI init...") end
     --- Setup the mainFrame and Eventwatcher ---
+    local MFData = iction.ictMainFrameData
     iction.mainFrameBldr = {}
-    setmetatable(iction.mainFrameBldr, {__index = iction.UIFrameElement})
-    iction.mainFrameBldr.create(iction.mainFrameBldr, iction.ictMainFrameData)
-    iction.mainFrameBldr.setMoveScript(iction.mainFrameBldr, UIParent)
-    iction.mainFrameBldr.frame:SetScale(iction.ictionScale)
+          setmetatable(iction.mainFrameBldr, {__index = iction.UIFrameElement})
+          iction.mainFrameBldr.create(iction.mainFrameBldr, MFData)
+          iction.mainFrameBldr.setMoveScript(iction.mainFrameBldr, UIParent)
+          iction.mainFrameBldr.frame:SetScale(iction.ictionScale)
 
     --- Now fire off all the other build functions ---
     iction.createBottomBarArtwork()
@@ -87,12 +88,11 @@ function iction.initMainUI()
     iction.createArtifactFrame()
     iction.createBuffFrame()
     iction.createDebuffColumns()
-
     --- Setup the frame watcher for spells etc
     if iction.class == iction.L['Warlock'] then
         iction.watcher(iction.mainFrameBldr.frame)
     elseif iction.class == iction.L['Priest'] then
-        iction.ictionPriestFrameWatcher(iction.mainFrameBldr.frame)
+        iction.watcher(iction.mainFrameBldr.frame)
     end
 
     if iction.debugUI then print("iction.initMainUI success!") end

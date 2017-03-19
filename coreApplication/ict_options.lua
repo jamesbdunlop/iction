@@ -20,54 +20,52 @@ function iction.setOptionsFrame()
     local curTgtCnt = ictionTargetCount
     local setCount
     if not iction.OptionsFrame then
+    local artifact = iction.artifact()
         local function createOptionsFrame()
-            iction.OptionsFrame = CreateFrame('Frame', 'ictionOptions', UIParent, "OptionsBoxTemplate")
-            iction.OptionsFrame:SetPoint("CENTER", UIParent, 0, 250)
-            iction.OptionsFrame:SetFrameStrata("MEDIUM")
-            iction.OptionsFrame:EnableMouse(true)
-            iction.OptionsFrame:SetMovable(true)
-            iction.OptionsFrame:SetUserPlaced(true)
-            iction.OptionsFrame:SetWidth(frameW)
-            iction.OptionsFrame:SetHeight(frameH)
-            iction.OptionsFrame:SetBackdropColor(1, 0, 0, 1)
+            local optionsData = iction.ictOptionsFrameData
+            iction.optionsFrameBldr = {}
+                setmetatable(iction.optionsFrameBldr, {__index = iction.UIFrameElement})
+                iction.optionsFrameBldr.create(iction.optionsFrameBldr, optionsData)
 
-            local OptionsBgT = iction.OptionsFrame:CreateTexture(nil, "BACKGROUND")
-                  OptionsBgT:SetAllPoints(true)
-                  OptionsBgT:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-                  OptionsBgT:SetVertexColor(.4, .1, .1, .85)
-            iction.OptionsFrame.texture = OptionsBgT
+                --- FRAMES MOUSE CLICK AND DRAG ---
+                iction.optionsFrameBldr.frame:SetScript("OnMouseDown", function(self, button)
+                    if button == "LeftButton" and not iction.optionsFrameBldr.frame.isMoving then
+                        iction.optionsFrameBldr.frame:StartMoving()
+                        iction.optionsFrameBldr.frame.isMoving = true
+                    end
+                end)
 
-            --- FRAMES MOUSE CLICK AND DRAG ---
-            iction.OptionsFrame:SetScript("OnMouseDown", function(self, button)
-                if button == "LeftButton" and not iction.OptionsFrame.isMoving then
-                    iction.OptionsFrame:StartMoving()
-                    iction.OptionsFrame.isMoving = true
-                end
-            end)
-
-            iction.OptionsFrame:SetScript("OnMouseUp", function(self, button)
-                if button == "LeftButton" and iction.OptionsFrame.isMoving then
-                    iction.OptionsFrame:StopMovingOrSizing()
-                    iction.OptionsFrame.isMoving = false
-                end
-            end)
+                iction.optionsFrameBldr.frame:SetScript("OnMouseUp", function(self, button)
+                    if button == "LeftButton" and iction.optionsFrameBldr.frame.isMoving then
+                        iction.optionsFrameBldr.frame:StopMovingOrSizing()
+                        iction.optionsFrameBldr.frame.isMoving = false
+                    end
+                end)
         end
         createOptionsFrame()
 
-        local function createMaxTargetsOptions()
-            ----------------------------------------------------------------------------------------------------------
-            --- MAX TARGETS
-            iction.ict_TargetLabel = iction.OptionsFrame:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
-            iction.ict_TargetLabel:SetText(iction.L['maxTargetColsLabel'])
-            iction.ict_TargetLabel:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
-            iction.ict_TargetLabel:SetPoint("TOP", iction.OptionsFrame, 0, -70)
+        local function listAllSpells()
+            local allSpellsData = iction.ictSpellsListFrameData
+                  allSpellsData['pointPosition']['relativeTo'] = iction.optionsFrameBldr.frame
 
-            iction.TargetOptionsFrame = CreateFrame('Frame', 'TargetOptionsFrame', iction.OptionsFrame, "InsetFrameTemplate")
+            iction.allSpellsListFrameBldr = {}
+                setmetatable(iction.allSpellsListFrameBldr, {__index = iction.UIScrollFrameElement})
+                iction.allSpellsListFrameBldr.create(iction.allSpellsListFrameBldr, allSpellsData)
+        end
+        listAllSpells()
+
+        local function createMaxTargetsOptions()
+            iction.ict_TargetLabel = iction.optionsFrameBldr.frame:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_TargetLabel:SetText(iction.L['maxTargetColsLabel'])
+            iction.ict_TargetLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
+            iction.ict_TargetLabel:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, -70)
+
+            iction.TargetOptionsFrame = CreateFrame('Frame', 'TargetOptionsFrame', iction.optionsFrameBldr.frame, "InsetFrameTemplate")
             iction.TargetOptionsFrame:SetWidth(optionsBoxW)
             iction.TargetOptionsFrame:SetFrameStrata("MEDIUM")
-            iction.TargetOptionsFrame:SetPoint("LEFT", iction.OptionsFrame, 20, 0)
-            iction.TargetOptionsFrame:SetPoint("TOP", iction.OptionsFrame, 0, optionsBoxTop)
-            iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, optionsBoxBottom)
+            iction.TargetOptionsFrame:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
+            iction.TargetOptionsFrame:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, optionsBoxTop)
+            iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, optionsBoxBottom)
             local tgIndent = 10
 
             ict_MaxTarget1Input = CreateFrame("CheckButton", "ict_maxCount1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
@@ -141,17 +139,17 @@ function iction.setOptionsFrame()
             -------------------------------------------------------------------------------------------------------------
             --- SKIN SELECTION
             local skinNumber
-            iction.ict_skinsLabel = iction.OptionsFrame:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_skinsLabel = iction.optionsFrameBldr.frame:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
             iction.ict_skinsLabel:SetText(iction.L['skinLabel'])
-            iction.ict_skinsLabel:SetPoint("LEFT", iction.OptionsFrame, 200, 0)
-            iction.ict_skinsLabel:SetPoint("TOP", iction.OptionsFrame, 0, -70)
+            iction.ict_skinsLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 200, 0)
+            iction.ict_skinsLabel:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, -70)
 
-            iction.SkinOptionsFrame = CreateFrame('Frame', 'SkinOptionsFrame', iction.OptionsFrame, "InsetFrameTemplate")
+            iction.SkinOptionsFrame = CreateFrame('Frame', 'SkinOptionsFrame', iction.optionsFrameBldr.frame, "InsetFrameTemplate")
             iction.SkinOptionsFrame:SetFrameStrata("MEDIUM")
             iction.SkinOptionsFrame:SetWidth(optionsBoxW)
-            iction.SkinOptionsFrame:SetPoint("RIGHT", iction.OptionsFrame, -20, 0)
-            iction.SkinOptionsFrame:SetPoint("TOP", iction.OptionsFrame, -20, optionsBoxTop)
-            iction.SkinOptionsFrame:SetPoint("BOTTOM", iction.OptionsFrame, 0, optionsBoxBottom)
+            iction.SkinOptionsFrame:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -20, 0)
+            iction.SkinOptionsFrame:SetPoint("TOP", iction.optionsFrameBldr.frame, -20, optionsBoxTop)
+            iction.SkinOptionsFrame:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, optionsBoxBottom)
 
             local skinIndent = 10
             ict_skin1Input = CreateFrame("CheckButton", "ict_skin1", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
@@ -224,21 +222,21 @@ function iction.setOptionsFrame()
         local function createScaleUIOptions()
             ----------------------------------------------------------------------------------------------------------
             --- SCALE
-            iction.ict_scaleLabel = iction.OptionsFrame:CreateFontString("ScaleLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_scaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleLabel", "OVERLAY", "GameFontNormal")
             iction.ict_scaleLabel:SetText(iction.L['scale'])
-            iction.ict_scaleLabel:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            iction.ict_scaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, scaleUILabel)
+            iction.ict_scaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_scaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, scaleUILabel)
 
-            iction.ict_scaleIDXLabel = iction.OptionsFrame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_scaleIDXLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
             iction.ict_scaleIDXLabel:SetText(ictionGlobalScale)
-            iction.ict_scaleIDXLabel:SetPoint("RIGHT", iction.OptionsFrame, -10, 0)
-            iction.ict_scaleIDXLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, scaleUILabel)
+            iction.ict_scaleIDXLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_scaleIDXLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, scaleUILabel)
 
-            iction.ict_Scale = CreateFrame("Slider", "ict_scaleSlider", iction.OptionsFrame, "OptionsSliderTemplate")
+            iction.ict_Scale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
             iction.ict_Scale.tooltip = iction.L['scaleUI']
-            iction.ict_Scale:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            iction.ict_Scale:SetPoint("RIGHT", iction.OptionsFrame, -10, 0)
-            iction.ict_Scale:SetPoint("BOTTOM", iction.OptionsFrame, 0, scaleUIBoxTop)
+            iction.ict_Scale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_Scale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_Scale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, scaleUIBoxTop)
             iction.ict_Scale:SetMinMaxValues(.5,2)
             iction.ict_Scale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
             iction.ict_Scale:SetValue(1)
@@ -261,21 +259,21 @@ function iction.setOptionsFrame()
         local function createSWDOptions()
             ----------------------------------------------------------------------------------------------------------
             --- PWD Scale Options
-            iction.ict_swdScaleLabel = iction.OptionsFrame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_swdScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
             iction.ict_swdScaleLabel:SetText(iction.L['scaleSWD'])
-            iction.ict_swdScaleLabel:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            iction.ict_swdScaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, swdLabel)
+            iction.ict_swdScaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_swdScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdLabel)
 
-            iction.ict_swdIDXScaleLabel = iction.OptionsFrame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_swdIDXScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
             iction.ict_swdIDXScaleLabel:SetText(ictionSWDScale)
-            iction.ict_swdIDXScaleLabel:SetPoint("RIGHT", iction.OptionsFrame, -10, 0)
-            iction.ict_swdIDXScaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, swdLabel)
+            iction.ict_swdIDXScaleLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_swdIDXScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdLabel)
 
-            iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.OptionsFrame, "OptionsSliderTemplate")
+            iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
             iction.ict_PWDScale.tooltip = iction.L['scaleSWDTT']
-            iction.ict_PWDScale:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            iction.ict_PWDScale:SetPoint("RIGHT", iction.OptionsFrame, -10, 0)
-            iction.ict_PWDScale:SetPoint("BOTTOM", iction.OptionsFrame, 0, swdBoxTop)
+            iction.ict_PWDScale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_PWDScale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_PWDScale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdBoxTop)
             iction.ict_PWDScale:SetMinMaxValues(.5,2)
             iction.ict_PWDScale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
             iction.ict_PWDScale:SetValue(ictionSWDScale)
@@ -299,21 +297,21 @@ function iction.setOptionsFrame()
         local function createVoidOptions()
             ----------------------------------------------------------------------------------------------------------
             --- PWD Scale Options
-            iction.ict_voidBoltScaleLabel = iction.OptionsFrame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_voidBoltScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
             iction.ict_voidBoltScaleLabel:SetText(iction.L['scaleVB'])
-            iction.ict_voidBoltScaleLabel:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            iction.ict_voidBoltScaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, voidLabel)
+            iction.ict_voidBoltScaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_voidBoltScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidLabel)
 
-            iction.ict_voidBoltIDXScaleLabel = iction.OptionsFrame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_voidBoltIDXScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
             iction.ict_voidBoltIDXScaleLabel:SetText(ictionVoidBoltScale)
-            iction.ict_voidBoltIDXScaleLabel:SetPoint("RIGHT", iction.OptionsFrame, -10, 0)
-            iction.ict_voidBoltIDXScaleLabel:SetPoint("BOTTOM", iction.OptionsFrame, 0, voidLabel)
+            iction.ict_voidBoltIDXScaleLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_voidBoltIDXScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidLabel)
 
-            iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.OptionsFrame, "OptionsSliderTemplate")
+            iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
             iction.ict_PWDScale.tooltip = iction.L['scaleVBTT']
-            iction.ict_PWDScale:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-            iction.ict_PWDScale:SetPoint("RIGHT", iction.OptionsFrame, -10, 0)
-            iction.ict_PWDScale:SetPoint("BOTTOM", iction.OptionsFrame, 0, voidBoxTop)
+            iction.ict_PWDScale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_PWDScale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_PWDScale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidBoxTop)
             iction.ict_PWDScale:SetMinMaxValues(.5,2)
             iction.ict_PWDScale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
             iction.ict_PWDScale:SetValue(ictionVoidBoltScale)
@@ -336,10 +334,10 @@ function iction.setOptionsFrame()
         end
         ----------------------------------------------------------------------------------------------------------
         --- UNLOCK
-        ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.OptionsFrame, "ChatConfigCheckButtonTemplate")
+        ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.optionsFrameBldr.frame, "ChatConfigCheckButtonTemplate")
         ict_UnlockCBx.tooltip = iction.L['unlockUITT']
-        ict_UnlockCBx:SetPoint("LEFT", iction.OptionsFrame, 10, 0)
-        ict_UnlockCBx:SetPoint("BOTTOM", iction.OptionsFrame, 0, 10)
+        ict_UnlockCBx:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+        ict_UnlockCBx:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, 10)
         ict_UnlockCBxtext = _G["ict_unlockText"]
         ict_UnlockCBxtext:SetText(iction.L['unlockUILabel'])
         ict_UnlockCBx:SetScript("OnClick", function()
@@ -349,11 +347,12 @@ function iction.setOptionsFrame()
 
         ---------------------
         --- Close button ----
-        local closeOptionsButton = CreateFrame("Button", "Close", iction.OptionsFrame, "UIPanelButtonTemplate")
-        closeOptionsButton:SetFrameStrata("HIGH")
-        closeOptionsButton:SetPoint("BOTTOMRIGHT", iction.OptionsFrame, -5, -8)
+        local closeOptionsButton = CreateFrame("Button", "Close", iction.optionsFrameBldr.frame, "UIPanelButtonTemplate")
+        closeOptionsButton:SetFrameStrata("MEDIUM")
+        closeOptionsButton:SetPoint("BOTTOMRIGHT", iction.optionsFrameBldr.frame, -5, -8)
         closeOptionsButton:SetWidth(45)
         closeOptionsButton:SetHeight(25)
+
         --- Create the texture for the close button
         local closeButText = closeOptionsButton:CreateTexture(nil, "ARTWORK")
               closeButText:SetAllPoints(true)
@@ -367,7 +366,8 @@ function iction.setOptionsFrame()
               fnt:SetText(iction.L['close'])
         closeOptionsButton.text = fnt
         closeOptionsButton:SetScript("OnClick", function()
-            iction.OptionsFrame:Hide()
+            iction.optionsFrameBldr.frame:Hide()
+            iction.allSpellsListFrameBldr.frame:Hide()
             CastingBarFrame:SetAlpha(0)
             CastingBarFrame:Hide()
             ict_moveCastBarButton = nil
@@ -377,9 +377,9 @@ function iction.setOptionsFrame()
             CastingBarFrame:Show()
             CastingBarFrame:SetAlpha(1)
         end
-        iction.OptionsFrame:Show()
+        iction.optionsFrameBldr.frame:Show()
     else
-        iction.OptionsFrame:Show()
+        iction.optionsFrameBldr.frame:Show()
         if ictionSetCastBar then
             CastingBarFrame:Show()
             CastingBarFrame:SetAlpha(1)

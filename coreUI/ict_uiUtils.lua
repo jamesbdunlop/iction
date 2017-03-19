@@ -72,21 +72,8 @@ function iction.specChanged()
 
         -- Change the artifact frame
         iction.createArtifactFrame()
-        print("spec changed.")
 
         -- Reset highlightframe size for buttons changes
         iction.highlightFrameTexture = iction.createHighlightFrame()
     end
-end
-
-
--------------UNUSED
-
-function iction.setMTapBorder(color)
-    local mt
-    for x=1, 4 do
-        local f = iction.uiBotBarArt[x]
-        if f then
-            f.setTextureVertexColor( f, color[0], color[1],color[2], color[3] )
-    end end
 end

@@ -72,9 +72,9 @@ function iction.createArtifactFrame()
 
     local function _priestUpdate()
         if iction.blizz_buffActive(194249) then
-            iction.artifactFrame.texture:SetVertexColor(1, 1, 1, 1)
+            iction.artifactFrameBldr.textures[1]:SetVertexColor(1, 1, 1, 1)
         else
-            iction.artifactFrame.texture:SetVertexColor(1, .1, .1, .7)
+            iction.artifactFrameBldr.textures[1]:SetVertexColor(1, .1, .1, .7)
         end
 
         --- Update channeled timer for artifact channel
@@ -83,11 +83,11 @@ function iction.createArtifactFrame()
             local remainingT = cexpires - GetTime()
             local TL = tonumber(string.format("%.1f", (remainingT)))
             if TL > 3 then
-                iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
+                iction.artifactFrameBldr.text:SetTextColor(1, 1, 1, 1)
             else
-                iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
+                iction.artifactFrameBldr.text:SetTextColor(1, .1, .1, 1)
             end
-            iction.artifactFrame.text:SetText(tostring(TL))
+            iction.artifactFrameBldr.text:SetText(tostring(TL))
 
         elseif iction.isSpellOnCooldown(205065) then
             local start, duration, _ = GetSpellCooldown(205065)
@@ -95,16 +95,16 @@ function iction.createArtifactFrame()
                 local cdET = iction.fetchCooldownET(205065)
                 local remainingT = cdET - GetTime()
                 local TL = tonumber(string.format("%.1d", (remainingT)))
-                iction.artifactFrame.texture:SetVertexColor(.55, .1, .1, 1)
+                iction.artifactFrameBldr.textures[1]:SetVertexColor(.55, .1, .1, 1)
                 if TL > 3 then
-                    iction.artifactFrame.text:SetTextColor(1, 1, 1, 1)
+                    iction.artifactFrameBldr.text:SetTextColor(1, 1, 1, 1)
                 else
-                    iction.artifactFrame.text:SetTextColor(1, .1, .1, 1)
+                    iction.artifactFrameBldr.text:SetTextColor(1, .1, .1, 1)
                 end
-                iction.artifactFrame.text:SetText(TL)
+                iction.artifactFrameBldr.text:SetText(TL)
             end
         else
-            iction.artifactFrame.text:SetText("")
+            iction.artifactFrameBldr.text:SetText("")
         end
         --- Sparkle on insanity
     end
@@ -150,9 +150,8 @@ function iction.createDebuffColumns()
               colData['pointPosition']["y"] = y
 
         local debuffColumnBldr = {}
-        setmetatable(debuffColumnBldr, {__index = iction.UIFrameElement})
-        debuffColumnBldr.create(debuffColumnBldr, colData)
---        debuffColumnBldr.addTexture(debuffColumnBldr, "iction_col" .. i .. '_bg', 32, 28, "ARTWORK", true, nil, nil, nil, "Interface/AddOns/iction/media/"..i, .1, .5, .1, 0)
+              setmetatable(debuffColumnBldr, {__index = iction.UIFrameElement})
+              debuffColumnBldr.create(debuffColumnBldr, colData)
         x = x + 75
 
         iction.debuffColumns["col_" ..i] = debuffColumnBldr
@@ -194,87 +193,55 @@ function iction.createInsanityFrame()
           insanityData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
     iction.insanityFrameBldr = {}
           setmetatable(iction.insanityFrameBldr, {__index = iction.UIFrameElement})
-    iction.insanityFrame = iction.insanityFrameBldr.create(iction.insanityFrameBldr, insanityData)
-    iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 106, iction.bh/1.8, "BACKGROUND", nil, "LEFT", -3, 0, "Interface\\ChatFrame\\ChatFrameBackground", 0, 0, 0, 1)
---    table.insert(insanityBar, iction.insanityFrameBldr.addTexture(iction.insanityFrame, "insanity", 1, iction.bh/2, "ARTWORK", nil, "LEFT", 0, 0, "Interface\\ChatFrame\\ChatFrameBackground", .5, .1, 1, 1))
-    iction.insanityFrame.text = iction.insanityFrameBldr.addFontSring(iction.insanityFrame, "THICKOUTLINE", "OVERLAY", true, nil, nil, nil, 16, 1, 1, 1, 1)
+          iction.insanityFrameBldr.create(iction.insanityFrameBldr, insanityData)
 
     local function _updateInsanity()
         local insanity = UnitPower("player", SPELL_POWER_INSANITY)
         if insanity ~= 0 then
             insanityBar[1]:SetWidth(insanity)
-            iction.insanityFrame.text:SetText(tostring(insanity))
+            iction.insanityFrameBldr.text:SetText(tostring(insanity))
             insanityBar[1]:SetVertexColor(.5, .1, 1, 1)
         else
             insanityBar[1]:SetVertexColor(0, 0, 0, .1)
-            iction.insanityFrame.text:SetText("0")
+            iction.insanityFrameBldr.text:SetText("0")
         end
     end
-    iction.insanityFrame:SetScript("OnUpdate", _updateInsanity)
+    iction.insanityFrameBldr.frame:SetScript("OnUpdate", _updateInsanity)
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.insanityFrameBldr)
 end
 
 function iction.createHighlightFrame()
-    local fw, fh = iction.calcFrameSize(iction.spellTable)
     local highlightData = iction.ictHighLightFrameData
-    highlightData["uiParentFrame"] = iction.mainFrameBldr.frame
-    highlightData["w"] = fw
-    highlightData["h"] = fh
-    highlightData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          highlightData["uiParentFrame"] = iction.mainFrameBldr.frame
+          highlightData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
 
     iction.highlightFrameBldr = {}
-    setmetatable(iction.highlightFrameBldr, {__index = iction.UIFrameElement})
-    iction.highlightFrame = iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
---    iction.highlightFrameBldr.addTexture(iction.highlightFrameBldr, "ict_highlightTexture", 1, 1, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
+            setmetatable(iction.highlightFrameBldr, {__index = iction.UIFrameElement})
+            iction.highlightFrameBldr.create(iction.highlightFrameBldr, highlightData)
 
     return iction.highlightFrameBldr
 end
 
 function iction.createSWDFrame()
-    iction.SWDUIElements = {}
     local SWDData = iction.ictSWDData
     SWDData["uiParentFrame"] = iction.mainFrameBldr.frame
     SWDData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+
     iction.SWDFrameBldr = {}
-    setmetatable(iction.SWDFrameBldr, {__index = iction.UIFrameElement})
-    iction.SWDFrame = iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
---    iction.SWDFrame.texture = iction.SWDFrameBldr.addTexture(iction.SWDFrame, "ict_SWDTexture", 15, 15, "BACKGROUND", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", .1, .6, .1, 0)
-    --- CREATE SPECIAL BUTTON
-    local swd = {}
-    local swdID = iction.swdID
-    iction.addButtonsToTable(iction.priestspells[3]['swd'], swd)
-    iction.SWDButtonFrame, iction.SWDButtonText = iction.buttonBuild(iction.SWDFrame, 'nil', swd, 0, 0, False, 42)
-    iction.SWDButtonFrame[swdID]:SetWidth(SWDData["w"])
-    iction.SWDButtonFrame[swdID]:SetHeight(SWDData["h"])
-    iction.SWDFrame:SetScale(iction.SWDScale)
-    table.insert(iction.SWDUIElements, iction.SWDFrame)
-    table.insert(iction.SWDUIElements, iction.SWDButtonFrame)
-    table.insert(iction.SWDUIElements, iction.SWDButtonText)
+          setmetatable(iction.SWDFrameBldr, {__index = iction.UIFrameElement})
+          iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.SWDFrameBldr)
 end
 
 function iction.createVoidFrame()
-    iction.voidBoltUIElements = {}
     local VFData = iction.ictVoidData
     VFData["uiParentFrame"] = iction.mainFrameBldr.frame
     VFData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
     iction.voidFrameBldr = {}
-    setmetatable(iction.voidFrameBldr, {__index = iction.UIFrameElement})
-    iction.voidFrame = iction.voidFrameBldr.create(iction.voidFrameBldr, VFData)
-    iction.voidFrame.texture = iction.voidFrameBldr.addTexture(iction.voidFrame, "ict_voidFrameTexture", 15, 15, "ARTWORK", true, nil, nil, nil, "Interface\\ChatFrame\\ChatFrameBackground", 1, 1, 1, 0)
-    --- CREATE SPECIAL BUTTON
-    local vblt = {}
-    local vbltID = iction.vbID
-    iction.addButtonsToTable(iction.priestspells[3]['voidB'], vblt)
-    iction.vBoltButtonFrame, iction.vBoltButtonText = iction.buttonBuild(iction.voidFrame, 'nil', vblt, 0, 0, False, 24)
-    iction.vBoltButtonFrame[vbltID]:SetWidth(VFData["w"])
-    iction.vBoltButtonFrame[vbltID]:SetHeight(VFData["h"])
-    iction.SWDFrame:SetScale(iction.VoidboltScale)
-    table.insert(iction.voidBoltUIElements, iction.voidFrame)
-    table.insert(iction.voidBoltUIElements, iction.vBoltButtonFrame)
-    table.insert(iction.voidBoltUIElements, iction.vBoltButtonText)
+          setmetatable(iction.voidFrameBldr, {__index = iction.UIFrameElement})
+          iction.voidFrameBldr.create(iction.voidFrameBldr, VFData)
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.voidFrameBldr)
 end

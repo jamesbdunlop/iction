@@ -100,6 +100,15 @@ function iction.debuffColumns_GUIDExists(guid)
     return exists
 end
 
+function iction.debuffColumns_FetchGUIDCol(guid)
+    for colID, colData in pairs(iction.targetCols) do
+        if colData["guid"] == guid then
+            if iction.debugIU then print("Found a highlight match guid!!!") end
+            return colID
+    end end
+    return false
+end
+
 function iction.debuffColumns_slotAvailable()
     local emptyColExists = false
 
@@ -168,43 +177,5 @@ function iction.oocCleanup()
     if iction.debugUITimers then print("EXIT COMBAT DETECTED. TABLES CLEANED!") end
 end
 
-----------------------------------------------------------------------------------------------
---- TIMERS UTILS -----------------------------------------------------------------------------
-function iction.highlightTargetSpellframe(guid)
-    if UnitAffectingCombat("player") then
-        if guid == nil or not (UnitName("target")) or guid == "" then
-            --- Hide the frame
-            iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
 
-        elseif guid ~= iction.playerGUID then
-            local stashedGuid = iction.hightlghtFrameGuid
-
-            if stashedGuid ~= guid then
-                local f = iction.targetFrames[guid] or nil
-                local pf = iction.targetFrames[iction.hlGuid] or nil
-
-                if iction.targetData[guid] ~= nil then
-                    if f ~= nil and iction.targetData[guid]["dead"] ~= true then
-                        iction.highlightFrameTexture:SetAllPoints(true)
-                        iction.highlightFrameTexture:SetVertexColor(.1, .6, .1, .45)
-                        iction.highlightFrame:SetParent(f)
-                        iction.highlightFrame:SetFrameStrata("BACKGROUND")
-                        iction.highlightFrame:SetPoint("BOTTOM", f, 0, 0)
-                        iction.highlightFrame:SetPoint("CENTER", f, 0, 0)
-                        iction.hightlghtFrameGuid = guid
-                    else
-                        iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
-                    end
-                end
-
-            else
-                if iction.targetData[guid] ~= nil then
-                    if iction.targetData[guid]['dead'] then
-                        iction.highlightFrameTexture:SetVertexColor(0, 0, 0, 0)
-                    end
-                end
-            end
-        end
-    end
-end
 

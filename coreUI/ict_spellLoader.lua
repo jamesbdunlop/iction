@@ -11,13 +11,13 @@ function iction.getAllSpells()
               local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(x, "spell")
                   if name and spellID and not IsPassiveSpell(spellID) then
                       local spellData = {}
-                      spellData['uiName'] = name
-                      spellData['id'] = spellID
-                      spellData['rank'] = rank
-                      spellData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
-                      spellData['minRange'] = minRange
-                      spellData['maxRange'] = maxRange
-                      spellData['icon'] = icon
+                            spellData['uiName'] = name
+                            spellData['id'] = spellID
+                            spellData['rank'] = rank
+                            spellData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
+                            spellData['minRange'] = minRange
+                            spellData['maxRange'] = maxRange
+                            spellData['icon'] = icon
                       table.insert(spells, spellData)
     end end end end
     return spells

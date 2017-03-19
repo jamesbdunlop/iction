@@ -4,7 +4,15 @@ local UnitBuff, UnitDebuff, UnitGUID, GetSpellInfo = UnitBuff, UnitDebuff, UnitG
 --- CREATE AN ICTION TARGET CACHE ENTRY  ---
 function iction.createTarget(guid)
     --- If we have this target already exit early
-    if iction.targetData[guid] then return end
+    local tgtExists = false
+    local tgDItr = iction.list_iter(iction.targetData)
+    while true do
+        local target = tgDItr()
+        if target == nil then break end
+        if target["guid"] == guid then tgtExists = true break end
+    end
+
+    if tgtExists then return end
 
     --- Do we have a free colum to use?
     if iction.debuffColumns_GUIDExists(guid) then return end
@@ -24,8 +32,8 @@ function iction.createTarget(guid)
 
     --- Build frame
     local frmData = iction.ictSpellFrameData
-    local fw, fh = iction.calcFrameSize(iction.getAllSpells())
-          frmData['w'] = fw
+    local fh = iction.tablelength(iction.getAllSpells())
+          frmData['w'] = iction.bw + iction.ictionButtonFramePad
           frmData['h'] = fh
           frmData['pointPosition']["point"] = "BOTTOM"
           frmData['pointPosition']['relativeTo'] = iction.debuffColumns[colID].frame

@@ -30,6 +30,7 @@ locales\korean_ui.lua
 ict_core.lua
 coreApplication\ict_utils.lua
 coreApplication\ict_target.lua
+coreApplication\ict_targetUtils.lua
 coreApplication\ict_options.lua
 coreApplication\ict_timers.lua
 
@@ -37,7 +38,6 @@ coreApplication\ict_timers.lua
 coreUI\ict_ui.lua
 coreUI\ict_uiUtils.lua
 coreUI\ict_spellLoader.lua
-coreUI\ict_frameUtils.lua
 coreUI\ict_Frame.lua
 
 ##--- Spell Lists
@@ -48,6 +48,8 @@ watchers\ict_lockWatcher.lua
 
 ##--- Final UI Stuff
 frames\mainFrame.lua
+frames\optionsFrame.lua
+frames\allSpellsListFrame.lua
 frames\buffFrame.lua
 frames\debuffFrame.lua
 frames\shardFrame.lua

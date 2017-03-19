@@ -17,5 +17,15 @@ iction.ictVoidData = {  uiType = "Frame",
                                          x = 0, y = 80},
                         textures = {[1] = {name = "VOIDMOVEFRAME", allPoints = true, level = "ARTWORK",
                                            texture= "Interface\\ChatFrame\\ChatFrameBackground",
-                                           vr = 1, vg = 1, vb = 1, va = 0 }},
-                      }
+                                           vr = 1, vg = 1, vb = 1, va = 0 },
+                                    [2] = { name = "ict_voidFrameTexture",
+                                            allPoints = true,
+                                            anchorPoint = "CENTER",
+                                            apX = 5,
+                                            apY = 0,
+                                            w = 15,
+                                            h= 15,
+                                            level = "ARTWORK",
+                                            texture= "Interface/AddOns/iction/media/icons/soulShard",
+                                            vr = 1, vg = 1, vb = 1, va = 0}}
+                    }

@@ -27,6 +27,7 @@ iction.swdID = 32379
 iction.class = localizedClass
 iction.SWDScale = 2
 iction.VoidboltScale = 2
+iction.hlGuid = nil
 
 --- COMBAT
 iction.spellTable = {}
@@ -34,7 +35,7 @@ iction.targetData = {}
 iction.activeSpellTable = {}
 
 --- DEBUG
-iction.debugUI = false
+iction.debugUI = true
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false

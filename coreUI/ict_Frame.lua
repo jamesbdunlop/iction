@@ -2,6 +2,7 @@
 local iction = iction
 iction.UIFrameElement = {}
 iction.UIButtonElement = {}
+iction.UIScrollFrameElement = {}
 ------------------------------------------------------------------------------------------------------------------------
 --- FRAME
 function iction.UIFrameElement.create(self, data)
@@ -9,7 +10,7 @@ function iction.UIFrameElement.create(self, data)
     self.data = data
     self.textures = {}
     -- Create the frame --
-    self.frame = CreateFrame(self.data['uiType'], self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
+    self.frame = CreateFrame("Frame", self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
     self.frame.isMoving = false
     self.setPoints(self)
     self.frame:SetResizable(true)
@@ -93,19 +94,14 @@ function iction.UIFrameElement.setPoints(self)
     self.frameMoveParent = nil
 
     local framePos = {point = self.data['pointPosition']['point'],
-                     relativeTo = self.data['pointPosition']["relativeTo"],
-                     relativePoint = self.data['pointPosition']['relativePoint'],
-                     xOfs = self.data['pointPosition']["x"], yOfs = self.data['pointPosition']["y"]}
+                      relativeTo = self.data['pointPosition']["relativeTo"],
+                      relativePoint = self.data['pointPosition']['relativePoint'],
+                      xOfs = self.data['pointPosition']["x"], yOfs = self.data['pointPosition']["y"]}
     self.storePos(self, 'startPos', framePos)
     self.storePos(self, 'startPre', framePos)
     self.storePos(self, 'endPos', framePos)
-
     --- Set the inital position
-    self.frame:SetPoint(self.data['pointPosition']['point'],
-                        self.data['pointPosition']["relativeTo"],
-                        self.data['pointPosition']["relativePoint"],
-                        self.data['pointPosition']["x"],
-                        self.data['pointPosition']["y"])
+    self.frame:SetPoint(self.data['pointPosition']['point'], self.data['pointPosition']["relativeTo"], self.data['pointPosition']["relativePoint"], self.data['pointPosition']["x"], self.data['pointPosition']["y"])
     self.frameMoveParent = self.frame:GetParent()
     if iction.debugUI then print (self.frameName .. " |posx: " .. tostring(self.data['pointPosition']["x"]) .. " |posy: " .. tostring(self.data['pointPosition']["y"]) .. " |pos: " .. tostring(self.data['pointPosition']['point'])) end
 end
@@ -282,4 +278,180 @@ end
 
 function iction.UIButtonElement.setButtonColor(self, color)
     self.text:SetTextColor(color[1], color[2], color[3], color[4])
+end
+
+------------------------------------------------------------------------------------------------------------------------
+--- OPTIONS SCROLL FRAME
+
+function iction.UIScrollFrameElement.create(self, data)
+    self.frameName = data['nameAttr']
+    self.data = data
+    self.textures = {}
+    -- Create the frame --
+    self.frame = CreateFrame("ScrollingMessageFrame", self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
+    self.frame.isMoving = false
+    self.frame:SetMaxLines(1000)
+    self.frame:AddMessage('TEST', 1, 1, 1, 1, true, 0)
+    self.setPoints(self)
+    self.frame:SetResizable(true)
+    self.frame:SetMovable(self.data['movable'])
+    self.frame:EnableMouse(self.data['enableMouse'])
+    self.frame:SetUserPlaced(self.data['userPlaced'])
+    self.frame:SetClampedToScreen(self.data['SetClampedToScreen'])
+    self.frame:SetFrameStrata(self.data['strata'])
+    self.frame:SetWidth(self.data['w'])
+    self.frame:SetHeight(self.data['h'])
+    self.frame:SetAttribute('name', self.data['nameAttr'])
+    self.frame:SetBackdropColor(self.data['bgCol']['r'], self.data['bgCol']['g'], self.data['bgCol']['b'], self.data['bgCol']['a'])
+    -- Texture
+    self.textures = {}
+    self.createTextures(self)
+    self.frame.texture = self.textures[0]
+    self.setPoints(self)
+    -- Default fontString
+    self.frame:Show()
+end
+
+function iction.UIScrollFrameElement.createTextures(self, data)
+    local t = self.data['textures']
+    local itr = iction.list_iter(t)
+    while true do
+        local textureData = itr()
+        if textureData == nil then break end
+        local texture = self.frame:CreateTexture(textureData['name'], textureData['level'])
+        -- POINTS
+        if textureData['allPoints'] then
+            texture:SetAllPoints(textureData['allPoints'])
+        else
+            texture:SetPoint(textureData['anchorPoint'], textureData['apX'], textureData['apY'])
+        end
+
+        -- WIDTH / HEIGHT
+        if textureData['w'] then texture:SetWidth(textureData['w']) end
+        if textureData['h'] then texture:SetHeight(textureData['h']) end
+
+        -- TEXTURE PATH
+        texture:SetTexture(textureData['texture'])
+        texture:SetVertexColor(textureData['vr'], textureData['vg'], textureData['vb'], textureData['va'])
+
+        -- ADD TO THE TABLE
+        table.insert(self.textures, texture)
+    end
+end
+
+function iction.UIScrollFrameElement.setPoints(self)
+    self.frame:ClearAllPoints()
+    --------------------------
+    --- Position Stuff
+    if ictionFramePos[self.frameName] then
+        self.data['pointPosition']['point'] = ictionFramePos[self.frameName]["point"]['point']
+        self.data['pointPosition']['relativePoint'] = ictionFramePos[self.frameName]["point"]['relativePoint']
+        self.data['pointPosition']['p'] = ictionFramePos[self.frameName]["point"]['p']
+        self.data['pointPosition']['x'] = ictionFramePos[self.frameName]["point"]['x']
+        self.data['pointPosition']['y'] = ictionFramePos[self.frameName]["point"]['y']
+    end
+
+    --- Setup the cache for postion
+    self.framePosition = {}
+    self.frameMoveParent = nil
+
+    local framePos = {point = self.data['pointPosition']['point'],
+                      relativeTo = self.data['pointPosition']["relativeTo"],
+                      relativePoint = self.data['pointPosition']['relativePoint'],
+                      xOfs = self.data['pointPosition']["x"], yOfs = self.data['pointPosition']["y"]}
+    self.storePos(self, 'startPos', framePos)
+    self.storePos(self, 'startPre', framePos)
+    self.storePos(self, 'endPos', framePos)
+    --- Set the inital position
+    self.frame:SetPoint(self.data['pointPosition']['point'], self.data['pointPosition']["relativeTo"], self.data['pointPosition']["relativePoint"], self.data['pointPosition']["x"], self.data['pointPosition']["y"])
+    self.frameMoveParent = self.frame:GetParent()
+    if iction.debugUI then print (self.frameName .. " |posx: " .. tostring(self.data['pointPosition']["x"]) .. " |posy: " .. tostring(self.data['pointPosition']["y"]) .. " |pos: " .. tostring(self.data['pointPosition']['point'])) end
+end
+
+function iction.UIScrollFrameElement.setPoints(self)
+    self.frame:ClearAllPoints()
+    --------------------------
+    --- Position Stuff
+    if ictionFramePos[self.frameName] then
+        self.data['pointPosition']['point'] = ictionFramePos[self.frameName]["point"]['point']
+        self.data['pointPosition']['relativePoint'] = ictionFramePos[self.frameName]["point"]['relativePoint']
+        self.data['pointPosition']['p'] = ictionFramePos[self.frameName]["point"]['p']
+        self.data['pointPosition']['x'] = ictionFramePos[self.frameName]["point"]['x']
+        self.data['pointPosition']['y'] = ictionFramePos[self.frameName]["point"]['y']
+    end
+
+    --- Setup the cache for postion
+    self.framePosition = {}
+    self.frameMoveParent = nil
+
+    local framePos = {point = self.data['pointPosition']['point'],
+                      relativeTo = self.data['pointPosition']["relativeTo"],
+                      relativePoint = self.data['pointPosition']['relativePoint'],
+                      xOfs = self.data['pointPosition']["x"], yOfs = self.data['pointPosition']["y"]}
+    self.storePos(self, 'startPos', framePos)
+    self.storePos(self, 'startPre', framePos)
+    self.storePos(self, 'endPos', framePos)
+    --- Set the inital position
+    self.frame:SetPoint(self.data['pointPosition']['point'], self.data['pointPosition']["relativeTo"], self.data['pointPosition']["relativePoint"], self.data['pointPosition']["x"], self.data['pointPosition']["y"])
+    self.frameMoveParent = self.frame:GetParent()
+    if iction.debugUI then print (self.frameName .. " |posx: " .. tostring(self.data['pointPosition']["x"]) .. " |posy: " .. tostring(self.data['pointPosition']["y"]) .. " |pos: " .. tostring(self.data['pointPosition']['point'])) end
+end
+
+function iction.UIScrollFrameElement.storePos(self, curPos, data)
+    self.framePosition[curPos] = data
+end
+
+function iction.UIScrollFrameElement.setMovedPosition(self)
+    local deltaX = self.framePosition["startPre"]["xOfs"] - self.framePosition['endPos']["xOfs"]
+    local deltaY = self.framePosition["startPre"]["yOfs"] - self.framePosition['endPos']["yOfs"]
+    local parentFrame = self.frameMoveParent
+    if not self.framePosition["startPos"]['relativeTo'] then
+        parentFrame = UIParent
+    end
+
+    if iction.debuUI then print(self.frameName .. " set parent to ".. tostring(parentFrame:GetAttribute("name"))) end
+    self.frame:SetPoint(self.framePosition["startPos"]["point"],
+                        self.frameMoveParent,
+                        self.framePosition["startPos"]["relativePoint"],
+                        self.framePosition["startPos"]["xOfs"] - deltaX,
+                        self.framePosition["startPos"]["yOfs"] - deltaY)
+    --- Now set the global position for reload
+    ictionFramePos[self.frameName] = {}
+    ictionFramePos[self.frameName]["point"] = {}
+    ictionFramePos[self.frameName]["point"]['point'] = self.framePosition["startPos"]["point"]
+    ictionFramePos[self.frameName]["point"]['x']   = self.framePosition["startPos"]["xOfs"] - deltaX
+    ictionFramePos[self.frameName]["point"]['y']   = self.framePosition["startPos"]["yOfs"] - deltaY
+    ictionFramePos[self.frameName]["point"]['relativePoint']   = self.framePosition["startPos"]["relativePoint"]
+end
+
+function iction.UIScrollFrameElement.setMoveScript(self)
+    local StartPoint, StartRelativeTo, StartRelativePoint, startXOfs, startYOfs
+    local prePoint, preRelativeTo, preRelativePoint, preXOfs, preYOfs
+    local postPoint, postRelativeTo, postRelativePoint, postXOfs, postYOfs
+    self.frame:SetScript("OnMouseDown", function(_, button)
+        if button == "LeftButton" then
+            StartPoint, StartRelativeTo, StartRelativePoint, startXOfs, startYOfs = self.frame:GetPoint(1)
+            if not StartRelativeTo or not StartRelativeTo:GetName() then
+                StartRelativeTo = iction_MF -- For some reason the UI can drop the parent frame entirely! so force the MF instead.
+            end
+            local framePos = {point = StartPoint, relativeTo = StartRelativeTo, relativePoint = StartRelativePoint, xOfs = startXOfs, yOfs = startYOfs}
+            self.storePos(self, 'startPos', framePos)
+
+            self.frame:StartMoving()
+
+            prePoint, preRelativeTo, preRelativePoint, preXOfs, preYOfs = self.frame:GetPoint(1)
+            local framePos = {point = prePoint, relativeTo = preRelativeTo, relativePoint = preRelativePoint, xOfs = preXOfs, yOfs = preYOfs}
+            self.storePos(self, 'startPre', framePos)
+        end
+    end)
+
+    self.frame:SetScript("OnMouseUp", function(_, button)
+        if button == "LeftButton" then
+            postPoint, postRelativeTo, postRelativePoint, postXOfs, postYOfs = self.frame:GetPoint(1)
+            local framePos = {point = postPoint, relativeTo = postRelativeTo, relativePoint = postRelativePoint, xOfs = postXOfs, yOfs = postYOfs}
+            self.storePos(self, 'endPos', framePos)
+            self.frame:StopMovingOrSizing()
+            self.setMovedPosition(self)
+        end
+    end)
 end

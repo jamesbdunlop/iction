@@ -1,6 +1,5 @@
 local last = 0
 local iction = iction
-
 ictonCombat = false
 function iction.watcher(self)
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -23,9 +22,6 @@ function iction.watcher(self)
                 iction.createTargetSpellData(mobGUID, spellType, spellID)
             end
         end
---        if iction.debugUITimers then print("******************") end
---        if iction.debugUITimers then print("event: " .. tostring(event)) end
---        if iction.debugUITimers then print("******************") end
         if event == 'PLAYER_REGEN_DISABLED' then
             ictonCombat = true
         elseif event == "PLAYER_REGEN_ENABLED" then
@@ -34,6 +30,9 @@ function iction.watcher(self)
             return
         end
         if event == 'PLAYER_SPECIALIZATION_CHANGED' then iction.specChanged() end
+        if event == 'PLAYER_TARGET_CHANGED' then
+            iction.targetChanged(UnitGUID("Target"))
+        end
 
         if ictonCombat then
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
@@ -57,21 +56,6 @@ function iction.watcher(self)
                     if iction.debugUITimers then print("event: " .. tostring(event)) end
                     if iction.debugUITimers then print("eventName: " .. tostring(eventName)) end
                     if iction.debugUITimers then print("sourceGUID: " .. tostring(sourceGUID)) end
---                    if iction.debugUITimers then print("spellName: " .. tostring(spellName)) end
---                    if iction.debugUITimers then print("mobName: " .. tostring(mobName)) end
---                    if iction.debugUITimers then print("mobGUID: " .. tostring(mobGUID)) end
---                    if iction.debugUITimers then print("spellType: " .. tostring(spellType)) end
---                    if iction.debugUITimers then print("spellID: " .. tostring(spellID)) end
---                    if iction.debugUITimers then print("prefix1: " .. tostring(spellID)) end
---                    if iction.debugUITimers then print("sufx1: " .. tostring(sufx1)) end
---                    if iction.debugUITimers then print("sufx2: " .. tostring(sufx2)) end
---                    if iction.debugUITimers then print("sufx3: " .. tostring(sufx3)) end
---                    if iction.debugUITimers then print("sufx4: " .. tostring(sufx4)) end
---                    if iction.debugUITimers then print("sufx5: " .. tostring(sufx5)) end
---                    if iction.debugUITimers then print("sufx6: " .. tostring(sufx6)) end
---                    if iction.debugUITimers then print("sufx7: " .. tostring(sufx7)) end
---                    if iction.debugUITimers then print("sufx8: " .. tostring(sufx8)) end
---                    if iction.debugUITimers then print("sufx9: " .. tostring(sufx9)) end
                     if iction.debugUITimers then print("-------") end
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
@@ -81,7 +65,6 @@ function iction.watcher(self)
         end
     end
     self:SetScript("OnEvent", eventHandler)
-
 
     -- ON UPDATE CHECKS
     local function _onUpdate(self, elapsed)
