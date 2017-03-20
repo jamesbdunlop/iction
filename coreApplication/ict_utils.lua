@@ -7,7 +7,7 @@ function iction.list_iter(t)
   local n = table.getn(t)
   return function ()
        i = i + 1
-       if i <= n then return t[i] end
+       if i <= n then return t[i], i end
      end
 end
 
@@ -26,6 +26,16 @@ function iction.tablelength(T)
       count = count + 1
   end
   return count
+end
+
+function iction.validSpellID(id)
+    local validIter = iction.list_iter(ictionValidSpells)
+    while true do
+        local spellID = validIter()
+        if not spellID then break end
+        if id == spellID then return true end
+    end
+    return false
 end
 
 ----------------------------------------------------------------------------------------------

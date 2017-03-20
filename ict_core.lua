@@ -30,12 +30,11 @@ iction.VoidboltScale = 2
 iction.hlGuid = nil
 
 --- COMBAT
-iction.spellTable = {}
 iction.targetData = {}
 iction.activeSpellTable = {}
-
+iction.validSpellTable = {}
 --- DEBUG
-iction.debugUI = true
+iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
@@ -53,8 +52,6 @@ sframe:RegisterEvent("ADDON_LOADED")
 sframe:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 sframe:SetScript("OnEvent", function(self, event, arg1)
     if( event == "ADDON_LOADED" ) and arg1 == "iction" then
-        iction.spellTable = iction.getAllSpells()
-        --ictionFramePos = nil
         --- Locale check
         if iction.L == nil then print("Unsupported Locale!") end
 
@@ -96,6 +93,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
 
         if not ictionValidSpells then
             iction.validSpells = {}
+            ictionValidSpells = {}
         else
             iction.validSpells = ictionValidSpells
         end

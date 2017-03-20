@@ -54,20 +54,23 @@ end
 local padX, padY
 function iction.createButtons(frm)
     local buttons = {}
-    local itr = iction.list_iter(iction.getAllSpells())
+    local itr = iction.list_iter(iction.validSpells)
     padX = 0
     padY = iction.ictionButtonFramePad
     while true do
         local buttonData = itr()
         if buttonData == nil then break end
-        if not buttonData['id'] then break end
+        local id = buttonData['id']
+        if not id then break end
 
-        local butFrameBldr = {}
-              setmetatable(butFrameBldr, {__index = iction.UIButtonElement})
-              butFrameBldr.create(butFrameBldr, frm, buttonData, "BOTTOM", padX, padY)
+        if iction.validSpellID(id) then
+            local butFrameBldr = {}
+                  setmetatable(butFrameBldr, {__index = iction.UIButtonElement})
+                  butFrameBldr.create(butFrameBldr, frm, buttonData, "BOTTOM", padX, padY)
 
-        table.insert(buttons, butFrameBldr)
-        padY = padY + iction.bh + iction.ictionButtonFramePad
+            table.insert(buttons, butFrameBldr)
+            padY = padY + iction.bh + iction.ictionButtonFramePad
+        end
     end
     return buttons
 end

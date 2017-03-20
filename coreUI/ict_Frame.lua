@@ -2,7 +2,7 @@
 local iction = iction
 iction.UIFrameElement = {}
 iction.UIButtonElement = {}
-iction.UIScrollFrameElement = {}
+iction.UISpellScrollFrameElement = {}
 ------------------------------------------------------------------------------------------------------------------------
 --- FRAME
 function iction.UIFrameElement.create(self, data)
@@ -12,7 +12,6 @@ function iction.UIFrameElement.create(self, data)
     -- Create the frame --
     self.frame = CreateFrame("Frame", self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
     self.frame.isMoving = false
-    self.setPoints(self)
     self.frame:SetResizable(true)
     self.frame:SetMovable(self.data['movable'])
     self.frame:EnableMouse(self.data['enableMouse'])
@@ -283,20 +282,22 @@ end
 ------------------------------------------------------------------------------------------------------------------------
 --- OPTIONS SCROLL FRAME
 
-function iction.UIScrollFrameElement.create(self, data)
+function iction.UISpellScrollFrameElement.create(self, data)
     self.frameName = data['nameAttr']
     self.data = data
     self.textures = {}
     -- Create the frame --
-    self.frame = CreateFrame("ScrollingMessageFrame", self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
-    self.frame.isMoving = false
-    self.frame:SetMaxLines(1000)
-    self.frame:AddMessage('TEST', 1, 1, 1, 1, true, 0)
+    self.scrollframe = CreateFrame("ScrollFrame", self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
+    self.frame = CreateFrame("Frame", 'SpellList',  self.scrollframe)
+    self.scrollframe:SetScrollChild(self.frame)
+    self.scrollframe:SetWidth(self.data['w'])
+    self.scrollframe:SetHeight(self.data['h'])
+
+    self.setScrollPoints(self)
     self.setPoints(self)
-    self.frame:SetResizable(true)
-    self.frame:SetMovable(self.data['movable'])
+
+    self.frame.isMoving = false
     self.frame:EnableMouse(self.data['enableMouse'])
-    self.frame:SetUserPlaced(self.data['userPlaced'])
     self.frame:SetClampedToScreen(self.data['SetClampedToScreen'])
     self.frame:SetFrameStrata(self.data['strata'])
     self.frame:SetWidth(self.data['w'])
@@ -307,12 +308,54 @@ function iction.UIScrollFrameElement.create(self, data)
     self.textures = {}
     self.createTextures(self)
     self.frame.texture = self.textures[0]
-    self.setPoints(self)
     -- Default fontString
     self.frame:Show()
+    self.scrollframe:Show()
 end
 
-function iction.UIScrollFrameElement.createTextures(self, data)
+function iction.UISpellScrollFrameElement.addItems(self, t)
+    local spellList = iction.list_iter(t)
+    local y = 0
+    local h = 0
+    while true do
+        local spellInfo, i = spellList()
+        if not spellInfo then break end
+        local spellCheckBox = CreateFrame("CheckButton", "spellOptionsButton_"..spellInfo['id'], self.frame, "OptionsSmallCheckButtonTemplate")
+            if i == 1 then
+                spellCheckBox:SetPoint("TOPLEFT", self.frame)
+            else
+                spellCheckBox:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 0, y)
+            end
+            spellCheckBox:SetWidth(24)
+            spellCheckBox:SetHeight(24)
+
+            spellCheckBox:SetScript("OnClick", function(self)
+                                        if self:GetChecked() then
+                                            table.insert(ictionValidSpells, spellInfo['id'])
+                                        else
+                                            table.remove(ictionValidSpells, spellInfo['id'])
+                                        end
+                                    end)
+            if iction.validSpellID(spellInfo['id']) then spellCheckBox:SetChecked(true) end
+
+        local fnt = self.frame:CreateFontString("spellOptionsLabel_"..spellInfo['id'], 'OVERLAY')
+            fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')
+            fnt:SetFontObject("GameFontWhite")
+            fnt:SetTextColor(1,1, 1, 1)
+            fnt:SetText(spellInfo['uiName'])
+            if i == 1 then
+                fnt:SetPoint("TOPLEFT", self.frame, 24, -4)  -- anchors the first string, parent should be the content frame
+            else
+                fnt:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 24, y-4)
+            end
+        y = y -26
+        h = h +26
+    end
+    self.scrollframe:SetMaxResize(300, h)
+    self.frame:SetHeight(h)
+end
+
+function iction.UISpellScrollFrameElement.createTextures(self, data)
     local t = self.data['textures']
     local itr = iction.list_iter(t)
     while true do
@@ -339,7 +382,36 @@ function iction.UIScrollFrameElement.createTextures(self, data)
     end
 end
 
-function iction.UIScrollFrameElement.setPoints(self)
+function iction.UISpellScrollFrameElement.setScrollPoints(self)
+    self.scrollframe:ClearAllPoints()
+    --------------------------
+    --- Position Stuff
+    if ictionFramePos[self.frameName] then
+        self.data['pointPosition']['point'] = ictionFramePos[self.frameName]["point"]['point']
+        self.data['pointPosition']['relativePoint'] = ictionFramePos[self.frameName]["point"]['relativePoint']
+        self.data['pointPosition']['p'] = ictionFramePos[self.frameName]["point"]['p']
+        self.data['pointPosition']['x'] = ictionFramePos[self.frameName]["point"]['x']
+        self.data['pointPosition']['y'] = ictionFramePos[self.frameName]["point"]['y']
+    end
+
+    --- Setup the cache for postion
+    self.framePosition = {}
+    self.frameMoveParent = nil
+
+    local framePos = {point = self.data['pointPosition']['point'],
+                      relativeTo = self.data['pointPosition']["relativeTo"],
+                      relativePoint = self.data['pointPosition']['relativePoint'],
+                      xOfs = self.data['pointPosition']["x"], yOfs = self.data['pointPosition']["y"]}
+    self.storePos(self, 'startPos', framePos)
+    self.storePos(self, 'startPre', framePos)
+    self.storePos(self, 'endPos', framePos)
+    --- Set the inital position
+    self.scrollframe:SetPoint(self.data['pointPosition']['point'], self.data['pointPosition']["relativeTo"], self.data['pointPosition']["relativePoint"], self.data['pointPosition']["x"], self.data['pointPosition']["y"])
+    self.frameMoveParent = self.scrollframe:GetParent()
+    if iction.debugUI then print (self.frameName .. " |posx: " .. tostring(self.data['pointPosition']["x"]) .. " |posy: " .. tostring(self.data['pointPosition']["y"]) .. " |pos: " .. tostring(self.data['pointPosition']['point'])) end
+end
+
+function iction.UISpellScrollFrameElement.setPoints(self)
     self.frame:ClearAllPoints()
     --------------------------
     --- Position Stuff
@@ -368,40 +440,11 @@ function iction.UIScrollFrameElement.setPoints(self)
     if iction.debugUI then print (self.frameName .. " |posx: " .. tostring(self.data['pointPosition']["x"]) .. " |posy: " .. tostring(self.data['pointPosition']["y"]) .. " |pos: " .. tostring(self.data['pointPosition']['point'])) end
 end
 
-function iction.UIScrollFrameElement.setPoints(self)
-    self.frame:ClearAllPoints()
-    --------------------------
-    --- Position Stuff
-    if ictionFramePos[self.frameName] then
-        self.data['pointPosition']['point'] = ictionFramePos[self.frameName]["point"]['point']
-        self.data['pointPosition']['relativePoint'] = ictionFramePos[self.frameName]["point"]['relativePoint']
-        self.data['pointPosition']['p'] = ictionFramePos[self.frameName]["point"]['p']
-        self.data['pointPosition']['x'] = ictionFramePos[self.frameName]["point"]['x']
-        self.data['pointPosition']['y'] = ictionFramePos[self.frameName]["point"]['y']
-    end
-
-    --- Setup the cache for postion
-    self.framePosition = {}
-    self.frameMoveParent = nil
-
-    local framePos = {point = self.data['pointPosition']['point'],
-                      relativeTo = self.data['pointPosition']["relativeTo"],
-                      relativePoint = self.data['pointPosition']['relativePoint'],
-                      xOfs = self.data['pointPosition']["x"], yOfs = self.data['pointPosition']["y"]}
-    self.storePos(self, 'startPos', framePos)
-    self.storePos(self, 'startPre', framePos)
-    self.storePos(self, 'endPos', framePos)
-    --- Set the inital position
-    self.frame:SetPoint(self.data['pointPosition']['point'], self.data['pointPosition']["relativeTo"], self.data['pointPosition']["relativePoint"], self.data['pointPosition']["x"], self.data['pointPosition']["y"])
-    self.frameMoveParent = self.frame:GetParent()
-    if iction.debugUI then print (self.frameName .. " |posx: " .. tostring(self.data['pointPosition']["x"]) .. " |posy: " .. tostring(self.data['pointPosition']["y"]) .. " |pos: " .. tostring(self.data['pointPosition']['point'])) end
-end
-
-function iction.UIScrollFrameElement.storePos(self, curPos, data)
+function iction.UISpellScrollFrameElement.storePos(self, curPos, data)
     self.framePosition[curPos] = data
 end
 
-function iction.UIScrollFrameElement.setMovedPosition(self)
+function iction.UISpellScrollFrameElement.setMovedPosition(self)
     local deltaX = self.framePosition["startPre"]["xOfs"] - self.framePosition['endPos']["xOfs"]
     local deltaY = self.framePosition["startPre"]["yOfs"] - self.framePosition['endPos']["yOfs"]
     local parentFrame = self.frameMoveParent
@@ -424,7 +467,7 @@ function iction.UIScrollFrameElement.setMovedPosition(self)
     ictionFramePos[self.frameName]["point"]['relativePoint']   = self.framePosition["startPos"]["relativePoint"]
 end
 
-function iction.UIScrollFrameElement.setMoveScript(self)
+function iction.UISpellScrollFrameElement.setMoveScript(self)
     local StartPoint, StartRelativeTo, StartRelativePoint, startXOfs, startYOfs
     local prePoint, preRelativeTo, preRelativePoint, preXOfs, preYOfs
     local postPoint, postRelativeTo, postRelativePoint, postXOfs, postYOfs

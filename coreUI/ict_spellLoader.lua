@@ -5,21 +5,23 @@ function iction.getAllSpells()
     --- to the user and a config panel.
     local numTabs = GetNumSpellTabs()
     for i=1,numTabs do
-      local name, texture, offset, numSpells = GetSpellTabInfo(i)
-      if name == iction.getSpecName() then
+        local name, texture, offset, numSpells = GetSpellTabInfo(i)
+        if name == iction.getSpecName() then
           for x=offset +1, offset + numSpells do
               local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(x, "spell")
-                  if name and spellID and not IsPassiveSpell(spellID) then
-                      local spellData = {}
-                            spellData['uiName'] = name
-                            spellData['id'] = spellID
-                            spellData['rank'] = rank
-                            spellData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
-                            spellData['minRange'] = minRange
-                            spellData['maxRange'] = maxRange
-                            spellData['icon'] = icon
-                      table.insert(spells, spellData)
-    end end end end
+              if name and spellID and not IsPassiveSpell(spellID) then
+                  local spellData = {}
+                        spellData['uiName'] = name
+                        spellData['id'] = spellID
+                        spellData['rank'] = rank
+                        spellData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
+                        spellData['minRange'] = minRange
+                        spellData['maxRange'] = maxRange
+                        spellData['icon'] = icon
+                  table.insert(spells, spellData)
+            end end
+        end
+    end
     return spells
 end
 
