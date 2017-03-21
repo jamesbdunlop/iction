@@ -73,6 +73,7 @@ function iction.initMainUI()
 
     --- Now fire off all the other build functions ---
     iction.createBottomBarArtwork()
+    iction.initSpellTable()
 
     if iction.class == iction.L['Warlock'] then
         iction.createShardFrame()
@@ -87,6 +88,7 @@ function iction.initMainUI()
     iction.createArtifactFrame()
     iction.createBuffFrame()
     iction.createDebuffColumns()
+
     --- Setup the frame watcher for spells etc
     if iction.class == iction.L['Warlock'] then
         iction.watcher(iction.mainFrameBldr.frame)
@@ -96,4 +98,19 @@ function iction.initMainUI()
 
     if iction.debugUI then print("iction.initMainUI success!") end
     iction.playerGUID = UnitGUID("Player")
+end
+
+function iction.initSpellTable()
+    local localizedClass, _, _ = UnitClass("Player")
+        iction.class = localizedClass
+    local spec = GetSpecialization()
+        iction.spec = spec
+    if not ictionValidSpells[iction.class] then
+        ictionValidSpells[iction.class] = {}
+        ictionValidSpells[iction.class][iction.spec] = {}
+        ictionValidSpells[iction.class][iction.spec]["spells"] = {}
+    elseif not ictionValidSpells[iction.class][iction.spec] then
+        ictionValidSpells[iction.class][iction.spec] = {}
+        ictionValidSpells[iction.class][iction.spec]["spells"] = {}
+    end
 end

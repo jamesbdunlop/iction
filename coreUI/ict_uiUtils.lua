@@ -61,16 +61,6 @@ function iction.specChanged()
             iction.createShardFrame()
         end
 
-        if iction.class == iction.L['Priest'] then
-            if spec == 3 then
-                iction.createDebuffColumns()
-                iction.ictionMF:Show()
-            else
-                if iction.ictionMF then iction.ictionMF:Hide() end
-                iction.spec = spec
-                return
-        end end
-
         -- Change the artifact frame
         iction.createArtifactFrame()
     end

@@ -257,7 +257,7 @@ function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, 
 end
 
 function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, procced)
-    if active and not refresh and not procced then
+    if active then
         self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
         self.texture:SetVertexColor(0.9,0.9,0.9, .9)
     elseif hidden then
@@ -267,8 +267,8 @@ function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, pr
         self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
         self.texture:SetVertexColor(1, 0, 0, 1)
     elseif active and procced then
-        self.buttonFrame:SetBackdropColor(1, 1, .1, 1)
-        self.texture:SetVertexColor(1, 1, .1, 1)
+        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
+        self.texture:SetVertexColor(0, 1, 0, 1)
     else
         self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
         self.texture:SetVertexColor(0.9,0.3,0.3, .5)
@@ -328,15 +328,25 @@ function iction.UISpellScrollFrameElement.addItems(self, t)
             end
             spellCheckBox:SetWidth(24)
             spellCheckBox:SetHeight(24)
-
             spellCheckBox:SetScript("OnClick", function(self)
-                                        if self:GetChecked() then
-                                            table.insert(ictionValidSpells, spellInfo['id'])
-                                        else
-                                            table.remove(ictionValidSpells, spellInfo['id'])
-                                        end
-                                    end)
-            if iction.validSpellID(spellInfo['id']) then spellCheckBox:SetChecked(true) end
+                if self:GetChecked() then
+                    if not ictionValidSpells[iction.class][iction.spec] then
+                        --- Add an empty table now
+                        ictionValidSpells[iction.class][iction.spec] = {}
+                        ictionValidSpells[iction.class][iction.spec]['spells'] = {}
+                    end
+                    table.insert(ictionValidSpells[iction.class][iction.spec]["spells"], spellInfo['id'])
+                else
+                    for i=1, iction.tablelength(ictionValidSpells[iction.class][iction.spec]["spells"]) do
+                        if ictionValidSpells[iction.class][iction.spec]["spells"][i] == spellInfo['id'] then
+                            table.remove(ictionValidSpells[iction.class][iction.spec]["spells"], i)
+                        end
+                    end
+                end
+                end)
+            if ictionValidSpells[iction.class][iction.spec] then
+                if iction.validSpellID(spellInfo['id']) then spellCheckBox:SetChecked(true) end
+            end
 
         local fnt = self.frame:CreateFontString("spellOptionsLabel_"..spellInfo['id'], 'OVERLAY')
             fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')

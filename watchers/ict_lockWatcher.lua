@@ -35,6 +35,11 @@ function iction.watcher(self)
         end
 
         if ictonCombat then
+            if iction.class == iction.L['Priest'] and iction.spec == 3 then
+                iction.voidFrameBldr.frame:Show()
+                iction.SWDFrameBldr.frame:Show()
+            end
+
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 if sourceGUID == iction.playerGUID then
                     local spellName, mobName, mobGUID, spellType, spellID

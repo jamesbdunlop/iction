@@ -187,23 +187,24 @@ function iction.createConflagFrame()
 end
 
 function iction.createInsanityFrame()
-    local insanityBar = {}
     local insanityData = iction.ictInsanityData
           insanityData["uiParentFrame"] = iction.mainFrameBldr.frame
           insanityData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
     iction.insanityFrameBldr = {}
           setmetatable(iction.insanityFrameBldr, {__index = iction.UIFrameElement})
           iction.insanityFrameBldr.create(iction.insanityFrameBldr, insanityData)
-
+    if iction.debugUI then print("createInsanityFrame created!") end
     local function _updateInsanity()
-        local insanity = UnitPower("player", SPELL_POWER_INSANITY)
-        if insanity ~= 0 then
-            insanityBar[1]:SetWidth(insanity)
-            iction.insanityFrameBldr.text:SetText(tostring(insanity))
-            insanityBar[1]:SetVertexColor(.5, .1, 1, 1)
-        else
-            insanityBar[1]:SetVertexColor(0, 0, 0, .1)
-            iction.insanityFrameBldr.text:SetText("0")
+        if iction.spec == 3 then
+            local insanity = UnitPower("player", SPELL_POWER_INSANITY)
+            if insanity ~= 0 then
+                iction.insanityFrameBldr.textures[3]:SetWidth(insanity)
+                iction.insanityFrameBldr.text:SetText(tostring(insanity))
+                iction.insanityFrameBldr.textures[3]:SetVertexColor(.5, .1, 1, 1)
+            else
+                iction.insanityFrameBldr.textures[3]:SetVertexColor(0, 0, 0, .1)
+                iction.insanityFrameBldr.text:SetText("0")
+            end
         end
     end
     iction.insanityFrameBldr.frame:SetScript("OnUpdate", _updateInsanity)
@@ -213,23 +214,51 @@ end
 
 function iction.createSWDFrame()
     local SWDData = iction.ictSWDData
-    SWDData["uiParentFrame"] = iction.mainFrameBldr.frame
-    SWDData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          SWDData["uiParentFrame"] = iction.mainFrameBldr.frame
+          SWDData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
 
     iction.SWDFrameBldr = {}
           setmetatable(iction.SWDFrameBldr, {__index = iction.UIFrameElement})
           iction.SWDFrameBldr.create(iction.SWDFrameBldr, SWDData)
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.SWDFrameBldr)
+
+    iction.SWDButtonBldr = {}
+          local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(iction.swdID)
+          local SWDData = {}
+                SWDData['uiName'] = name
+                SWDData['id'] = iction.swdID
+                SWDData['rank'] = rank
+                SWDData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
+                SWDData['minRange'] = minRange
+                SWDData['maxRange'] = maxRange
+                SWDData['icon'] = icon
+          setmetatable(iction.SWDButtonBldr, {__index = iction.UIButtonElement})
+          iction.SWDButtonBldr.create(iction.SWDButtonBldr, iction.SWDFrameBldr.frame, SWDData, "CENTER", 0, 0)
+          iction.SWDButtonBldr.buttonFrame:SetAllPoints(true)
 end
 
 function iction.createVoidFrame()
     local VFData = iction.ictVoidData
-    VFData["uiParentFrame"] = iction.mainFrameBldr.frame
-    VFData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
+          VFData["uiParentFrame"] = iction.mainFrameBldr.frame
+          VFData['pointPosition']['relativeTo'] = iction.mainFrameBldr.frame
     iction.voidFrameBldr = {}
           setmetatable(iction.voidFrameBldr, {__index = iction.UIFrameElement})
           iction.voidFrameBldr.create(iction.voidFrameBldr, VFData)
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames,  iction.voidFrameBldr)
+
+    iction.voidButtonBldr = {}
+          local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(iction.vbID)
+          local VButtonData = {}
+                VButtonData['uiName'] = name
+                VButtonData['id'] = iction.vbID
+                VButtonData['rank'] = rank
+                VButtonData['castingTime'] = castingTime --returns in milliseconds so we should do *.001
+                VButtonData['minRange'] = minRange
+                VButtonData['maxRange'] = maxRange
+                VButtonData['icon'] = icon
+          setmetatable(iction.voidButtonBldr, {__index = iction.UIButtonElement})
+          iction.voidButtonBldr.create(iction.voidButtonBldr, iction.voidFrameBldr.frame, VButtonData, "CENTER", 0, 0)
+          iction.voidButtonBldr.buttonFrame:SetAllPoints(true)
 end

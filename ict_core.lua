@@ -40,7 +40,7 @@ iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
 
 iction.playerGUID = nil
-iction.spec = GetSpecialization()
+iction.spec = nil
 iction.font = iction.SharedMedia:Fetch("font", "FRIZQT__")
 
 
@@ -92,10 +92,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         end
 
         if not ictionValidSpells then
-            iction.validSpells = {}
             ictionValidSpells = {}
-        else
-            iction.validSpells = ictionValidSpells
         end
     end
 end)

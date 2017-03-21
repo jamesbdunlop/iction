@@ -1,7 +1,7 @@
 local iction = iction
 local frameW = 300
-local frameH = 380
-local optionsBoxTop = -(frameH * .24)
+local frameH = 450
+local optionsBoxTop = -(frameH * .21)
 local optionsBoxBottom = (frameH * .5)
 local optionsBoxW = (frameW*.25)
 
@@ -25,12 +25,6 @@ function iction.setOptionsFrame()
     local function closeOptionsUI()
         if iction.optionsFrameBldr and iction.optionsFrameBldr.frame then
             iction.optionsFrameBldr.frame:Hide()
---            local itr = iction.list_iter(iction.allSpellsListFrameBldr.scrollframe:GetChildren())
---            while true do
---                local f = itr()
---                if not f then break end
---                f:Hide()
---            end
             iction.allSpellsListFrameBldr.frame:Hide()
             iction.allSpellsListFrameBldr.scrollframe:Hide()
             iction.allSpellsListFrameBldr = {}
@@ -41,6 +35,8 @@ function iction.setOptionsFrame()
     local function createOptionsFrame()
         closeOptionsUI()
         local optionsData = iction.ictOptionsFrameData
+              optionsData['h'] = frameH
+              optionsData['w'] = frameW
         iction.optionsFrameBldr = {}
             setmetatable(iction.optionsFrameBldr, {__index = iction.UIFrameElement})
             iction.optionsFrameBldr.create(iction.optionsFrameBldr, optionsData)
@@ -65,6 +61,7 @@ function iction.setOptionsFrame()
     local function listAllSpells()
         local allSpellsData = iction.ictSpellsListFrameData
               allSpellsData['pointPosition']['relativeTo'] = iction.optionsFrameBldr.frame
+              allSpellsData['h'] = frameH
 
         iction.allSpellsListFrameBldr = {}
             setmetatable(iction.allSpellsListFrameBldr, {__index = iction.UISpellScrollFrameElement})
@@ -75,77 +72,77 @@ function iction.setOptionsFrame()
 
     local function createMaxTargetsOptions()
         iction.ict_TargetLabel = iction.optionsFrameBldr.frame:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_TargetLabel:SetText(iction.L['maxTargetColsLabel'])
-        iction.ict_TargetLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
-        iction.ict_TargetLabel:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, -70)
+            iction.ict_TargetLabel:SetText(iction.L['maxTargetColsLabel'])
+            iction.ict_TargetLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
+            iction.ict_TargetLabel:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, -70)
 
         iction.TargetOptionsFrame = CreateFrame('Frame', 'TargetOptionsFrame', iction.optionsFrameBldr.frame, "InsetFrameTemplate")
-        iction.TargetOptionsFrame:SetWidth(optionsBoxW)
-        iction.TargetOptionsFrame:SetFrameStrata("MEDIUM")
-        iction.TargetOptionsFrame:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
-        iction.TargetOptionsFrame:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, optionsBoxTop)
-        iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, optionsBoxBottom)
+            iction.TargetOptionsFrame:SetWidth(optionsBoxW)
+            iction.TargetOptionsFrame:SetFrameStrata("MEDIUM")
+            iction.TargetOptionsFrame:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
+            iction.TargetOptionsFrame:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, optionsBoxTop)
+            iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, optionsBoxBottom)
         local tgIndent = 10
 
         ict_MaxTarget1Input = CreateFrame("CheckButton", "ict_maxCount1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget1Input.tooltip = iction.L['maxTargets1TT']
-        ict_MaxTarget1Input:SetWidth(chxboxW)
-        ict_MaxTarget1Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-        ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -5)
-        ict_MaxTarget1Inputtext = _G["ict_maxCount1Text"]
-        ict_MaxTarget1Inputtext:SetText(iction.L['maxT1'])
-        ict_MaxTarget1Input:SetScript("OnClick", function()
-                                        ict_MaxTarget2Input:SetChecked(false)
-                                        ict_MaxTarget3Input:SetChecked(false)
-                                        ict_MaxTarget4Input:SetChecked(false)
-                                        ictionTargetCount = 1
-                                        setCount = 1
-                                        end)
+            ict_MaxTarget1Input.tooltip = iction.L['maxTargets1TT']
+            ict_MaxTarget1Input:SetWidth(chxboxW)
+            ict_MaxTarget1Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
+            ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -5)
+            ict_MaxTarget1Inputtext = _G["ict_maxCount1Text"]
+            ict_MaxTarget1Inputtext:SetText(iction.L['maxT1'])
+            ict_MaxTarget1Input:SetScript("OnClick", function()
+                                            ict_MaxTarget2Input:SetChecked(false)
+                                            ict_MaxTarget3Input:SetChecked(false)
+                                            ict_MaxTarget4Input:SetChecked(false)
+                                            ictionTargetCount = 1
+                                            setCount = 1
+                                            end)
 
         ict_MaxTarget2Input = CreateFrame("CheckButton", "ict_maxCount2", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget2Input.tooltip = iction.L['maxTargets2TT']
-        ict_MaxTarget2Input:SetWidth(chxboxW)
-        ict_MaxTarget2Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-        ict_MaxTarget2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -25)
-        ict_MaxTarget2Inputtext = _G["ict_maxCount2Text"]
-        ict_MaxTarget2Inputtext:SetText(iction.L['maxT2'])
-        ict_MaxTarget2Input:SetScript("OnClick", function()
-                                        ict_MaxTarget1Input:SetChecked(false)
-                                        ict_MaxTarget3Input:SetChecked(false)
-                                        ict_MaxTarget4Input:SetChecked(false)
-                                        ictionTargetCount = 2
-                                        setCount = 2
-                                        end)
+            ict_MaxTarget2Input.tooltip = iction.L['maxTargets2TT']
+            ict_MaxTarget2Input:SetWidth(chxboxW)
+            ict_MaxTarget2Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
+            ict_MaxTarget2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -25)
+            ict_MaxTarget2Inputtext = _G["ict_maxCount2Text"]
+            ict_MaxTarget2Inputtext:SetText(iction.L['maxT2'])
+            ict_MaxTarget2Input:SetScript("OnClick", function()
+                                            ict_MaxTarget1Input:SetChecked(false)
+                                            ict_MaxTarget3Input:SetChecked(false)
+                                            ict_MaxTarget4Input:SetChecked(false)
+                                            ictionTargetCount = 2
+                                            setCount = 2
+                                            end)
 
         ict_MaxTarget3Input = CreateFrame("CheckButton", "ict_maxCount3", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget3Input.tooltip = iction.L['maxTargets3TT']
-        ict_MaxTarget3Input:SetWidth(chxboxW)
-        ict_MaxTarget3Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-        ict_MaxTarget3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -45)
-        ict_MaxTarget3Inputtext = _G["ict_maxCount3Text"]
-        ict_MaxTarget3Inputtext:SetText(iction.L['maxT3'])
-        ict_MaxTarget3Input:SetScript("OnClick", function()
-                                        ict_MaxTarget1Input:SetChecked(false)
-                                        ict_MaxTarget2Input:SetChecked(false)
-                                        ict_MaxTarget4Input:SetChecked(false)
-                                        ictionTargetCount = 3
-                                        setCount = 3
-                                        end)
+            ict_MaxTarget3Input.tooltip = iction.L['maxTargets3TT']
+            ict_MaxTarget3Input:SetWidth(chxboxW)
+            ict_MaxTarget3Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
+            ict_MaxTarget3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -45)
+            ict_MaxTarget3Inputtext = _G["ict_maxCount3Text"]
+            ict_MaxTarget3Inputtext:SetText(iction.L['maxT3'])
+            ict_MaxTarget3Input:SetScript("OnClick", function()
+                                            ict_MaxTarget1Input:SetChecked(false)
+                                            ict_MaxTarget2Input:SetChecked(false)
+                                            ict_MaxTarget4Input:SetChecked(false)
+                                            ictionTargetCount = 3
+                                            setCount = 3
+                                            end)
 
         ict_MaxTarget4Input = CreateFrame("CheckButton", "ict_maxCount4", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_MaxTarget4Input.tooltip = iction.L['maxTargets4TT']
-        ict_MaxTarget4Input:SetWidth(chxboxW)
-        ict_MaxTarget4Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-        ict_MaxTarget4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -65)
-        ict_MaxTarget4Inputtext = _G["ict_maxCount4Text"]
-        ict_MaxTarget4Inputtext:SetText(iction.L['maxT4'])
-        ict_MaxTarget4Input:SetScript("OnClick", function()
-                                        ict_MaxTarget1Input:SetChecked(false)
-                                        ict_MaxTarget2Input:SetChecked(false)
-                                        ict_MaxTarget3Input:SetChecked(false)
-                                        ictionTargetCount = 4
-                                        setCount = 4
-                                        end)
+            ict_MaxTarget4Input.tooltip = iction.L['maxTargets4TT']
+            ict_MaxTarget4Input:SetWidth(chxboxW)
+            ict_MaxTarget4Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
+            ict_MaxTarget4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -65)
+            ict_MaxTarget4Inputtext = _G["ict_maxCount4Text"]
+            ict_MaxTarget4Inputtext:SetText(iction.L['maxT4'])
+            ict_MaxTarget4Input:SetScript("OnClick", function()
+                                            ict_MaxTarget1Input:SetChecked(false)
+                                            ict_MaxTarget2Input:SetChecked(false)
+                                            ict_MaxTarget3Input:SetChecked(false)
+                                            ictionTargetCount = 4
+                                            setCount = 4
+                                            end)
 
         if ictionTargetCount == 1 then ict_MaxTarget1Input:SetChecked(true) setCount = 1 end
         if ictionTargetCount == 2 then ict_MaxTarget2Input:SetChecked(true) setCount = 2 end
@@ -275,80 +272,79 @@ function iction.setOptionsFrame()
     end
     createScaleUIOptions()
 
-    local function createSWDOptions()
-        ----------------------------------------------------------------------------------------------------------
-        --- PWD Scale Options
-        iction.ict_swdScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_swdScaleLabel:SetText(iction.L['scaleSWD'])
-        iction.ict_swdScaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
-        iction.ict_swdScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdLabel)
+    if iction.class == iction.L['Priest'] and iction.spec == 3 then
+        local function createSWDOptions()
+            ----------------------------------------------------------------------------------------------------------
+            --- PWD Scale Options
+            iction.ict_swdScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_swdScaleLabel:SetText(iction.L['scaleSWD'])
+            iction.ict_swdScaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_swdScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdLabel)
 
-        iction.ict_swdIDXScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_swdIDXScaleLabel:SetText(ictionSWDScale)
-        iction.ict_swdIDXScaleLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
-        iction.ict_swdIDXScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdLabel)
+            iction.ict_swdIDXScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_swdIDXScaleLabel:SetText(ictionSWDScale)
+            iction.ict_swdIDXScaleLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_swdIDXScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdLabel)
 
-        iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
-        iction.ict_PWDScale.tooltip = iction.L['scaleSWDTT']
-        iction.ict_PWDScale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
-        iction.ict_PWDScale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
-        iction.ict_PWDScale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdBoxTop)
-        iction.ict_PWDScale:SetMinMaxValues(.5,2)
-        iction.ict_PWDScale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
-        iction.ict_PWDScale:SetValue(ictionSWDScale)
-        iction.ict_PWDScale:SetValueStep(.1)
-        iction.ict_PWDScale:SetOrientation("HORIZONTAL")
-        iction.ict_PWDScale:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
-        iction.ict_PWDScale:SetBackdrop({
-                  bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
-                  edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
-                  tile = true, tileSize = 8, edgeSize = 8,
-                  insets = { left = 3, right = 3, top = 6, bottom = 6 }})
-        iction.ict_PWDScale:SetScript("OnValueChanged", function(self, event, arg1)
-                            ictionSWDScale = tonumber(string.format("%.1f", event))
-                            iction.SWDFrame:SetScale(tonumber(string.format("%.1f", event)))
-                            iction.ict_swdIDXScaleLabel:SetText(string.format("%.1f", ictionSWDScale))
-                            end)
-    end
-    if iction.class == iction.L['Priest'] then
+            iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
+            iction.ict_PWDScale.tooltip = iction.L['scaleSWDTT']
+            iction.ict_PWDScale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_PWDScale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_PWDScale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, swdBoxTop)
+            iction.ict_PWDScale:SetMinMaxValues(.5,2)
+            iction.ict_PWDScale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
+            iction.ict_PWDScale:SetValue(ictionSWDScale)
+            iction.ict_PWDScale:SetValueStep(.1)
+            iction.ict_PWDScale:SetOrientation("HORIZONTAL")
+            iction.ict_PWDScale:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+            iction.ict_PWDScale:SetBackdrop({
+                      bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+                      edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+                      tile = true, tileSize = 8, edgeSize = 8,
+                      insets = { left = 3, right = 3, top = 6, bottom = 6 }})
+            iction.ict_PWDScale:SetScript("OnValueChanged", function(self, event, arg1)
+                                ictionSWDScale = tonumber(string.format("%.1f", event))
+                                iction.SWDFrameBldr.frame:SetScale(tonumber(string.format("%.1f", event)))
+                                iction.ict_swdIDXScaleLabel:SetText(string.format("%.1f", ictionSWDScale))
+                                end)
+        end
+
+        local function createVoidOptions()
+            ----------------------------------------------------------------------------------------------------------
+            --- PWD Scale Options
+            iction.ict_voidBoltScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_voidBoltScaleLabel:SetText(iction.L['scaleVB'])
+            iction.ict_voidBoltScaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_voidBoltScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidLabel)
+
+            iction.ict_voidBoltIDXScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
+            iction.ict_voidBoltIDXScaleLabel:SetText(ictionVoidBoltScale)
+            iction.ict_voidBoltIDXScaleLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_voidBoltIDXScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidLabel)
+
+            iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
+            iction.ict_PWDScale.tooltip = iction.L['scaleVBTT']
+            iction.ict_PWDScale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+            iction.ict_PWDScale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+            iction.ict_PWDScale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidBoxTop)
+            iction.ict_PWDScale:SetMinMaxValues(.5,2)
+            iction.ict_PWDScale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
+            iction.ict_PWDScale:SetValue(ictionVoidBoltScale)
+            iction.ict_PWDScale:SetValueStep(.1)
+            iction.ict_PWDScale:SetOrientation("HORIZONTAL")
+            iction.ict_PWDScale:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+            iction.ict_PWDScale:SetBackdrop({
+                      bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+                      edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+                      tile = true, tileSize = 8, edgeSize = 8,
+                      insets = { left = 3, right = 3, top = 6, bottom = 6 }})
+            iction.ict_PWDScale:SetScript("OnValueChanged", function(self, event, arg1)
+                                ictionVoidBoltScale = tonumber(string.format("%.1f", event))
+                                iction.voidFrameBldr.frame:SetScale(tonumber(string.format("%.1f", event)))
+                                iction.ict_voidBoltIDXScaleLabel:SetText(string.format("%.1f", ictionVoidBoltScale))
+                                end)
+        end
         createSWDOptions()
-    end
-    local function createVoidOptions()
-        ----------------------------------------------------------------------------------------------------------
-        --- PWD Scale Options
-        iction.ict_voidBoltScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("PWDScaleLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_voidBoltScaleLabel:SetText(iction.L['scaleVB'])
-        iction.ict_voidBoltScaleLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
-        iction.ict_voidBoltScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidLabel)
-
-        iction.ict_voidBoltIDXScaleLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_voidBoltIDXScaleLabel:SetText(ictionVoidBoltScale)
-        iction.ict_voidBoltIDXScaleLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
-        iction.ict_voidBoltIDXScaleLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidLabel)
-
-        iction.ict_PWDScale = CreateFrame("Slider", "ict_scaleSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
-        iction.ict_PWDScale.tooltip = iction.L['scaleVBTT']
-        iction.ict_PWDScale:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
-        iction.ict_PWDScale:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
-        iction.ict_PWDScale:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, voidBoxTop)
-        iction.ict_PWDScale:SetMinMaxValues(.5,2)
-        iction.ict_PWDScale.minValue, iction.ict_Scale.maxValue = iction.ict_Scale:GetMinMaxValues()
-        iction.ict_PWDScale:SetValue(ictionVoidBoltScale)
-        iction.ict_PWDScale:SetValueStep(.1)
-        iction.ict_PWDScale:SetOrientation("HORIZONTAL")
-        iction.ict_PWDScale:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
-        iction.ict_PWDScale:SetBackdrop({
-                  bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
-                  edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
-                  tile = true, tileSize = 8, edgeSize = 8,
-                  insets = { left = 3, right = 3, top = 6, bottom = 6 }})
-        iction.ict_PWDScale:SetScript("OnValueChanged", function(self, event, arg1)
-                            ictionVoidBoltScale = tonumber(string.format("%.1f", event))
-                            iction.voidFrame:SetScale(tonumber(string.format("%.1f", event)))
-                            iction.ict_voidBoltIDXScaleLabel:SetText(string.format("%.1f", ictionVoidBoltScale))
-                            end)
-    end
-    if iction.class == iction.L['Priest'] then
         createVoidOptions()
     end
     ----------------------------------------------------------------------------------------------------------

@@ -32,7 +32,14 @@ function iction.createTarget(guid)
           if iction.debugUITimers then print("NEW TARGET COLID: " .. tostring(colID)) end
 
     --- Build frame
-    local fh = iction.tablelength(iction.getAllSpells())
+    local fh
+    local curSpells = ictionValidSpells[iction.class][iction.spec]["spells"]
+    if curSpells then
+        fh = iction.tablelength(curSpells)
+    else
+        fh = 0
+    end
+
     local frmData = iction.ictSpellFrameData
           frmData['w'] = iction.bw + iction.ictionButtonFramePad
           frmData['h'] = fh * iction.bh
@@ -54,7 +61,7 @@ end
 local padX, padY
 function iction.createButtons(frm)
     local buttons = {}
-    local itr = iction.list_iter(iction.validSpells)
+    local itr = iction.list_iter(iction.getAllSpells())
     padX = 0
     padY = iction.ictionButtonFramePad
     while true do

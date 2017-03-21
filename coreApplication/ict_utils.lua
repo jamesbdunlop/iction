@@ -29,11 +29,13 @@ function iction.tablelength(T)
 end
 
 function iction.validSpellID(id)
-    local validIter = iction.list_iter(ictionValidSpells)
-    while true do
-        local spellID = validIter()
-        if not spellID then break end
-        if id == spellID then return true end
+    if ictionValidSpells[iction.class][iction.spec]["spells"] then
+        local validIter = iction.list_iter(ictionValidSpells[iction.class][iction.spec]["spells"])
+        while true do
+            local spellID = validIter()
+            if not spellID then break end
+            if id == spellID then return true end
+        end
     end
     return false
 end
@@ -88,6 +90,56 @@ function iction.blizz_buffActive(spellID)
     end end
 
     return found
+end
+
+function iction.blizz_fetchCooldownET(spellID)
+    if iction.debugTimers then print("fetchCooldownET") end
+    local start, duration, _ = GetSpellCooldown(spellID)
+    local actualFinish = start+duration
+    local et = (actualFinish - GetTime()) + GetTime()
+    if start == 0 then
+        return false
+    else
+        return et
+    end
+end
+
+function iction.blizz_fetchRemainingT(remainingT)
+    local rt = remainingT
+    local TL = tonumber(string.format("%.1f", (rt)))
+    if TL > 60.0 then
+        rt = tostring(tonumber(string.format("%.1f", rt/60.0))) .. "m"
+    else
+        rt = tonumber(string.format("%.1d", rt))
+    end
+    return rt
+end
+
+function iction.isReaperActive()
+    for x=1, 7 do
+        for c=1, 3 do
+            local _, name, _, selected, _, spellid = GetTalentInfo(x, c, 1)
+            --- how is it that ShadowyInsight talent and buff applied have different id's argh
+            if spellid == 199853 and selected then
+                return .35
+            end
+        end
+    end
+    return .20
+end
+
+function iction.blizz_getTargetHP()
+    local isDead = UnitIsDead("target")
+    if UnitName("target") then
+        local health = UnitHealth("target")
+        local max_health = UnitHealthMax("target")
+        local percent = (max_health * iction.isReaperActive())
+        if health <= percent and not isDead then
+            return true
+        else
+            return false
+        end
+    end
 end
 
 ----------------------------------------------------------------------------------------------
@@ -182,7 +234,13 @@ end
     --- CACHE DATA COMBAT STUFF ---
 function iction.oocCleanup()
     if UnitAffectingCombat("player") then return end
-
+    if iction.class == iction.L['Priest'] and iction.spec == 3 then
+        if ict_UnlockCBx then
+            if not ict_UnlockCBx:GetChecked() then return end
+        end
+        iction.voidFrameBldr.frame:Hide()
+        iction.SWDFrameBldr.frame:Hide()
+    end
     local itr = iction.list_iter(iction.targetData)
     while true do
         local target = itr()
