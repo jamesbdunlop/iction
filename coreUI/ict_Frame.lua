@@ -279,6 +279,15 @@ function iction.UIButtonElement.setButtonColor(self, color)
     self.text:SetTextColor(color[1], color[2], color[3], color[4])
 end
 
+function iction.UIButtonElement.setVisibility(self, visible)
+    if visible then
+        self.buttonFrame:Show()
+    else
+        self.buttonFrame:Hide()
+    end
+    if iction.debugUI then print("iction.UIFrameElement.setVisibility success!") end
+end
+
 ------------------------------------------------------------------------------------------------------------------------
 --- OPTIONS SCROLL FRAME
 
@@ -508,3 +517,5 @@ function iction.UISpellScrollFrameElement.setMoveScript(self)
         end
     end)
 end
+
+

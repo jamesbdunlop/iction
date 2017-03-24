@@ -14,10 +14,37 @@ function iction.watcher(self)
     self:RegisterEvent("SPELL_CAST_SUCCESS")
     self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     self:RegisterEvent("UNIT_DIED")
+    self:RegisterEvent("COMPANION_UPDATE")
     local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1,
                                 prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
+        if iction.debugWatcher then print("#############") end
+        if iction.debugWatcher then print("event: " .. tostring(event)) end
+        if iction.debugWatcher then print("eventName: " .. tostring(eventName)) end
+        if iction.debugWatcher then print("sourceGUID: " .. tostring(sourceGUID)) end
+        if iction.debugWatcher then print("mobGUID: " .. tostring(prefix2)) end
+        if iction.debugWatcher then print("spellID: " .. tostring(sufx3)) end
+        if iction.debugWatcher then print("sourceGUID: " .. tostring(sourceGUID)) end
+        if iction.debugWatcher then print("spellName: " .. tostring(spellName)) end
+        if iction.debugWatcher then print("mobName: " .. tostring(mobName)) end
+        if iction.debugWatcher then print("mobGUID: " .. tostring(mobGUID)) end
+        if iction.debugWatcher then print("spellType: " .. tostring(spellType)) end
+        if iction.debugWatcher then print("spellID: " .. tostring(spellID)) end
+        if iction.debugWatcher then print("prefix1: " .. tostring(spellID)) end
+        if iction.debugWatcher then print("sufx1: " .. tostring(sufx1)) end
+        if iction.debugWatcher then print("sufx2: " .. tostring(sufx2)) end
+        if iction.debugWatcher then print("sufx3: " .. tostring(sufx3)) end
+        if iction.debugWatcher then print("sufx4: " .. tostring(sufx4)) end
+        if iction.debugWatcher then print("sufx5: " .. tostring(sufx5)) end
+        if iction.debugWatcher then print("sufx6: " .. tostring(sufx6)) end
+        if iction.debugWatcher then print("sufx7: " .. tostring(sufx7)) end
+        if iction.debugWatcher then print("sufx8: " .. tostring(sufx8)) end
+        if iction.debugWatcher then print("sufx9: " .. tostring(sufx9)) end
+        if iction.debugWatcher then print("-------") end
+        if iction.debugWatcher then print("-------") end
         local function createTarget(mobGUID, spellType, spellID)
-            iction.createTarget(mobGUID)
+            if not iction.debuffColumns_GUIDExists(mobGUID) then
+                iction.createTarget(mobGUID)
+            end
             if iction.debuffColumns_GUIDExists(mobGUID) then
                 iction.createTargetSpellData(mobGUID, spellType, spellID)
             end
@@ -29,10 +56,16 @@ function iction.watcher(self)
             iction.oocCleanup()
             return
         end
+
         if event == 'PLAYER_SPECIALIZATION_CHANGED' then iction.specChanged() end
         if event == 'PLAYER_TARGET_CHANGED' then
             iction.targetChanged(UnitGUID("Target"))
         end
+        local spellName, mobName, mobGUID, spellType, spellID
+        mobGUID = prefix2
+        spellType = sufx6
+        spellID = sufx3
+        spellName = prefix1
 
         if ictonCombat then
             if iction.class == iction.L['Priest'] and iction.spec == 3 then
@@ -41,13 +74,9 @@ function iction.watcher(self)
             end
 
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-                if sourceGUID == iction.playerGUID then
-                    local spellName, mobName, mobGUID, spellType, spellID
-                    spellName = sufx4
-                    mobName = prefix3
-                    mobGUID = prefix2
-                    spellType = sufx6
-                    spellID = sufx3
+                if eventName == 'UNIT_DIED' then
+                    iction.targetsColumns_tagDead(mobGUID)
+                elseif sourceGUID == iction.playerGUID and eventName ~= "SPELL_CAST_FAILED" and eventName ~= "SPELL_CAST_START" then
                     --- Account for some bullshit in the API where some events return this data and some return that....
                     if eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then spellType = "DEBUFF" end
 
@@ -56,16 +85,16 @@ function iction.watcher(self)
 
                     --- Ignore all player buffs
                     if mobGUID ~= nil and string.find(mobGUID, "Player", 1) then return end
-
-                    if iction.debugUITimers then print("#############") end
-                    if iction.debugUITimers then print("event: " .. tostring(event)) end
-                    if iction.debugUITimers then print("eventName: " .. tostring(eventName)) end
-                    if iction.debugUITimers then print("sourceGUID: " .. tostring(sourceGUID)) end
-                    if iction.debugUITimers then print("-------") end
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
                     createTarget(mobGUID, spellType, spellID)
+                elseif sourceGUID == iction.playerGUID and eventName == 'SPELL_AURA_REMOVED' and mobGUID == iction.playerGUID then
+                    iction.removeBuff(spellID)
                 end
+            end
+        else
+            if sourceGUID == iction.playerGUID and eventName == 'SPELL_AURA_REMOVED' and mobGUID == iction.playerGUID then
+                iction.removeBuff(sufx4)
             end
         end
     end
@@ -79,6 +108,8 @@ function iction.watcher(self)
             iction.setSoulShards(shards)
             iction.setConflagCount()
             iction.runTimers()
+            iction.targetChanged(UnitGUID("Target"))
+            iction.updateBuffTimers()
         end
     end
     self:SetScript("OnUpdate", _onUpdate)

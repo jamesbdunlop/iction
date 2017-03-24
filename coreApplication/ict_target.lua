@@ -3,6 +3,7 @@ local UnitBuff, UnitDebuff, UnitGUID, GetSpellInfo = UnitBuff, UnitDebuff, UnitG
 ----------------------------------------------------------------------------------------------
 --- CREATE AN ICTION TARGET CACHE ENTRY  ---
 function iction.createTarget(guid)
+    if not guid then return end
     --- If we have this target already exit early
     local tgtExists = false
     local tgDItr = iction.list_iter(iction.targetData)
@@ -98,15 +99,15 @@ function iction.createTargetSpellData(guid, spellType, spellID)
                     if spellTable == nil then break end
                     -- Check for id and guid match and return table associated with the spell
                     if spellTable['id'] == spellID and spellTable['guid'] == guid then
-                        if iction.debugUITimers then print("SPELL IS ACTIVE...") end
+                        if iction.debugUITimers then print("SPELL IS ACTIVE..."..tostring(spellID)) end
                         return true, spellTable
                     end
                 end
-                if iction. debugUITimers then print("SPELL IS NOT ACTIVE...") end
+                if iction. debugUITimers then print("SPELL IS NOT ACTIVE... "..tostring(spellID)) end
                 return false, nil
             end
 
-            local function getExpiresInfo(spellName)
+            local function getExpiresInfo(spellName, guid)
                 local expiresData = {}
                       expiresData['endTime'] = 0
                       expiresData['isChanneled'] = false
@@ -114,6 +115,9 @@ function iction.createTargetSpellData(guid, spellType, spellID)
                 if not spellName then return expiresData end
 
                 if iction.debugUITimers then print("...FETCHING ENDTIME...") end
+                -- Set all expires to 0
+                if iction.debugRunningTimers then print('Clearning all channeled spells but target...') end
+                iction.targetsColumns_clearAllChanneled(guid)
                 -- EXPIRES
                 local channelSpellID, cexpires = iction.blizz_getChannelSpellInfo()
                 if channelSpellID == spellID then
@@ -148,13 +152,13 @@ function iction.createTargetSpellData(guid, spellType, spellID)
                       spellInfo['id'] = spellID
                       spellInfo['count'] = 0
                       spellInfo['buttons'] = targetData["buttons"]
-                      spellInfo['expires'] = getExpiresInfo(spellName)
+                      spellInfo['expires'] = getExpiresInfo(spellName, guid)
                 table.insert(iction.activeSpellTable, spellInfo)
-                if iction.debugUITimers then print("ADDED NEW SPELL TABLE: " .. tostring(name)) end
+                if iction.debugUITimers then print("ADDED NEW SPELL TABLE: " .. tostring(spellName)) end
             else
                 -- spell is active update the expires for timers
                 -- Find the active spelltable for guid and update the expires
-                activeTable['expires'] = getExpiresInfo(spellName)
+                activeTable['expires'] = getExpiresInfo(spellName, guid)
             end
             if iction.debugUITimers then print("#############") end
         end

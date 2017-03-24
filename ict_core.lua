@@ -31,6 +31,7 @@ iction.hlGuid = nil
 
 --- COMBAT
 iction.targetData = {}
+iction.buffButtons = {}
 iction.activeSpellTable = {}
 iction.validSpellTable = {}
 --- DEBUG
@@ -38,6 +39,7 @@ iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
+iction.debugWatcher = true
 
 iction.playerGUID = nil
 iction.spec = nil

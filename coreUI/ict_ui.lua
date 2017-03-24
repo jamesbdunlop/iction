@@ -126,8 +126,8 @@ function iction.createBuffFrame()
     buffData['w'] = 200
     buffData['h'] = iction.bh
     iction.buffFrameBldr = {}
-    setmetatable(iction.buffFrameBldr, {__index = iction.UIFrameElement})
-    iction.buffFrame = iction.buffFrameBldr.create(iction.buffFrameBldr, buffData)
+        setmetatable(iction.buffFrameBldr, {__index = iction.UIFrameElement})
+        iction.buffFrameBldr.create(iction.buffFrameBldr, buffData)
 
     -- Add to moveable frame table
     table.insert(iction.moveableUIFrames, iction.buffFrameBldr)

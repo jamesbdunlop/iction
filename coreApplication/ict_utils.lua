@@ -122,9 +122,7 @@ function iction.isReaperActive()
             --- how is it that ShadowyInsight talent and buff applied have different id's argh
             if spellid == 199853 and selected then
                 return .35
-            end
-        end
-    end
+    end end end
     return .20
 end
 
@@ -138,8 +136,7 @@ function iction.blizz_getTargetHP()
             return true
         else
             return false
-        end
-    end
+    end end
 end
 
 ----------------------------------------------------------------------------------------------
@@ -175,8 +172,7 @@ function iction.debuffColumns_currentTargetFrameBldr(guid)
 
         if target["guid"] == guid and target["colID"]['active'] then
             return target['frame']
-        end
-    end
+    end end
     return nil
 end
 
@@ -222,7 +218,6 @@ function iction.debuffColumns_createOrderColTable()
 end
 
 function iction.debuffColumns_clearAll()
-    --- Add to available column now.
     local orderCol = iction.debuffColumns_createOrderColTable()
     for i = 1, iction.ict_maxTargets do
         local colID = orderCol[i]
@@ -231,7 +226,8 @@ function iction.debuffColumns_clearAll()
     end
 end
 
-    --- CACHE DATA COMBAT STUFF ---
+----------------------------------------------------------------------------------------------
+--- CACHE DATA COMBAT STUFF ---
 function iction.oocCleanup()
     if UnitAffectingCombat("player") then return end
     if iction.class == iction.L['Priest'] and iction.spec == 3 then
@@ -254,5 +250,45 @@ function iction.oocCleanup()
     if iction.debugUITimers then print("EXIT COMBAT DETECTED. TABLES CLEANED!") end
 end
 
+function iction.targetsColumns_clearAllChanneled(guid)
+    local itr  = iction.list_iter(iction.activeSpellTable)
+    while true do
+        local spellData = itr()
+        if not spellData then break end
+        if spellData['expires']['isChanneled'] and spellData['guid'] ~= guid then
+            spellData['expires']['endTime']= 0
+    end end
+end
 
+function iction.targetsColumns_tagDead(guid)
+    local itr  = iction.list_iter(iction.targetData)
+    while true do
+        local targetData = itr()
+        if not targetData then break end
+        if targetData["guid"] == guid then
+            targetData["dead"] = false
+            targetData["frame"].setVisibility(targetData['frame'], false)
+            targetData = nil
+            if iction.debugWatcher then print("Removed targetData: " .. tostring(guid)) end
+    end end
 
+    local itr  = iction.list_iter(iction.activeSpellTable)
+    while true do
+        local spellData = itr()
+        if not spellData then break end
+        if spellData["guid"] == guid then
+            spellData = nil
+            if iction.debugWatcher then print("Removed activeSpell Data: " .. tostring(guid)) end
+    end end
+end
+
+function iction.isBuffInCacheData(spellName)
+    local itr  = iction.list_iter(iction.buffButtons)
+    while true do
+        local spellData = itr()
+        if not spellData then break end
+        if spellData['uiName'] == spellName then
+            return true, spellData
+    end end
+    return false, nil
+end
