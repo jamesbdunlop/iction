@@ -40,13 +40,12 @@ iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
-iction.debugWatcher = false
+iction.debugWatcher = true
 iction.debugBuffs = false
 
 iction.playerGUID = nil
 iction.spec = nil
 iction.font = iction.SharedMedia:Fetch("font", "FRIZQT__")
-
 
 ----------------------------------------------------------------------------------------------
 --- CREATE THE ADDON MAIN FRAME / REGISTER ADDON ---

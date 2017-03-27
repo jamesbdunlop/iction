@@ -232,7 +232,7 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
         self.texture:SetTexture(self.icon)
         self.texture:SetVertexColor(0.9,0.3,0.3, .5)
     -- Create the fontString for the button
-    self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 16, .1, 1, .1, 1)
+    self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 16, 1, 1, 1, 1)
 end
 
 function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
@@ -243,7 +243,6 @@ function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, 
             Addfnt:SetPoint(anchorPoint, x, y)
         end
         Addfnt:SetFont(iction.font, size, strata, outline)
-        Addfnt:SetFontObject("GameFontWhite")
         Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
     return Addfnt
 end
@@ -256,27 +255,31 @@ function iction.UIButtonElement.addCountFontString(self, outline, strata, allPoi
             Addfnt:SetPoint(anchorPoint, x, y)
         end
         Addfnt:SetFont(iction.font, size, strata, outline)
-        Addfnt:SetFontObject("GameFontRed")
         Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
     self.count = Addfnt
 end
 
 function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, procced)
-    if active then
-        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
-        self.texture:SetVertexColor(0.9,0.9,0.9, .9)
+    if active and not refresh then
+        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
+        self.texture:SetVertexColor(0.9,0.9,0.9, .8)
+        self.setButtonColor(self, {1,1,1,1})
     elseif hidden then
         self.buttonFrame:SetBackdropColor(0,0,0, 0)
         self.texture:SetVertexColor(0,0,0, 0)
+        self.setButtonColor(self, {1,1,1,0})
     elseif active and refresh then
-        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
-        self.texture:SetVertexColor(1, 0, 0, 1)
+        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
+        self.texture:SetVertexColor(.5, 0, 0, 1)
+        self.setButtonColor(self, {1,.1,.1,1})
     elseif active and procced then
-        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
-        self.texture:SetVertexColor(0, 1, 0, 1)
+        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
+        self.texture:SetVertexColor(0, 1, 0, .8)
+        self.setButtonColor(self, {1,1,1,1})
     else
-        self.buttonFrame:SetBackdropColor(1, 1, 1, 1)
+        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
         self.texture:SetVertexColor(0.9,0.3,0.3, .5)
+        self.setButtonColor(self, {1,1,1,1})
     end
 end
 

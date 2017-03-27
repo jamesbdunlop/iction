@@ -23,10 +23,14 @@ function iction.runTimers()
                         remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
                         spellButton.text:SetText(remainingT)
                         spellButton.setButtonState(spellButton, true, false, false, false)
-                    elseif remainingT < 60 and remainingT > 0 then
+                    elseif remainingT < 60 and remainingT > 5 then
                         remainingT = tonumber(string.format("%.1f", remainingT))
                         spellButton.text:SetText(remainingT)
                         spellButton.setButtonState(spellButton, true, false, false, false)
+                    elseif remainingT <= 5 and remainingT > .1 then
+                        remainingT = tonumber(string.format("%.1f", remainingT))
+                        spellButton.text:SetText(remainingT)
+                        spellButton.setButtonState(spellButton, true, false, true, false)
                     elseif remainingT <= 0 then
                         spellButton.text:SetText("")
                         spellButton.setButtonState(spellButton, false, false, false, false)
