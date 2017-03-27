@@ -37,7 +37,7 @@ iction.validSpellTable = {}
 iction.targetExists = false
 --- DEBUG
 iction.debugUI = false
-iction.debugUITimers = true
+iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
 iction.debugWatcher = false

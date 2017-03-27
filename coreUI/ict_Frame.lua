@@ -235,14 +235,6 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 16, .1, 1, .1, 1)
 end
 
-function iction.UIButtonElement.addCountFrame(self)
-    self.countFrame = self.frame:CreateTexture(self.frameName .. "_count", "MEDIUM")
-    self.countFrame:EnableMouse(false)
-    self.buttonFrame:SetPoint("RIGHT", self.buttonFrame, iction.bw, iction.bh)
-    self.buttonFrame:SetWidth(16)
-    self.buttonFrame:SetHeight(16)
-end
-
 function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
     local Addfnt = self.buttonFrame:CreateFontString(nil, strata)
         if allPoints then
@@ -254,6 +246,19 @@ function iction.UIButtonElement.addFontString(self, outline, strata, allPoints, 
         Addfnt:SetFontObject("GameFontWhite")
         Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
     return Addfnt
+end
+
+function iction.UIButtonElement.addCountFontString(self, outline, strata, allPoints, anchorPoint, x, y, size, vtxR, vtxG, vtxB, vtxA)
+    local Addfnt = self.buttonFrame:CreateFontString(nil, strata)
+        if allPoints then
+            Addfnt:SetAllPoints(true)
+        else
+            Addfnt:SetPoint(anchorPoint, x, y)
+        end
+        Addfnt:SetFont(iction.font, size, strata, outline)
+        Addfnt:SetFontObject("GameFontRed")
+        Addfnt:SetTextColor(vtxR,vtxG, vtxB, vtxA)
+    self.count = Addfnt
 end
 
 function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, procced)

@@ -3,36 +3,35 @@ local GetTime = GetTime
 ----------------------------------------------------------------------------------------------
 --- MAIN TIMER UPDATE ------------------------------------------------------------------------
 function iction.runTimers()
-    local activeSpellTables = iction.list_iter(iction.activeSpellTable)
-    while true do
-        local spellTable = activeSpellTables()
-        if spellTable == nil then break end
-        if spellTable['expires']["endTime"] then
-            local remainingT = (spellTable['expires']["endTime"] - GetTime())
-            -- Find the button
-            local function fetchButton(buttonTable)
-                local buttonTable = iction.list_iter(buttonTable)
-                while true do
-                    local button = buttonTable()
-                    if button == nil then break end
-
-                    if button.frameName == spellTable['spellName'] then
-                        return button
-                    end
+    for guid, targetTable in pairs(iction.targetData) do
+        if targetTable == nil then break end
+        local spells = targetTable['spellData']
+        if not spells then break end
+        for spellID, spellData in pairs(spells) do
+            if iction.validSpellID(spellID) then
+                local buttonTable = targetTable['buttons']
+                local spellButton = iction.fetchButton(buttonTable, spellID)
+                local endTime = spellData['expires']['endTime']
+                local count = spellData['expires']['count']
+                if count and count ~= 0 then
+                    spellButton.count:SetText(tostring(count))
                 end
-                return false
-            end
-            local spellButton = fetchButton(spellTable['buttons'])
-            if spellButton then
-                if remainingT > 60 then
-                    remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
-                    spellButton.text:SetText(remainingT)
-                    spellButton.setButtonState(spellButton, true, false, false, false)
-                elseif remainingT < 60 and remainingT > 0 then
-                    remainingT = tonumber(string.format("%.1f", remainingT))
-                    spellButton.text:SetText(remainingT)
-                    spellButton.setButtonState(spellButton, true, false, false, false)
-                elseif remainingT <= 0 then
+
+                if endTime then
+                    local remainingT = (endTime - GetTime())
+                    if remainingT > 60 then
+                        remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
+                        spellButton.text:SetText(remainingT)
+                        spellButton.setButtonState(spellButton, true, false, false, false)
+                    elseif remainingT < 60 and remainingT > 0 then
+                        remainingT = tonumber(string.format("%.1f", remainingT))
+                        spellButton.text:SetText(remainingT)
+                        spellButton.setButtonState(spellButton, true, false, false, false)
+                    elseif remainingT <= 0 then
+                        spellButton.text:SetText("")
+                        spellButton.setButtonState(spellButton, false, false, false, false)
+                    end
+                else
                     spellButton.text:SetText("")
                     spellButton.setButtonState(spellButton, false, false, false, false)
                 end
@@ -43,6 +42,15 @@ function iction.runTimers()
         iction.swdFrameUpdate()
         iction.voidFrameUpdate()
     end
+end
+
+function iction.fetchButton(buttonTable, spellID)
+    for bSpellID, button in pairs(buttonTable) do
+        if button == nil then break end
+        if bSpellID == spellID then
+            return button
+    end end
+    return nil
 end
 
 ictionBuffPadX = 0
@@ -68,16 +76,20 @@ function iction.updateBuffTimers()
             if iction.debugBuffs then print("Added buffButton spellID:" ..tostring(spellID)) end
             if iction.debugBuffs then print("Added buffButton spellName:" ..tostring(spellName)) end
             if iction.debugBuffs then print("-------") end
+
             ictionBuffPadX = ictionBuffPadX + iction.bw + iction.ictionButtonFramePad
             local remainingT = (expires - GetTime())
             if remainingT > 60 then
                 remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
                 butFrameBldr.text:SetText(remainingT)
+                butFrameBldr.setButtonState(butFrameBldr, true, false, false, false)
             elseif remainingT < 60 and remainingT > 0 then
                 remainingT = tonumber(string.format("%.1f", remainingT))
                 butFrameBldr.text:SetText(remainingT)
+                butFrameBldr.setButtonState(butFrameBldr, true, false, false, false)
             else
                 butFrameBldr.text:SetText("")
+                butFrameBldr.setButtonState(butFrameBldr, false, false, false, false)
             end
         else
             local remainingT = tonumber(string.format("%.1f", (button['expires'] - GetTime())))

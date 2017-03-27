@@ -9,6 +9,10 @@ function iction.getAllSpells()
         if name == iction.getSpecName() then
           for x=offset +1, offset + numSpells do
               local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(x, "spell")
+
+              -- Corruption spellBook has different ID than cast corruption
+              if spellID == 172 then spellID = 146739 end
+              -- Unstable affliction has 3 spellIDS to manage too
               if name and spellID and not IsPassiveSpell(spellID) then
                   local spellData = {}
                         spellData['uiName'] = name

@@ -165,13 +165,10 @@ function iction.debuffColumns_GUIDExists(guid)
 end
 
 function iction.debuffColumns_currentTargetFrameBldr(guid)
-    local tgIter = iction.list_iter(iction.targetData)
-    while true do
-        local target = tgIter()
-        if not target then break end
-
-        if target["guid"] == guid and target["colID"]['active'] then
-            return target['frame']
+    for tguid, targetData in pairs(iction.targetData) do
+        if not targetData then break end
+        if tguid == guid and targetData["colID"]['active'] then
+            return targetData['frame']
     end end
     return nil
 end
@@ -237,17 +234,18 @@ function iction.oocCleanup()
         iction.voidFrameBldr.frame:Hide()
         iction.SWDFrameBldr.frame:Hide()
     end
-    local itr = iction.list_iter(iction.targetData)
-    while true do
-        local target = itr()
+    for guid, target in pairs(iction.targetData) do
         if target == nil then break end
         target['frame'].setVisibility(target['frame'], false)
-        target = nil
+        target['spellData'] = nil
+        for _, button in pairs(target['buttons']) do
+            button.setVisibility(button, false)
+        end
+        iction.targetData[guid] = nil
     end
     iction.targetData = {}
     iction.activeSpellTable = {}
     iction.debuffColumns_clearAll()
-    if iction.debugUITimers then print("EXIT COMBAT DETECTED. TABLES CLEANED!") end
 end
 
 function iction.targetsColumns_clearAllChanneled(guid)

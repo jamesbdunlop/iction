@@ -19,11 +19,9 @@ function iction.targetChanged(guid)
     if UnitAffectingCombat("player") then
         local prev = iction.hlGuid
         if prev ~= guid then
-            local tgIter = iction.list_iter(iction.targetData)
-            while true do
-                local target = tgIter()
-                if not target then break end
-                target['frame'].setTextureVertexColor(target['frame'], 0,0,0,0)
+            for guid, targetData in pairs(iction.targetData) do
+                if not targetData then break end
+                targetData['frame'].setTextureVertexColor(targetData['frame'], 0,0,0,0)
             end
             local activeFrameBldr = iction.debuffColumns_currentTargetFrameBldr(guid)
             if activeFrameBldr then
