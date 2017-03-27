@@ -157,7 +157,7 @@ end
 
 function iction.debuffColumns_GUIDExists(guid)
     local exists = false
-    for colID, colData in pairs(iction.targetCols) do
+    for _, colData in pairs(iction.targetCols) do
         if colData["guid"] == guid then
             exists = true
     end end
@@ -292,3 +292,15 @@ function iction.isBuffInCacheData(spellName)
     end end
     return false, nil
 end
+
+function iction.clearBuffButtons()
+    local itr  = iction.list_iter(iction.buffButtons)
+    while true do
+        local spellData = itr()
+        if not spellData then break end
+        spellData['frame'].setVisibility(spellData['frame'], false)
+        ictionBuffPadX = ictionBuffPadX - iction.bw - iction.ictionButtonFramePad
+    end
+    iction.buffButtons = {}
+end
+

@@ -8,7 +8,7 @@ function iction.runTimers()
         local spellTable = activeSpellTables()
         if spellTable == nil then break end
         if spellTable['expires']["endTime"] then
-            local remainingT = tonumber(string.format("%.1f", (spellTable['expires']["endTime"] - GetTime())))
+            local remainingT = (spellTable['expires']["endTime"] - GetTime())
             -- Find the button
             local function fetchButton(buttonTable)
                 local buttonTable = iction.list_iter(buttonTable)
@@ -22,10 +22,14 @@ function iction.runTimers()
                 end
                 return false
             end
-
             local spellButton = fetchButton(spellTable['buttons'])
             if spellButton then
-                if remainingT >= 0 then
+                if remainingT > 60 then
+                    remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
+                    spellButton.text:SetText(remainingT)
+                    spellButton.setButtonState(spellButton, true, false, false, false)
+                elseif remainingT < 60 and remainingT > 0 then
+                    remainingT = tonumber(string.format("%.1f", remainingT))
                     spellButton.text:SetText(remainingT)
                     spellButton.setButtonState(spellButton, true, false, false, false)
                 elseif remainingT <= 0 then
@@ -47,6 +51,7 @@ function iction.updateBuffTimers()
     for x = 1, 100 do
         local spellName, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura("Player", x, "CANCELABLE|PLAYER|HELPFUL")
         if not spellName then break end
+
         local active, button = iction.isBuffInCacheData(spellName)
         if not active then
             local spellData = {}
@@ -55,45 +60,30 @@ function iction.updateBuffTimers()
                   spellData['count'] = count
                   spellData['expires'] = expires
                   spellData['icon'] = icon
-                  spellData['expires'] = {}
-                  spellData['expires']["endTime"] = expires
-
             local butFrameBldr = {}
                   setmetatable(butFrameBldr, {__index = iction.UIButtonElement})
                   butFrameBldr.create(butFrameBldr, iction.buffFrameBldr.frame, spellData, "LEFT", ictionBuffPadX, ictionBuffPadY)
             spellData['frame'] = butFrameBldr
             table.insert(iction.buffButtons, spellData)
-            if iction.debugWatcher then print("Added buffButton spellID:" ..tostring(spellID)) end
-            if iction.debugWatcher then print("Added buffButton spellName:" ..tostring(spellName)) end
-            if iction.debugWatcher then print("-------") end
+            if iction.debugBuffs then print("Added buffButton spellID:" ..tostring(spellID)) end
+            if iction.debugBuffs then print("Added buffButton spellName:" ..tostring(spellName)) end
+            if iction.debugBuffs then print("-------") end
             ictionBuffPadX = ictionBuffPadX + iction.bw + iction.ictionButtonFramePad
+            local remainingT = (expires - GetTime())
+            if remainingT > 60 then
+                remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
+                butFrameBldr.text:SetText(remainingT)
+            elseif remainingT < 60 and remainingT > 0 then
+                remainingT = tonumber(string.format("%.1f", remainingT))
+                butFrameBldr.text:SetText(remainingT)
+            else
+                butFrameBldr.text:SetText("")
+            end
         else
-           local remainingT = tonumber(string.format("%.1f", (button['expires']["endTime"] - GetTime())))
-           if remainingT < 120 and remainingT > 0 then
-               button['frame'].text:SetText(remainingT)
+            local remainingT = tonumber(string.format("%.1f", (button['expires'] - GetTime())))
+            if remainingT < 120 and remainingT > 0 then
+                button['frame'].text:SetText(remainingT)
         end end end
-end
-
-function iction.getBuffSpellNameTableIDX(spellName)
-    for x=1, 100 do
-        local spellData = iction.buffButtons[x]
-        if not spellData then break end
-        if spellData['uiName'] == spellName then
-            return x
-        end
-    end
-    return nil
-end
-
-function iction.removeBuff(spellName)
-    local active, _ = iction.isBuffInCacheData(spellName)
-    if active then
-        local idx = iction.getBuffSpellNameTableIDX(spellName)
-        iction.buffButtons[idx]['frame'].setVisibility(iction.buffButtons[idx]['frame'], false)
-        iction.buffButtons[idx]=nil
-        table.remove(iction.buffButtons, idx)
-        ictionBuffPadX = ictionBuffPadX - iction.bw - iction.ictionButtonFramePad
-    end
 end
 
 --- PRIEST SPECIFIC HANDLERS (TO REMOVE)

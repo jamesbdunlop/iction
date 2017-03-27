@@ -232,7 +232,7 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
         self.texture:SetTexture(self.icon)
         self.texture:SetVertexColor(0.9,0.3,0.3, .5)
     -- Create the fontString for the button
-    self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 24, .1, 1, .1, 1)
+    self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 16, .1, 1, .1, 1)
 end
 
 function iction.UIButtonElement.addCountFrame(self)

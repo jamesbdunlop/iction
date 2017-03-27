@@ -34,12 +34,14 @@ iction.targetData = {}
 iction.buffButtons = {}
 iction.activeSpellTable = {}
 iction.validSpellTable = {}
+iction.targetExists = false
 --- DEBUG
 iction.debugUI = false
-iction.debugUITimers = false
+iction.debugUITimers = true
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
-iction.debugWatcher = true
+iction.debugWatcher = false
+iction.debugBuffs = false
 
 iction.playerGUID = nil
 iction.spec = nil

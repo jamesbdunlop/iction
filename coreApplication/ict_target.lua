@@ -1,19 +1,20 @@
 local iction = iction
-local UnitBuff, UnitDebuff, UnitGUID, GetSpellInfo = UnitBuff, UnitDebuff, UnitGUID, GetSpellInfo
+local UnitDebuff, GetSpellInfo = UnitDebuff, GetSpellInfo
 ----------------------------------------------------------------------------------------------
 --- CREATE AN ICTION TARGET CACHE ENTRY  ---
 function iction.createTarget(guid)
     if not guid then return end
+
     --- If we have this target already exit early
-    local tgtExists = false
+    iction.targetExists = false
     local tgDItr = iction.list_iter(iction.targetData)
     while true do
         local target = tgDItr()
         if target == nil then break end
-        if target["guid"] == guid then tgtExists = true break end
+        if target["guid"] == guid then iction.targetExists = true break end
     end
 
-    if tgtExists then return end
+    if iction.targetExists then return end
 
     --- Do we have a free colum to use?
     if iction.debuffColumns_GUIDExists(guid) then return end
@@ -86,24 +87,31 @@ end
 ----------------------------------------------------------------------------------------------
 --- CREATE CRETURE CACHE TABLE ENTRY  ---
 function iction.createTargetSpellData(guid, spellType, spellID)
+    if not spellType then return end
+    if iction.debugUITimers then print("createTargetSpellData: guid:"..tostring(guid)) end
+    if iction.debugUITimers then print("createTargetSpellData: spellType:"..tostring(spellType)) end
+    if iction.debugUITimers then print("createTargetSpellData: spellID:"..tostring(spellID)) end
+
     local targetDataTable = iction.list_iter(iction.targetData)
+
     while true do
         local targetData = targetDataTable()
         if targetData == nil then break end
 
         if targetData['guid'] == guid then
             local function isSpellActive(activeSpellTable, guid, spellID)
+                if iction.debugUITimers then print("Checking guid table:"..tostring(guid)) end
                 local activeSpellTables = iction.list_iter(activeSpellTable)
                 while true do
                     local spellTable = activeSpellTables()
                     if spellTable == nil then break end
                     -- Check for id and guid match and return table associated with the spell
                     if spellTable['id'] == spellID and spellTable['guid'] == guid then
-                        if iction.debugUITimers then print("SPELL IS ACTIVE..."..tostring(spellID)) end
+                        if iction.debugUITimers then print("SPELL IS ACTIVE: "..tostring(spellID)) end
                         return true, spellTable
                     end
                 end
-                if iction. debugUITimers then print("SPELL IS NOT ACTIVE... "..tostring(spellID)) end
+                if iction. debugUITimers then print("SPELL IS NOT ACTIVE: "..tostring(spellID)) end
                 return false, nil
             end
 
@@ -115,7 +123,6 @@ function iction.createTargetSpellData(guid, spellType, spellID)
                 if not spellName then return expiresData end
 
                 if iction.debugUITimers then print("...FETCHING ENDTIME...") end
-                -- Set all expires to 0
                 if iction.debugRunningTimers then print('Clearning all channeled spells but target...') end
                 iction.targetsColumns_clearAllChanneled(guid)
                 -- EXPIRES
@@ -159,6 +166,7 @@ function iction.createTargetSpellData(guid, spellType, spellID)
                 -- spell is active update the expires for timers
                 -- Find the active spelltable for guid and update the expires
                 activeTable['expires'] = getExpiresInfo(spellName, guid)
+                if iction.debugUITimers then print("Updated Expires info: " .. tostring(activeTable['expires']['endTime'])) end
             end
             if iction.debugUITimers then print("#############") end
         end
