@@ -45,6 +45,8 @@ coreUI\ict_Frame.lua
 frames\mainFrame.lua
 frames\optionsFrame.lua
 frames\allSpellsListFrame.lua
+frames\optionsSkinCheckBoxList.lua
+frames\optionsColumnCheckBoxList.lua
 frames\buffFrame.lua
 frames\debuffFrame.lua
 frames\shardFrame.lua
