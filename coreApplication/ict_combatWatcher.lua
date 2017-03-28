@@ -109,9 +109,6 @@ function iction.watcher(self)
                 if mobGUID ~= nil and string.find(mobGUID, "Creature", 1) then
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
---                    if spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID == 233499 then --- UA
---                        spellID = 30108
---                    end
                     createTarget(mobGUID, spellType, spellID, spellName)
                 end
             elseif ictonCombat and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName == "SPELL_CAST_START" then
