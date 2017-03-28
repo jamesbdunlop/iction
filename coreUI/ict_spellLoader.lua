@@ -5,14 +5,10 @@ function iction.getAllSpells()
     --- to the user and a config panel.
     local numTabs = GetNumSpellTabs()
     for i=1,numTabs do
-        local name, texture, offset, numSpells = GetSpellTabInfo(i)
+        local name, _, offset, numSpells = GetSpellTabInfo(i)
         if name == iction.getSpecName() then
-          for x=offset +1, offset + numSpells do
+          for x=offset+1, offset + numSpells do
               local name, rank, icon, castingTime, minRange, maxRange, spellID = GetSpellInfo(x, "spell")
-              -- Corruption spellBook has different ID than cast corruption
-              if spellID == 172 then spellID = 146739 end -- This fucks SPELL_CAST_SUCCESS for corruption
-              if spellID == 5782 then spellID = 118699 end
-              -- Unstable affliction has 3 spellIDS to manage too
               if name and spellID and not IsPassiveSpell(spellID) then
                   local spellData = {}
                         spellData['uiName'] = name

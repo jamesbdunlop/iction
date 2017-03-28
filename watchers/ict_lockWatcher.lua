@@ -21,6 +21,7 @@ function iction.watcher(self)
         mobGUID = prefix2
         spellType = sufx6
         spellID = sufx3
+        spellName = sufx4
         if sourceGUID == iction.playerGUID then
             if iction.debugWatcher then print("#############") end
             if iction.debugWatcher then print("event: " .. tostring(event)) end
@@ -46,14 +47,14 @@ function iction.watcher(self)
             if iction.debugWatcher then print("sufx9: " .. tostring(sufx9)) end
             if iction.debugWatcher then print("-------") end
         end
-        local function createTarget(mobGUID, spellType, spellID)
+        local function createTarget(mobGUID, spellType, spellID, spellName)
             --- Create the frame and icons for the timers
             if mobGUID and not iction.debuffColumns_GUIDExists(mobGUID) then
                 iction.createTarget(mobGUID)
             end
             --- Create the spellData for the target
             if mobGUID and iction.debuffColumns_GUIDExists(mobGUID) then
-                iction.createTargetSpellData(mobGUID, spellType, spellID)
+                iction.createTargetSpellData(mobGUID, spellType, spellID, spellName)
             end
         end
 
@@ -102,22 +103,22 @@ function iction.watcher(self)
 
                 if eventName == 'SPELL_AURA_REMOVED' and mobGUID == iction.playerGUID then
                     iction.clearBuffButtons()
-                    createTarget(mobGUID, spellType, spellID)
+                    createTarget(mobGUID, spellType, spellID, spellName)
                 end
 
                 if mobGUID ~= nil and string.find(mobGUID, "Creature", 1) then
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
-                    if spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID == 233499 then --- UA
-                        spellID = 30108
-                    end
-                    createTarget(mobGUID, spellType, spellID)
+--                    if spellID == 233490 or spellID == 233496 or spellID == 233497 or spellID == 233498 or spellID == 233499 then --- UA
+--                        spellID = 30108
+--                    end
+                    createTarget(mobGUID, spellType, spellID, spellName)
                 end
             elseif ictonCombat and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName == "SPELL_CAST_START" then
                 if mobGUID ~= nil and string.find(mobGUID, "Creature", 1) then
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
-                    createTarget(mobGUID, spellType, spellID)
+                    createTarget(mobGUID, spellType, spellID, spellName)
                 end
             end
         end

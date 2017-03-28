@@ -113,4 +113,5 @@ function iction.initSpellTable()
         ictionValidSpells[iction.class][iction.spec] = {}
         ictionValidSpells[iction.class][iction.spec]["spells"] = {}
     end
+    print("Built newSpellTable in global")
 end

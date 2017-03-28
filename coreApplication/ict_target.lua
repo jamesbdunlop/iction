@@ -68,15 +68,14 @@ function iction.createButtons(frm)
     padX = 0
     padY = iction.ictionButtonFramePad
     while true do
-        local buttonData = itr()
-        if buttonData == nil then break end
-        local id = buttonData['id']
+        local spellData = itr()
+        if spellData == nil then break end
+        local id = spellData['id']
         if not id then break end
-
         if iction.validSpellID(id) then
             local butFrameBldr = {}
                   setmetatable(butFrameBldr, {__index = iction.UIButtonElement})
-                  butFrameBldr.create(butFrameBldr, frm, buttonData, "BOTTOM", padX, padY)
+                  butFrameBldr.create(butFrameBldr, frm, spellData, "BOTTOM", padX, padY)
                   butFrameBldr.addCountFontString(butFrameBldr, "THICKOUTLINE", "OVERLAY", false, "LEFT", 0, -(iction.bh/2), 12, 1, 0, 0, 1)
             buttons[id] = butFrameBldr
             padY = padY + iction.bh + iction.ictionButtonFramePad
@@ -87,9 +86,13 @@ end
 
 ----------------------------------------------------------------------------------------------
 --- CREATE CRETURE CACHE TABLE ENTRY  ---
-function iction.createTargetSpellData(guid, spellType, spellID)
+function iction.createTargetSpellData(guid, spellType, spellID, spellName)
     if not UnitAffectingCombat("player") then return end
-    if not iction.validSpellID(spellID) then return end
+    if not iction.validSpellID(spellID) then
+        if not iction.validSpellName(spellName) then
+            return
+        end
+    end
 
     local function isSpellActive(spellTable, spellID)
         for tspellID, spellData in pairs(spellTable) do
@@ -153,7 +156,6 @@ function iction.createTargetSpellData(guid, spellType, spellID)
                     targetData["spellData"][spellID]["expires"]['count'] = count
                 end
             end
-
         end
     end
 end

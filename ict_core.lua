@@ -40,7 +40,7 @@ iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
-iction.debugWatcher = true
+iction.debugWatcher = false
 iction.debugBuffs = false
 
 iction.playerGUID = nil
@@ -94,6 +94,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.VoidboltScale = ictionVoidBoltScale
         end
 
+        --ictionValidSpells = nil
         if not ictionValidSpells then
             ictionValidSpells = {}
         end

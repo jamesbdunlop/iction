@@ -335,9 +335,9 @@ function iction.UISpellScrollFrameElement.addItems(self, t)
     local y = 0
     local h = 0
     while true do
-        local spellInfo, i = spellList()
-        if not spellInfo then break end
-        local spellCheckBox = CreateFrame("CheckButton", "spellOptionsButton_"..spellInfo['id'], self.frame, "OptionsSmallCheckButtonTemplate")
+        local spellData, i = spellList()
+        if not spellData then break end
+        local spellCheckBox = CreateFrame("CheckButton", "spellOptionsButton_"..spellData['id'], self.frame, "OptionsSmallCheckButtonTemplate")
             if i == 1 then
                 spellCheckBox:SetPoint("TOPLEFT", self.frame)
             else
@@ -346,30 +346,35 @@ function iction.UISpellScrollFrameElement.addItems(self, t)
             spellCheckBox:SetWidth(24)
             spellCheckBox:SetHeight(24)
             spellCheckBox:SetScript("OnClick", function(self)
+                local validSpells = ictionValidSpells[iction.class][iction.spec]
                 if self:GetChecked() then
-                    if not ictionValidSpells[iction.class][iction.spec] then
+                    print( spellData['id'] .. ' is checked!')
+                    if not validSpells then
                         --- Add an empty table now
-                        ictionValidSpells[iction.class][iction.spec] = {}
-                        ictionValidSpells[iction.class][iction.spec]['spells'] = {}
+                        iction.initSpellTable()
                     end
-                    table.insert(ictionValidSpells[iction.class][iction.spec]["spells"], spellInfo['id'])
+                    print("Adding spell " .. tostring(spellData['uiName']) .. " to validSpells global table.")
+                    table.insert(ictionValidSpells[iction.class][iction.spec]["spells"], {id = spellData['id'], name = spellData['uiName']})
                 else
-                    for i=1, iction.tablelength(ictionValidSpells[iction.class][iction.spec]["spells"]) do
-                        if ictionValidSpells[iction.class][iction.spec]["spells"][i] == spellInfo['id'] then
+                    for i=1, iction.tablelength(validSpells) do
+                        if ictionValidSpells[iction.class][iction.spec]["spells"][i]['id'] == spellData['id'] then
                             table.remove(ictionValidSpells[iction.class][iction.spec]["spells"], i)
                         end
                     end
                 end
                 end)
+
             if ictionValidSpells[iction.class][iction.spec] then
-                if iction.validSpellID(spellInfo['id']) then spellCheckBox:SetChecked(true) end
+                if iction.validSpellID(spellData['id']) then
+                    spellCheckBox:SetChecked(true)
+                end
             end
 
-        local fnt = self.frame:CreateFontString("spellOptionsLabel_"..spellInfo['id'], 'OVERLAY')
+        local fnt = self.frame:CreateFontString("spellOptionsLabel_"..spellData['id'], 'OVERLAY')
             fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')
             fnt:SetFontObject("GameFontWhite")
             fnt:SetTextColor(1,1, 1, 1)
-            fnt:SetText(spellInfo['uiName'])
+            fnt:SetText(spellData['uiName'])
             if i == 1 then
                 fnt:SetPoint("TOPLEFT", self.frame, 24, -4)  -- anchors the first string, parent should be the content frame
             else

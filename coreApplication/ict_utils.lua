@@ -29,12 +29,24 @@ function iction.tablelength(T)
 end
 
 function iction.validSpellID(id)
-    if ictionValidSpells[iction.class][iction.spec]["spells"] then
-        local validIter = iction.list_iter(ictionValidSpells[iction.class][iction.spec]["spells"])
-        while true do
-            local spellID = validIter()
-            if not spellID then break end
-            if id == spellID then return true end
+    local validSpells = ictionValidSpells[iction.class][iction.spec]["spells"]
+    if validSpells then
+        for _, spellTable in pairs(validSpells) do
+            if spellTable['id'] == id then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function iction.validSpellName(spellName)
+    local validSpells = ictionValidSpells[iction.class][iction.spec]["spells"]
+    if validSpells then
+        for _, spellTable in pairs(validSpells) do
+            if spellTable['name'] == spellName then
+                return true
+            end
         end
     end
     return false

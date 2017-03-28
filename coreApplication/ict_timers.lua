@@ -7,38 +7,52 @@ function iction.runTimers()
         if targetTable == nil then break end
         local spells = targetTable['spellData']
         if not spells then break end
-        for spellID, spellData in pairs(spells) do
-            if iction.validSpellID(spellID) then
-                local buttonTable = targetTable['buttons']
-                local spellButton = iction.fetchButton(buttonTable, spellID)
-                local endTime = spellData['expires']['endTime']
-                local count = spellData['expires']['count']
-                if count and count ~= 0 then
-                    spellButton.count:SetText(tostring(count))
-                end
 
-                if endTime then
-                    local remainingT = (endTime - GetTime())
-                    if remainingT > 60 then
-                        remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
-                        spellButton.text:SetText(remainingT)
-                        spellButton.setButtonState(spellButton, true, false, false, false)
-                    elseif remainingT < 60 and remainingT > 5 then
-                        remainingT = tonumber(string.format("%.1f", remainingT))
-                        spellButton.text:SetText(remainingT)
-                        spellButton.setButtonState(spellButton, true, false, false, false)
-                    elseif remainingT <= 5 and remainingT > .1 then
-                        remainingT = tonumber(string.format("%.1f", remainingT))
-                        spellButton.text:SetText(remainingT)
-                        spellButton.setButtonState(spellButton, true, false, true, false)
-                    elseif remainingT <= 0 then
-                        spellButton.text:SetText("")
-                        spellButton.setButtonState(spellButton, false, false, false, false)
-                    end
-                else
+        for spellID, spellData in pairs(spells) do
+            local bySpellname = false
+            if not iction.validSpellID(spellID) and not iction.validSpellName(spellData['spellName']) then
+                print("timers...Not a valid spellID: " ..tostring(spellID))
+                print("timers...Not a valid spellName: " ..tostring(spellData['spellName']))
+                return
+            elseif not iction.validSpellID(spellID) and iction.validSpellName(spellData['spellName']) then
+                bySpellname = true
+            end
+
+            local buttonTable = targetTable['buttons']
+            local spellButton
+            if not bySpellname then
+                spellButton = iction.fetchButtonByID(buttonTable, spellID)
+            else
+                spellButton = iction.fetchButtonBySpellName(buttonTable, spellData['spellName'])
+            end
+
+            local endTime = spellData['expires']['endTime']
+            local count = spellData['expires']['count']
+            if count and count ~= 0 then
+                spellButton.count:SetText(tostring(count))
+            end
+
+            if endTime then
+                local remainingT = (endTime - GetTime())
+                if remainingT > 60 then
+                    remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
+                    spellButton.text:SetText(remainingT)
+                    spellButton.setButtonState(spellButton, true, false, false, false)
+                elseif remainingT < 60 and remainingT > 5 then
+                    remainingT = tonumber(string.format("%.1f", remainingT))
+                    spellButton.text:SetText(remainingT)
+                    spellButton.setButtonState(spellButton, true, false, false, false)
+                elseif remainingT <= 5 and remainingT > .1 then
+                    remainingT = tonumber(string.format("%.1f", remainingT))
+                    spellButton.text:SetText(remainingT)
+                    spellButton.setButtonState(spellButton, true, false, true, false)
+                elseif remainingT <= 0 then
                     spellButton.text:SetText("")
                     spellButton.setButtonState(spellButton, false, false, false, false)
                 end
+            else
+                spellButton.text:SetText("")
+                spellButton.setButtonState(spellButton, false, false, false, false)
             end
         end
     end
@@ -48,11 +62,20 @@ function iction.runTimers()
     end
 end
 
-function iction.fetchButton(buttonTable, spellID)
-    for bSpellID, button in pairs(buttonTable) do
-        if button == nil then break end
+function iction.fetchButtonByID(buttonTable, spellID)
+    for bSpellID, buttonBldr in pairs(buttonTable) do
+        if buttonBldr == nil then break end
         if bSpellID == spellID then
-            return button
+            return buttonBldr
+    end end
+    return nil
+end
+
+function iction.fetchButtonBySpellName(buttonTable, spellName)
+    for _, buttonBldr in pairs(buttonTable) do
+        if buttonBldr == nil then break end
+        if buttonBldr.frameName == spellName then
+            return buttonBldr
     end end
     return nil
 end

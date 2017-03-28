@@ -23,6 +23,7 @@ function iction.targetChanged(guid)
                 if not targetData then break end
                 targetData['frame'].setTextureVertexColor(targetData['frame'], 0,0,0,0)
             end
+
             local activeFrameBldr = iction.debuffColumns_currentTargetFrameBldr(guid)
             if activeFrameBldr then
                 iction.hlGuid = guid
