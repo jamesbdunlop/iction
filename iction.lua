@@ -90,11 +90,7 @@ function iction.initMainUI()
     iction.createDebuffColumns()
 
     --- Setup the frame watcher for spells etc
-    if iction.class == iction.L['Warlock'] then
-        iction.watcher(iction.mainFrameBldr.frame)
-    elseif iction.class == iction.L['Priest'] then
-        iction.watcher(iction.mainFrameBldr.frame)
-    end
+    iction.watcher(iction.mainFrameBldr.frame)
 
     if iction.debugUI then print("iction.initMainUI success!") end
     iction.playerGUID = UnitGUID("Player")

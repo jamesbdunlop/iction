@@ -2,7 +2,7 @@
 ## Title: iction
 ## Version: 2.00
 ## Author: Macky kaz`goroth
-## Notes: MOAR DOTS!
+## Notes: Blizzards API was designed by an Orc.
 ##
 ##SavedVariablesPerCharacter: ictionFramePos
 ##SavedVariablesPerCharacter: ictionTargetCount
@@ -33,18 +33,13 @@ coreApplication\ict_target.lua
 coreApplication\ict_targetUtils.lua
 coreApplication\ict_options.lua
 coreApplication\ict_timers.lua
+coreApplication\ict_combatWatcher.lua
 
 ##-- CoreUI Stuff
 coreUI\ict_ui.lua
 coreUI\ict_uiUtils.lua
 coreUI\ict_spellLoader.lua
 coreUI\ict_Frame.lua
-
-##--- Spell Lists
-spells\ict_lockSpells.lua
-
-##--- Spell Watchers
-watchers\ict_lockWatcher.lua
 
 ##--- Final UI Stuff
 frames\mainFrame.lua
