@@ -11,8 +11,6 @@ function iction.runTimers()
         for spellID, spellData in pairs(spells) do
             local bySpellname = false
             if not iction.validSpellID(spellID) and not iction.validSpellName(spellData['spellName']) then
-                print("timers...Not a valid spellID: " ..tostring(spellID))
-                print("timers...Not a valid spellName: " ..tostring(spellData['spellName']))
                 return
             elseif not iction.validSpellID(spellID) and iction.validSpellName(spellData['spellName']) then
                 bySpellname = true

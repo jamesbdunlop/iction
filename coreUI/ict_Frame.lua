@@ -351,12 +351,10 @@ function iction.UISpellScrollFrameElement.addItems(self, t)
             spellCheckBox:SetScript("OnClick", function(self)
                 local validSpells = ictionValidSpells[iction.class][iction.spec]
                 if self:GetChecked() then
-                    print( spellData['id'] .. ' is checked!')
                     if not validSpells then
                         --- Add an empty table now
                         iction.initSpellTable()
                     end
-                    print("Adding spell " .. tostring(spellData['uiName']) .. " to validSpells global table.")
                     table.insert(ictionValidSpells[iction.class][iction.spec]["spells"], {id = spellData['id'], name = spellData['uiName']})
                 else
                     for i=1, iction.tablelength(validSpells) do
