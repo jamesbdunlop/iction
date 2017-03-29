@@ -60,6 +60,7 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
 
         --- Legacy check for globals cleanup
         if ictionLegacy == nil then ictionFramePos = nil ictionLegacy = false end
+        if ictionLegacyV1 == nil then ictionFramePos = nil ictionLegacyV1 = false end
 
         --- Initialize frame position table
         if not ictionFramePos then ictionFramePos = {} end
@@ -94,7 +95,6 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
             iction.VoidboltScale = ictionVoidBoltScale
         end
 
-        --ictionValidSpells = nil
         if not ictionValidSpells then
             ictionValidSpells = {}
         end

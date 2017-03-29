@@ -12,6 +12,7 @@
 ##SavedVariablesPerCharacter: ictionGlobalScale
 ##SavedVariablesPerCharacter: ictionSkin
 ##SavedVariablesPerCharacter: ictionLegacy
+##SavedVariablesPerCharacter: ictionLegacyV1
 ##SavedVariablesPerCharacter: ictionSWDScale
 ##SavedVariablesPerCharacter: ictionVoidBoltScale
 ##SavedVariablesPerCharacter: ictionValidSpells
