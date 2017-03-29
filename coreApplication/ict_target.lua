@@ -142,6 +142,7 @@ function iction.createTargetSpellData(guid, spellType, spellID, spellName)
             local spellName, _, _, _, _, _, _  = GetSpellInfo(spellID)
             if not active then
                 local spellInfo = {}
+                      spellInfo['guid'] = guid
                       spellInfo['spellType'] = spellType
                       spellInfo['spellName'] = spellName
                       spellInfo['id'] = spellID

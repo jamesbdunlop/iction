@@ -235,6 +235,16 @@ function iction.debuffColumns_clearAll()
     end
 end
 
+function iction.debuffColumns_setInActive(guid)
+    local orderCol = iction.debuffColumns_createOrderColTable()
+    for i = 1, iction.ict_maxTargets do
+        local colID = orderCol[i]
+        if iction.targetCols[colID]["guid"] == guid then
+            iction.targetCols[colID]["active"] = false
+        end
+    end
+end
+
 ----------------------------------------------------------------------------------------------
 --- CACHE DATA COMBAT STUFF ---
 function iction.oocCleanup()
@@ -261,34 +271,28 @@ function iction.oocCleanup()
 end
 
 function iction.targetsColumns_clearAllChanneled(guid)
-    local itr  = iction.list_iter(iction.activeSpellTable)
-    while true do
-        local spellData = itr()
-        if not spellData then break end
-        if spellData['expires']['isChanneled'] and spellData['guid'] ~= guid then
-            spellData['expires']['endTime']= 0
+    for tguid, targetData in pairs(iction.targetData) do
+        if not targetData then break end
+        local spellData = targetData['spellData']
+        if spellData then
+            for spellID, spellInfo in pairs(spellData) do
+                if spellInfo['expires']['isChanneled'] and spellData['guid'] ~= guid then
+                    spellInfo['expires']['endTime']= 0
+                end
+            end
     end end
 end
 
 function iction.targetsColumns_tagDead(guid)
-    local itr  = iction.list_iter(iction.targetData)
-    while true do
-        local targetData = itr()
+    for tguid, targetData in pairs(iction.targetData) do
         if not targetData then break end
-        if targetData["guid"] == guid then
-            targetData["dead"] = false
-            targetData["frame"].setVisibility(targetData['frame'], false)
-            targetData = nil
-            if iction.debugWatcher then print("Removed targetData: " .. tostring(guid)) end
-    end end
-
-    local itr  = iction.list_iter(iction.activeSpellTable)
-    while true do
-        local spellData = itr()
-        if not spellData then break end
-        if spellData["guid"] == guid then
-            spellData = nil
-            if iction.debugWatcher then print("Removed activeSpell Data: " .. tostring(guid)) end
+        if tguid == guid then
+           targetData["dead"] = false
+           targetData["frame"].setVisibility(targetData['frame'], false)
+           targetData['spellData'] = nil
+           iction.debuffColumns_setInActive(guid)
+           targetData = nil
+           if iction.debugWatcher then print("Removed targetData: " .. tostring(guid)) end
     end end
 end
 
