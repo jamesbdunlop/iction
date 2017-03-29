@@ -568,13 +568,12 @@ function iction.UICheckBoxListFrameElement.create(self, data)
     self.scrollframe:Show()
 end
 
-function iction.UICheckBoxListFrameElement.addItems(self, t)
+function iction.UICheckBoxListFrameElement.addItems(self, t, checkBoxTable)
     -- format expected for table. The list index will become the number.
     -- {[0]=nil,
     --  [1] = {label = 'skin01'},
     --  [2] = {label = 'skin02'}
     -- }
-    local columnCheckBoxes = {}
     local checkBoxList = iction.list_iter(t)
     local y = 0
     local h = 0
@@ -592,16 +591,7 @@ function iction.UICheckBoxListFrameElement.addItems(self, t)
             end
             checkBox:SetWidth(24)
             checkBox:SetHeight(24)
-            checkBox:SetScript("OnClick", function(self)
-                if self:GetChecked() then
-                    --Turn off all checkboxes
-                    for i=1, iction.table_length(self.checkBoxes) do
-                        -- do a label check here and only turn off the ones we don't want
-                        --self.checkBoxes[0]:SetChecked(false)
-                    end
-                end
-                end)
-            table.insert(columnCheckBoxes, checkBox)
+            table.insert(checkBoxTable, checkBox)
         -- THE LABEL
         local fnt = self.frame:CreateFontString("checkBoxOptionsLabel_"..checkBoxes['label'], 'OVERLAY')
             fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')

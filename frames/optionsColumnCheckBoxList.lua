@@ -12,7 +12,7 @@ iction.ictColumnCheckBoxListFrameData = {
                                 h = 145,
                                 bgCol = {r = 1, g = 0, b= 0, a = 1},
                                 strata = "MEDIUM",
-                                pointPosition = {point = "LEFT",
+                                pointPosition = {point = "RIGHT",
                                                  relativeTo = nil,
                                                  relativePoint = "LEFT",
                                                  x = 0, y = 0},

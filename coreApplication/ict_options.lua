@@ -1,7 +1,7 @@
 local iction = iction
 local frameW = 300
 local frameH = 450
-local optionsBoxTop = -(frameH * .21)
+local optionsBoxTop = frameH -75
 local optionsBoxBottom = (frameH * .5)
 local optionsBoxW = (frameW*.25)
 
@@ -14,11 +14,10 @@ local voidBoxTop = voidLabel - 15
 local scaleUILabel = voidBoxTop - 33
 local scaleUIBoxTop = scaleUILabel - 15
 
-local chxboxW = 24
-
 function iction.setOptionsFrame()
     --- Now do the global options default setups
     local curTgtCnt = ictionTargetCount
+    local setCount
     local artifact = iction.artifact()
 
     local function closeOptionsUI()
@@ -71,7 +70,10 @@ function iction.setOptionsFrame()
 
     local function createMaxTargetsOptions()
         local columnData = iction.ictColumnCheckBoxListFrameData
+              columnData['uiParentFrame'] = iction.optionsFrameBldr.frame
               columnData['pointPosition']['relativeTo'] = iction.optionsFrameBldr.frame
+              columnData['pointPosition']['y'] = optionsBoxTop
+              columnData['pointPosition']['relativePoint'] = "BOTTOM"
 
         iction.optionsTargetListFrameBldr = {}
             setmetatable(iction.optionsTargetListFrameBldr, {__index = iction.UICheckBoxListFrameElement})
@@ -82,16 +84,37 @@ function iction.setOptionsFrame()
                         [2] = {label = 'ict_maxCount2'},
                         [3] = {label = 'ict_maxCount3'},
                         [4] = {label = 'ict_maxCount4'}
-                      }
-        iction.optionsTargetListFrameBldr.addItems(iction.optionsTargetListFrameBldr, items)
+        }
+        iction.optionsColumnCheckBoxes = {}
+        iction.optionsTargetListFrameBldr.addItems(iction.optionsTargetListFrameBldr, items, iction.optionsColumnCheckBoxes)
+        for i=1, iction.tablelength(iction.optionsColumnCheckBoxes) do
+            if i == ictionTargetCount then
+                iction.optionsColumnCheckBoxes[i]:SetChecked(true)
+                setCount = ictionTargetCount
+            end
+            iction.optionsColumnCheckBoxes[i]:SetScript("OnClick", function(self)
+                if self:GetChecked() then
+                    -- Turn off all checkboxes
+                    for i=1, iction.tablelength(iction.optionsColumnCheckBoxes) do
+                        iction.optionsColumnCheckBoxes[i]:SetChecked(false)
+                        self:SetChecked(true)
+                        setCount = i
+                        ictionTargetCount = i
+                    end
+                end
+            end)
+        end
     end
     createMaxTargetsOptions()
 
     local function createSkinOptions()
          local skinData = iction.ictSkinListFrameData
+              skinData['uiParentFrame'] = iction.optionsFrameBldr.frame
               skinData['pointPosition']['relativeTo'] = iction.optionsFrameBldr.frame
+              skinData['pointPosition']['y'] = optionsBoxTop
+              skinData['pointPosition']['relativePoint'] = "BOTTOM"
 
-        iction.optionsSkinListFrameBldr = {}
+         iction.optionsSkinListFrameBldr = {}
             setmetatable(iction.optionsSkinListFrameBldr, {__index = iction.UICheckBoxListFrameElement})
             iction.optionsSkinListFrameBldr.create(iction.optionsSkinListFrameBldr, skinData)
 
@@ -100,8 +123,26 @@ function iction.setOptionsFrame()
                         [2] = {label = 'skin2'},
                         [3] = {label = 'skin3'},
                         [4] = {label = 'skin4'}
-                      }
-        iction.optionsSkinListFrameBldr.addItems(iction.optionsSkinListFrameBldr, items)
+        }
+        iction.optionsSkinCheckBoxes = {}
+        iction.optionsSkinListFrameBldr.addItems(iction.optionsSkinListFrameBldr, items, iction.optionsSkinCheckBoxes)
+        for i=1, iction.tablelength(iction.optionsSkinCheckBoxes) do
+            if i == ictionSkin then
+                iction.optionsSkinCheckBoxes[i]:SetChecked(true)
+            end
+            iction.optionsSkinCheckBoxes[i]:SetScript("OnClick", function(self)
+                if self:GetChecked() then
+                    ictionSkin = i
+                    iction.skin = i
+                    iction.createBottomBarArtwork()
+                    -- Turn off all checkboxes
+                    for i=1, iction.tablelength(iction.optionsSkinCheckBoxes) do
+                        iction.optionsSkinCheckBoxes[i]:SetChecked(false)
+                        self:SetChecked(true)
+                    end
+                end
+            end)
+        end
     end
     createSkinOptions()
 

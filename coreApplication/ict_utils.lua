@@ -251,10 +251,18 @@ function iction.oocCleanup()
     if UnitAffectingCombat("player") then return end
     if iction.class == iction.L['Priest'] and iction.spec == 3 then
         if ict_UnlockCBx then
-            if not ict_UnlockCBx:GetChecked() then return end
+            if not ict_UnlockCBx:GetChecked() then
+                iction.voidFrameBldr.frame:Hide()
+                iction.SWDFrameBldr.frame:Hide()
+                return
+            else
+                iction.voidFrameBldr.frame:Show()
+                iction.SWDFrameBldr.frame:Show()
+            end
+        else
+            iction.voidFrameBldr.frame:Hide()
+            iction.SWDFrameBldr.frame:Hide()
         end
-        iction.voidFrameBldr.frame:Hide()
-        iction.SWDFrameBldr.frame:Hide()
     end
     for guid, target in pairs(iction.targetData) do
         if target == nil then break end
