@@ -19,7 +19,6 @@ local chxboxW = 24
 function iction.setOptionsFrame()
     --- Now do the global options default setups
     local curTgtCnt = ictionTargetCount
-    local setCount
     local artifact = iction.artifact()
 
     local function closeOptionsUI()
@@ -71,167 +70,38 @@ function iction.setOptionsFrame()
     listAllSpells()
 
     local function createMaxTargetsOptions()
-        iction.ict_TargetLabel = iction.optionsFrameBldr.frame:CreateFontString("TargetsLabel", "OVERLAY", "GameFontNormal")
-            iction.ict_TargetLabel:SetText(iction.L['maxTargetColsLabel'])
-            iction.ict_TargetLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
-            iction.ict_TargetLabel:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, -70)
+        local columnData = iction.ictColumnCheckBoxListFrameData
+              columnData['pointPosition']['relativeTo'] = iction.optionsFrameBldr.frame
 
-        iction.TargetOptionsFrame = CreateFrame('Frame', 'TargetOptionsFrame', iction.optionsFrameBldr.frame, "InsetFrameTemplate")
-            iction.TargetOptionsFrame:SetWidth(optionsBoxW)
-            iction.TargetOptionsFrame:SetFrameStrata("MEDIUM")
-            iction.TargetOptionsFrame:SetPoint("LEFT", iction.optionsFrameBldr.frame, 20, 0)
-            iction.TargetOptionsFrame:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, optionsBoxTop)
-            iction.TargetOptionsFrame:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, optionsBoxBottom)
-        local tgIndent = 10
+        iction.optionsTargetListFrameBldr = {}
+            setmetatable(iction.optionsTargetListFrameBldr, {__index = iction.UICheckBoxListFrameElement})
+            iction.optionsTargetListFrameBldr.create(iction.optionsTargetListFrameBldr, columnData)
 
-        ict_MaxTarget1Input = CreateFrame("CheckButton", "ict_maxCount1", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-            ict_MaxTarget1Input.tooltip = iction.L['maxTargets1TT']
-            ict_MaxTarget1Input:SetWidth(chxboxW)
-            ict_MaxTarget1Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-            ict_MaxTarget1Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -5)
-            ict_MaxTarget1Inputtext = _G["ict_maxCount1Text"]
-            ict_MaxTarget1Inputtext:SetText(iction.L['maxT1'])
-            ict_MaxTarget1Input:SetScript("OnClick", function()
-                                            ict_MaxTarget2Input:SetChecked(false)
-                                            ict_MaxTarget3Input:SetChecked(false)
-                                            ict_MaxTarget4Input:SetChecked(false)
-                                            ictionTargetCount = 1
-                                            setCount = 1
-                                            end)
-
-        ict_MaxTarget2Input = CreateFrame("CheckButton", "ict_maxCount2", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-            ict_MaxTarget2Input.tooltip = iction.L['maxTargets2TT']
-            ict_MaxTarget2Input:SetWidth(chxboxW)
-            ict_MaxTarget2Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-            ict_MaxTarget2Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -25)
-            ict_MaxTarget2Inputtext = _G["ict_maxCount2Text"]
-            ict_MaxTarget2Inputtext:SetText(iction.L['maxT2'])
-            ict_MaxTarget2Input:SetScript("OnClick", function()
-                                            ict_MaxTarget1Input:SetChecked(false)
-                                            ict_MaxTarget3Input:SetChecked(false)
-                                            ict_MaxTarget4Input:SetChecked(false)
-                                            ictionTargetCount = 2
-                                            setCount = 2
-                                            end)
-
-        ict_MaxTarget3Input = CreateFrame("CheckButton", "ict_maxCount3", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-            ict_MaxTarget3Input.tooltip = iction.L['maxTargets3TT']
-            ict_MaxTarget3Input:SetWidth(chxboxW)
-            ict_MaxTarget3Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-            ict_MaxTarget3Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -45)
-            ict_MaxTarget3Inputtext = _G["ict_maxCount3Text"]
-            ict_MaxTarget3Inputtext:SetText(iction.L['maxT3'])
-            ict_MaxTarget3Input:SetScript("OnClick", function()
-                                            ict_MaxTarget1Input:SetChecked(false)
-                                            ict_MaxTarget2Input:SetChecked(false)
-                                            ict_MaxTarget4Input:SetChecked(false)
-                                            ictionTargetCount = 3
-                                            setCount = 3
-                                            end)
-
-        ict_MaxTarget4Input = CreateFrame("CheckButton", "ict_maxCount4", iction.TargetOptionsFrame, "ChatConfigCheckButtonTemplate")
-            ict_MaxTarget4Input.tooltip = iction.L['maxTargets4TT']
-            ict_MaxTarget4Input:SetWidth(chxboxW)
-            ict_MaxTarget4Input:SetPoint("LEFT", iction.TargetOptionsFrame, tgIndent, 0)
-            ict_MaxTarget4Input:SetPoint("TOP", iction.TargetOptionsFrame, 0, -65)
-            ict_MaxTarget4Inputtext = _G["ict_maxCount4Text"]
-            ict_MaxTarget4Inputtext:SetText(iction.L['maxT4'])
-            ict_MaxTarget4Input:SetScript("OnClick", function()
-                                            ict_MaxTarget1Input:SetChecked(false)
-                                            ict_MaxTarget2Input:SetChecked(false)
-                                            ict_MaxTarget3Input:SetChecked(false)
-                                            ictionTargetCount = 4
-                                            setCount = 4
-                                            end)
-
-        if ictionTargetCount == 1 then ict_MaxTarget1Input:SetChecked(true) setCount = 1 end
-        if ictionTargetCount == 2 then ict_MaxTarget2Input:SetChecked(true) setCount = 2 end
-        if ictionTargetCount == 3 then ict_MaxTarget3Input:SetChecked(true) setCount = 3 end
-        if ictionTargetCount == 4 then ict_MaxTarget4Input:SetChecked(true) setCount = 4 end
+        local items = { [0]=nil,
+                        [1] = {label = 'ict_maxCount1'},
+                        [2] = {label = 'ict_maxCount2'},
+                        [3] = {label = 'ict_maxCount3'},
+                        [4] = {label = 'ict_maxCount4'}
+                      }
+        iction.optionsTargetListFrameBldr.addItems(iction.optionsTargetListFrameBldr, items)
     end
     createMaxTargetsOptions()
 
     local function createSkinOptions()
-        -------------------------------------------------------------------------------------------------------------
-        --- SKIN SELECTION
-        local skinNumber
-        iction.ict_skinsLabel = iction.optionsFrameBldr.frame:CreateFontString("SkinsLabel", "OVERLAY", "GameFontNormal")
-        iction.ict_skinsLabel:SetText(iction.L['skinLabel'])
-        iction.ict_skinsLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -50, 0)
-        iction.ict_skinsLabel:SetPoint("TOP", iction.optionsFrameBldr.frame, 0, -70)
+         local skinData = iction.ictSkinListFrameData
+              skinData['pointPosition']['relativeTo'] = iction.optionsFrameBldr.frame
 
-        iction.SkinOptionsFrame = CreateFrame('Frame', 'SkinOptionsFrame', iction.optionsFrameBldr.frame, "InsetFrameTemplate")
-        iction.SkinOptionsFrame:SetFrameStrata("MEDIUM")
-        iction.SkinOptionsFrame:SetWidth(optionsBoxW)
-        iction.SkinOptionsFrame:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -20, 0)
-        iction.SkinOptionsFrame:SetPoint("TOP", iction.optionsFrameBldr.frame, -20, optionsBoxTop)
-        iction.SkinOptionsFrame:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, optionsBoxBottom)
+        iction.optionsSkinListFrameBldr = {}
+            setmetatable(iction.optionsSkinListFrameBldr, {__index = iction.UICheckBoxListFrameElement})
+            iction.optionsSkinListFrameBldr.create(iction.optionsSkinListFrameBldr, skinData)
 
-        local skinIndent = 10
-        ict_skin1Input = CreateFrame("CheckButton", "ict_skin1", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin1Input.tooltip = iction.L['skin1TT']
-        ict_skin1Input:SetWidth(chxboxW)
-        ict_skin1Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
-        ict_skin1Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -5)
-        ict_skin1InputText = _G["ict_skin1Text"]
-        ict_skin1InputText:SetText(iction.L['maxT1'])
-        if ictionSkin == 1 then ict_skin1Input:SetChecked(true) end
-        ict_skin1Input:SetScript("OnClick", function()
-                                ict_skin2Input:SetChecked(false)
-                                ict_skin3Input:SetChecked(false)
-                                ict_skin4Input:SetChecked(false)
-                                ictionSkin = 1
-                                iction.skin = ictionSkin
-                                iction.createBottomBarArtwork()
-                                end)
-        ict_skin2Input = CreateFrame("CheckButton", "ict_skin2", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin2Input.tooltip = iction.L['skin2TT']
-        ict_skin2Input:SetWidth(chxboxW)
-        ict_skin2Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
-        ict_skin2Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -25)
-        ict_skin2InputText = _G["ict_skin2Text"]
-        ict_skin2InputText:SetText(iction.L['maxT2'])
-        if ictionSkin == 2 then ict_skin2Input:SetChecked(true) end
-        ict_skin2Input:SetScript("OnClick", function()
-                                ict_skin1Input:SetChecked(false)
-                                ict_skin3Input:SetChecked(false)
-                                ict_skin4Input:SetChecked(false)
-                                ictionSkin = 2
-                                iction.skin = ictionSkin
-                                iction.createBottomBarArtwork()
-                                end)
-        ict_skin3Input = CreateFrame("CheckButton", "ict_skin3", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin3Input.tooltip = iction.L['skin3TT']
-        ict_skin3Input:SetWidth(chxboxW)
-        ict_skin3Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
-        ict_skin3Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -45)
-        ict_skin3InputText = _G["ict_skin3Text"]
-        ict_skin3InputText:SetText(iction.L['maxT3'])
-        if ictionSkin == 3 then ict_skin3Input:SetChecked(true) end
-        ict_skin3Input:SetScript("OnClick", function()
-                                ict_skin1Input:SetChecked(false)
-                                ict_skin2Input:SetChecked(false)
-                                ict_skin4Input:SetChecked(false)
-                                ictionSkin = 3
-                                iction.skin = ictionSkin
-                                iction.createBottomBarArtwork()
-                                end)
-        ict_skin4Input = CreateFrame("CheckButton", "ict_skin4", iction.SkinOptionsFrame, "ChatConfigCheckButtonTemplate")
-        ict_skin4Input.tooltip = iction.L['skin4TT']
-        ict_skin4Input:SetWidth(chxboxW)
-        ict_skin4Input:SetPoint("LEFT", iction.SkinOptionsFrame, skinIndent, 0)
-        ict_skin4Input:SetPoint("TOP", iction.SkinOptionsFrame, 0, -65)
-        ict_skin4InputText = _G["ict_skin4Text"]
-        ict_skin4InputText:SetText(iction.L['maxT4'])
-        if ictionSkin == 4 then ict_skin4Input:SetChecked(true) end
-        ict_skin4Input:SetScript("OnClick", function()
-                                ict_skin1Input:SetChecked(false)
-                                ict_skin2Input:SetChecked(false)
-                                ict_skin3Input:SetChecked(false)
-                                ictionSkin = 4
-                                iction.skin = ictionSkin
-                                iction.createBottomBarArtwork()
-                                end)
+        local items = { [0]=nil,
+                        [1] = {label = 'skin1'},
+                        [2] = {label = 'skin2'},
+                        [3] = {label = 'skin3'},
+                        [4] = {label = 'skin4'}
+                      }
+        iction.optionsSkinListFrameBldr.addItems(iction.optionsSkinListFrameBldr, items)
     end
     createSkinOptions()
 

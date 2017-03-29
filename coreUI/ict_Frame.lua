@@ -4,6 +4,8 @@ iction.UIFrameElement = {}
 iction.UIButtonElement = {}
 iction.UISpellScrollFrameElement = {}
 iction.UICheckBoxListFrameElement = {}
+
+
 ------------------------------------------------------------------------------------------------------------------------
 --- FRAME
 function iction.UIFrameElement.create(self, data)
@@ -572,14 +574,17 @@ function iction.UICheckBoxListFrameElement.addItems(self, t)
     --  [1] = {label = 'skin01'},
     --  [2] = {label = 'skin02'}
     -- }
-    self.checkBoxes = {}
+    local columnCheckBoxes = {}
     local checkBoxList = iction.list_iter(t)
     local y = 0
     local h = 0
     while true do
         local checkBoxes, i = checkBoxList()
         if not checkBoxes then break end
-        local checkBox = CreateFrame("CheckButton", "spellOptionsButton_"..spellData['id'], self.frame, "OptionsSmallCheckButtonTemplate")
+        local checkBox = CreateFrame("CheckButton",
+                                     "spellOptionsButton_"..checkBoxes['label'],
+                                     self.frame,
+                                     "OptionsSmallCheckButtonTemplate")
             if i == 1 then
                 checkBox:SetPoint("TOPLEFT", self.frame)
             else
@@ -588,15 +593,15 @@ function iction.UICheckBoxListFrameElement.addItems(self, t)
             checkBox:SetWidth(24)
             checkBox:SetHeight(24)
             checkBox:SetScript("OnClick", function(self)
-                    if self:GetChecked() then
-                        --Turn off all checkboxes
-                        for i=1, iction.table_length(self.checkBoxes) do
-                            -- do a label check here and only turn off the ones we don't want
-                            self.checkBoxes[0]:SetChecked(false)
-                        end
+                if self:GetChecked() then
+                    --Turn off all checkboxes
+                    for i=1, iction.table_length(self.checkBoxes) do
+                        -- do a label check here and only turn off the ones we don't want
+                        --self.checkBoxes[0]:SetChecked(false)
                     end
-               end)
-            table.insert(self.checkboxes, checkBox)
+                end
+                end)
+            table.insert(columnCheckBoxes, checkBox)
         -- THE LABEL
         local fnt = self.frame:CreateFontString("checkBoxOptionsLabel_"..checkBoxes['label'], 'OVERLAY')
             fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')

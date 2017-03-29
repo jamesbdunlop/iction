@@ -1,6 +1,6 @@
 local iction = iction
-iction.ictSpellsListFrameData = {
-                                uiName = "ictionColumnCheckBoxList",
+iction.ictColumnCheckBoxListFrameData = {
+                                uiName = iction.L['maxTargetColsLabel'],
                                 nameAttr = "ictionColumnCheckBoxList",
                                 uiInherits = nil,
                                 userPlaced = false,
@@ -8,14 +8,14 @@ iction.ictSpellsListFrameData = {
                                 enableMouse = false,
                                 SetClampedToScreen = false,
                                 uiInherits = "UIPanelScrollFrameTemplate",
-                                w = 250,
-                                h = 250,
-                                bgCol = {r = 1, g = 0, b= 0, a = 0},
+                                w = 150,
+                                h = 145,
+                                bgCol = {r = 1, g = 0, b= 0, a = 1},
                                 strata = "MEDIUM",
                                 pointPosition = {point = "LEFT",
                                                  relativeTo = nil,
-                                                 relativePoint = "RIGHT",
-                                                 x = 5, y = 0},
+                                                 relativePoint = "LEFT",
+                                                 x = 0, y = 0},
                                 textures = { [1] = {name = "ictionColumnCheckBoxListBG",
                                                     allPoints = true,
                                                     level = "ARTWORK",

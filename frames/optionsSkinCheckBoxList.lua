@@ -1,5 +1,5 @@
 local iction = iction
-iction.ictSpellsListFrameData = {
+iction.ictSkinListFrameData = {
                                 uiName = "ictionSkinCheckBoxList",
                                 nameAttr = "ictionSkinCheckBoxList",
                                 uiInherits = nil,
@@ -8,14 +8,14 @@ iction.ictSpellsListFrameData = {
                                 enableMouse = false,
                                 SetClampedToScreen = false,
                                 uiInherits = "UIPanelScrollFrameTemplate",
-                                w = 250,
-                                h = 250,
+                                w = 100,
+                                h = 145,
                                 bgCol = {r = 1, g = 0, b= 0, a = 0},
                                 strata = "MEDIUM",
-                                pointPosition = {point = "LEFT",
+                                pointPosition = {point = "RIGHT",
                                                  relativeTo = nil,
                                                  relativePoint = "RIGHT",
-                                                 x = 5, y = 0},
+                                                 x = -20, y = 0},
                                 textures = { [1] = {name = "ictionSkinCheckBoxListBG",
                                                     allPoints = true,
                                                     level = "ARTWORK",

@@ -79,8 +79,7 @@ function iction.createButtons(frm)
                   butFrameBldr.addCountFontString(butFrameBldr, "THICKOUTLINE", "OVERLAY", false, "LEFT", 0, -(iction.bh/2), 12, 1, 0, 0, 1)
             buttons[id] = butFrameBldr
             padY = padY + iction.bh + iction.ictionButtonFramePad
-        end
-    end
+    end end
     return buttons
 end
 

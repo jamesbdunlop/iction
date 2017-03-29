@@ -1,4 +1,4 @@
-﻿## Interface: 70100
+﻿## Interface: 70200
 ## Title: iction
 ## Version: 2.00
 ## Author: Macky kaz`goroth
