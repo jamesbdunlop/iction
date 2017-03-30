@@ -39,7 +39,7 @@ iction.targetExists = false
 iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
-iction.debugRunningTimers = false
+iction.debugRunningTimers = true
 iction.debugWatcher = false
 iction.debugBuffs = false
 

@@ -29,8 +29,10 @@ function iction.runTimers()
             if count and count ~= 0 then
                 spellButton.count:SetText(tostring(count))
             end
+            if not endTime then endTime = iction.fetchCooldownET(spellID) end
 
             if endTime then
+                print("Found endTime!")
                 local remainingT = (endTime - GetTime())
                 if remainingT > 60 then
                     remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
@@ -49,6 +51,7 @@ function iction.runTimers()
                     spellButton.setButtonState(spellButton, false, false, false, false)
                 end
             else
+                print("Clearning timer text!")
                 spellButton.text:SetText("")
                 spellButton.setButtonState(spellButton, false, false, false, false)
             end

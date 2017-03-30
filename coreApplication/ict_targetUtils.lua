@@ -14,6 +14,13 @@ function iction.isSpellOnCooldown(spellID)
     end
 end
 
+function iction.fetchCooldownET(spellID)
+    local start, duration, _ = GetSpellCooldown(spellID)
+    local actualFinish = start+duration
+    if not start then return nil end
+    return actualFinish
+end
+
 function iction.targetChanged(guid)
     if iction.debugUI then print('Target changed') end
     if UnitAffectingCombat("player") then

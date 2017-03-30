@@ -23,7 +23,7 @@ end
 function iction.setSoulShards(shards)
     if iction.class == iction.L['Warlock'] then
         iction.shardFrameBldr.setTextureVertexColor(iction.shardFrameBldr, 1, 1, 1, 0)
-        for x = 2, shards do
+        for x = 2, shards+1 do
             if iction.shardFrameBldr.textures[x] then
                 iction.shardFrameBldr.textures[x]:SetVertexColor(1, 1, 1, 1)
             end

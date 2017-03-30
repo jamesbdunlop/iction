@@ -28,11 +28,7 @@ function iction.createArtifactFrame()
         iction.artifactFrameBldr = nil
     end
     local fntSize, icon
-    if iction.class == iction.L['Warlock'] then
-        fntSize = 26
-    elseif iction.class == iction.L['Priest'] then
-        fntSize = 20
-    end
+    fntSize = 26
 
     local artifact = iction.artifact()
     local artifactData = iction.ictArtifactFrameData
