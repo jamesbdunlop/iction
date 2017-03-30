@@ -262,32 +262,15 @@ function iction.UIButtonElement.addCountFontString(self, outline, strata, allPoi
     self.count = Addfnt
 end
 
-function iction.UIButtonElement.setButtonState(self, active, hidden, refresh, procced)
-    if active and not refresh then
-        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
-        self.texture:SetVertexColor(0.9,0.9,0.9, .8)
-        self.setButtonColor(self, {1,1,1,1})
-    elseif hidden then
-        self.buttonFrame:SetBackdropColor(0,0,0, 0)
-        self.texture:SetVertexColor(0,0,0, 0)
-        self.setButtonColor(self, {1,1,1,0})
-    elseif active and refresh then
-        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
-        self.texture:SetVertexColor(.5, 0, 0, 1)
-        self.setButtonColor(self, {1,.1,.1,1})
-    elseif active and procced then
-        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
-        self.texture:SetVertexColor(0, 1, 0, .8)
-        self.setButtonColor(self, {1,1,1,1})
-    else
-        self.buttonFrame:SetBackdropColor(1, 1, 1, .8)
-        self.texture:SetVertexColor(0.9,0.3,0.3, .5)
-        self.setButtonColor(self, {1,1,1,1})
-    end
+function iction.UIButtonElement.setButtonState(self, bgCol, vertCol, textCol, gameFont)
+    self.buttonFrame:SetBackdropColor(bgCol[0], bgCol[1], bgCol[2], bgCol[3])
+    self.texture:SetVertexColor(vertCol[0], vertCol[1], vertCol[2], vertCol[3])
+    self.setButtonTextColor(self, textCol, gameFont)
 end
 
-function iction.UIButtonElement.setButtonColor(self, color)
+function iction.UIButtonElement.setButtonTextColor(self, color, gameFont)
     self.text:SetTextColor(color[1], color[2], color[3], color[4])
+    self.text:SetFontObject(gameFont)
 end
 
 function iction.UIButtonElement.setVisibility(self, visible)

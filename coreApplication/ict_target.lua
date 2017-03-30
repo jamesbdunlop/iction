@@ -87,12 +87,10 @@ end
 --- CREATE CRETURE CACHE TABLE ENTRY  ---
 function iction.createTargetSpellData(guid, spellType, spellID, spellName)
     if not UnitAffectingCombat("player") then return end
-    if not iction.validSpellID(spellID) then
-        if not iction.validSpellName(spellName) then
-            return
-        end
-    end
 
+    if not iction.validSpellID(spellID) then
+        if not iction.validSpellName(spellName) then return end
+    end
     local function isSpellActive(spellTable, spellID)
         for tspellID, spellData in pairs(spellTable) do
             if spellData == nil then break end
@@ -108,10 +106,9 @@ function iction.createTargetSpellData(guid, spellType, spellID, spellName)
               expiresData['isChanneled'] = false
               expiresData['count'] = 0
         if not spellName then return expiresData end
-
         if iction.debugUITimers then print("...FETCHING ENDTIME...") end
         if iction.debugRunningTimers then print('Clearning all channeled spells but target...') end
-        iction.targetsColumns_clearAllChanneled(guid)
+
         -- EXPIRES
         local channelSpellID, cexpires = iction.blizz_getChannelSpellInfo()
         local nme, _, _, count, _, duration, expires, _, _, _, _, _, _, _, _, _, _, _, _  = UnitDebuff("TARGET", spellName, nil, "PLAYER")
@@ -131,7 +128,6 @@ function iction.createTargetSpellData(guid, spellType, spellID, spellName)
     end
 
     if not spellType then return end
-
     if not iction.debuffColumns_GUIDExists(guid) then return end
 
     for tguid, targetData in pairs(iction.targetData) do

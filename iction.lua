@@ -1,5 +1,10 @@
---- version Release 2.0.0
---- Full over haul of internal engine / ui
+--- version Release 2.0.2
+--- Changed font
+--- Fixed font bug on artifact frame any class other than lock and priest. This should in theory mean iction can work across all classes now.
+--- Added cooldowns to debuff timers on debuff columns
+--- Clean up to the channeled spell clear so it should swap more cleanly and not get stuck if you switch to a target without a columnID
+--- Changes to the button states during timer countdown for buffs and defbuffs (prob some more tweaking to go here)
+
 local min, max, abs = min, max, abs
 local UIParent, GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent, GetScreenWidth, GetScreenHeight, IsAltKeyDown
 local iction = iction

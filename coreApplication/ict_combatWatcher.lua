@@ -48,6 +48,7 @@ function iction.watcher(self)
             if iction.debugWatcher then print("-------") end
         end
         local function createTarget(mobGUID, spellType, spellID, spellName)
+            iction.targetsColumns_clearAllChanneled(mobGUID)
             --- Create the frame and icons for the timers
             if mobGUID and not iction.debuffColumns_GUIDExists(mobGUID) then
                 iction.createTarget(mobGUID)

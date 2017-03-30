@@ -284,8 +284,8 @@ function iction.targetsColumns_clearAllChanneled(guid)
         local spellData = targetData['spellData']
         if spellData then
             for spellID, spellInfo in pairs(spellData) do
-                if spellInfo['expires']['isChanneled'] and spellData['guid'] ~= guid then
-                    spellInfo['expires']['endTime']= 0
+                if spellInfo['expires']['isChanneled'] and tguid ~= guid then
+                    spellInfo['expires']['endTime'] = 0
                 end
             end
     end end
