@@ -166,6 +166,11 @@ function iction.updateBuffTimers()
                 butFrameBldr.setButtonState(butFrameBldr, bgCol, vertCol, textCol, gameFont)
             end
         else
+            bgCol = {1,1,1,1}
+            vertCol = {1,1,1,.5}
+            textCol = {1,1,1,1}
+            gameFont = "GameFontWhite"
+            button['frame'].setButtonState(button['frame'], bgCol, vertCol, textCol, gameFont)
             local remainingT = tonumber(string.format("%.1f", (button['expires'] - GetTime())))
             if remainingT < 120 and remainingT > 0 then
                 button['frame'].text:SetText(remainingT)
@@ -174,25 +179,36 @@ end
 
 --- PRIEST SPECIFIC HANDLERS (TO REMOVE)
 function iction.voidFrameUpdate()
+    --194249 is void eruption
     --- PRIEST VOID FRAME SPECIAL FRAME HANDLER
     local vbID = iction.vbID
+    local bgCol, vertCol, textCol, gameFont
+    bgCol = {1,1,1,0}
+    vertCol = {1,1,1,0}
+    textCol = {1,1,0,0}
+    gameFont = "GameFontWhite"
+    iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, bgCol, vertCol, textCol, gameFont)
     if iction.blizz_buffActive(194249) and not iction.isSpellOnCooldown(vbID) then
-        iction.voidButtonBldr.setButtonColor(iction.voidButtonBldr, {0,0,0,0})
+        bgCol = {1,1,1,0}
+        vertCol = {1,1,1,0}
+        textCol = {0,1,0,1}
+        gameFont = "GameFontWhite"
+        iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, bgCol, vertCol, textCol, gameFont)
         iction.voidButtonBldr.text:SetText("")
-        iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, true, false, false, true)
 
     elseif iction.blizz_buffActive(194249) and iction.isSpellOnCooldown(vbID) then
+        bgCol = {1,1,1,0}
+        vertCol = {1,1,1,0}
+        textCol = {1,1,0,1}
+        gameFont = "NumberFontNormalYellow"
+        iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, bgCol, vertCol, textCol, gameFont)
+
         local _, duration, _ = GetSpellCooldown(vbID)
         if duration > 1.5 then
             local remainingT = iction.blizz_fetchCooldownET(vbID)
             local rt = iction.blizz_fetchRemainingT(remainingT - GetTime())
             iction.voidButtonBldr.text:SetText(rt)
-            iction.voidButtonBldr.setButtonColor(iction.voidButtonBldr, {1, 0, 0, 1})
         end
-        iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, false, false, false, false)
-    else
-        iction.voidButtonBldr.setButtonColor(iction.voidButtonBldr, {0,0,0,0})
-        iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, false, true, false, false)
     end
 end
 
@@ -201,14 +217,24 @@ function iction.swdFrameUpdate()
     local tguid = UnitGUID("Target")
     local swdID = iction.swdID
     local charges, maxCharges, start, duration = GetSpellCharges(swdID)
+    local bgCol, vertCol, textCol, gameFont
 
-    iction.SWDButtonBldr.setButtonState(iction.SWDButtonBldr, false, false, false, false)
 
     if tguid and tguid ~= iction.playerGUID then
         if iction.blizz_getTargetHP() then
-            iction.SWDButtonBldr.setButtonState(iction.SWDButtonBldr, true, false, false, true)
+            if charges then iction.SWDButtonBldr.count:SetText(tostring(charges)) end
+            bgCol = {1,1,1,1}
+            vertCol = {1,1,1,1}
+            textCol = {1,1,1,1}
+            gameFont = "GameFontHighlightLarge"
+            iction.SWDButtonBldr.setButtonState(iction.SWDButtonBldr, bgCol, vertCol, textCol, gameFont)
         else
-            iction.SWDButtonBldr.setButtonState(iction.SWDButtonBldr, false, false, false, false)
+            iction.SWDButtonBldr.count:SetText(tostring(""))
+            bgCol = {1,.1,.1,.1}
+            vertCol = {1,.1,.1,.1}
+            textCol = {1,1,1,0}
+            gameFont = "GameFontHighlightLarge"
+            iction.SWDButtonBldr.setButtonState(iction.SWDButtonBldr, bgCol, vertCol, textCol, gameFont)
         end
     end
     ---  ON COOLDOWN

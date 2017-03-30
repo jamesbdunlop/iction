@@ -232,6 +232,7 @@ function iction.createSWDFrame()
           setmetatable(iction.SWDButtonBldr, {__index = iction.UIButtonElement})
           iction.SWDButtonBldr.create(iction.SWDButtonBldr, iction.SWDFrameBldr.frame, SWDData, "CENTER", 0, 0)
           iction.SWDButtonBldr.buttonFrame:SetAllPoints(true)
+          iction.SWDButtonBldr.addCountFontString(iction.SWDButtonBldr, "THICKOUTLINE", "OVERLAY", false, "LEFT", 0, 16, 16, 1, 0, 0, 1)
 end
 
 function iction.createVoidFrame()
