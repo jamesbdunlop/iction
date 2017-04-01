@@ -4,7 +4,8 @@
 --- Added cooldowns to debuff timers on debuff columns
 --- Clean up to the channeled spell clear so it should swap more cleanly and not get stuck if you switch to a target without a columnID
 --- Changes to the button states during timer countdown for buffs and defbuffs (prob some more tweaking to go here)
-
+--Known issues
+--- Issue with priest special frames the voidFrame in particular -- will fix asap
 local min, max, abs = min, max, abs
 local UIParent, GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent, GetScreenWidth, GetScreenHeight, IsAltKeyDown
 local iction = iction
