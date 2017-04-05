@@ -11,11 +11,13 @@
 ##SavedVariablesPerCharacter: iction_cby
 ##SavedVariablesPerCharacter: ictionGlobalScale
 ##SavedVariablesPerCharacter: ictionSkin
-##SavedVariablesPerCharacter: ictionLegacy
-##SavedVariablesPerCharacter: ictionLegacyV1
 ##SavedVariablesPerCharacter: ictionSWDScale
 ##SavedVariablesPerCharacter: ictionVoidBoltScale
 ##SavedVariablesPerCharacter: ictionValidSpells
+##SavedVariablesPerCharacter: ictionLegacy
+##SavedVariablesPerCharacter: ictionLegacyV1
+##SavedVariablesPerCharacter: ictionDisplayBuffLimit
+##SavedVariablesPerCharacter: ictionDisplayOnlyPlayerBuffs
 ##
 #@no-lib-strip@
 Libs\LibSharedMedia-3.0\lib.xml

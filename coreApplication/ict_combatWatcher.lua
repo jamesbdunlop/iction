@@ -60,13 +60,6 @@ function iction.watcher(self)
         end
 
         --- Set if we're in combat or not
-        if UnitAffectingCombat("player") then
-            ictonCombat = true
-        else
-            ictonCombat = false
-            iction.oocCleanup()
-        end
-
         --- SPEC CHANGE
         if event == 'PLAYER_SPECIALIZATION_CHANGED' then iction.specChanged() end
 
@@ -81,7 +74,7 @@ function iction.watcher(self)
         end
 
         --- COMBAT STUFF
-        if ictonCombat then
+        if UnitAffectingCombat("player") then
             if iction.class == iction.L['Priest'] and iction.spec == 3 then
                 iction.voidFrameBldr.frame:Show()
                 iction.SWDFrameBldr.frame:Show()
@@ -94,11 +87,7 @@ function iction.watcher(self)
         end
 
         if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            if eventName == 'UNIT_DIED' then
-                iction.targetsColumns_tagDead(mobGUID)
-            end
-
-            if ictonCombat and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName ~= "SPELL_CAST_FAILED" and eventName ~= "SPELL_CAST_START" then
+            if UnitAffectingCombat("player") and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName ~= "SPELL_CAST_FAILED" and spellID ~= 27283 then ---and eventName ~= "SPELL_CAST_START" then
                 --- Account for some bullshit in the API where some events return this data and some return that....
                 if eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then spellType = "DEBUFF" end
 
@@ -112,12 +101,14 @@ function iction.watcher(self)
                     --- COMBAT LOG USER CAST SPELLS ONLY
                     createTarget(mobGUID, spellType, spellID, spellName)
                 end
-            elseif ictonCombat and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName == "SPELL_CAST_START" then
+            elseif UnitAffectingCombat("player") and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName == "SPELL_CAST_START" then
                 if mobGUID ~= nil and string.find(mobGUID, "Creature", 1) then
                     --------------------------------------------------------------------------------------
                     --- COMBAT LOG USER CAST SPELLS ONLY
                     createTarget(mobGUID, spellType, spellID, spellName)
                 end
+            elseif UnitAffectingCombat("player") and eventName == 'UNIT_DIED' or eventName == 'PARTY_KILL' then
+                iction.targetsColumns_tagDead(mobGUID)
             end
         end
     end

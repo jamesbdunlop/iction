@@ -86,11 +86,6 @@ end
 ----------------------------------------------------------------------------------------------
 --- CREATE CRETURE CACHE TABLE ENTRY  ---
 function iction.createTargetSpellData(guid, spellType, spellID, spellName)
-    if not UnitAffectingCombat("player") then return end
-
-    if not iction.validSpellID(spellID) then
-        if not iction.validSpellName(spellName) then return end
-    end
     local function isSpellActive(spellTable, spellID)
         for tspellID, spellData in pairs(spellTable) do
             if spellData == nil then break end

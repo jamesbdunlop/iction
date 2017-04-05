@@ -292,16 +292,11 @@ function iction.targetsColumns_clearAllChanneled(guid)
 end
 
 function iction.targetsColumns_tagDead(guid)
-    for tguid, targetData in pairs(iction.targetData) do
-        if not targetData then break end
-        if tguid == guid then
-           targetData["dead"] = false
-           targetData["frame"].setVisibility(targetData['frame'], false)
-           targetData['spellData'] = nil
-           iction.debuffColumns_setInActive(guid)
-           targetData = nil
-           if iction.debugWatcher then print("Removed targetData: " .. tostring(guid)) end
-    end end
+    if iction.targetData[guid] == nil then return end
+    iction.targetData[guid]['dead'] = true
+    iction.targetData[guid]["frame"].setVisibility(iction.targetData[guid]['frame'], false)
+    iction.debuffColumns_setInActive(guid)
+    if iction.debugWatcher then print("Removed targetData: " .. tostring(guid)) end
 end
 
 function iction.isBuffInCacheData(spellName)
@@ -325,4 +320,3 @@ function iction.clearBuffButtons()
     end
     iction.buffButtons = {}
 end
-

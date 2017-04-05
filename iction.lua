@@ -1,18 +1,27 @@
---- version Release 2.0.2
---- Changed font
---- Fixed font bug on artifact frame any class other than lock and priest. This should in theory mean iction can work across all classes now.
---- Added cooldowns to debuff timers on debuff columns
---- Clean up to the channeled spell clear so it should swap more cleanly and not get stuck if you switch to a target without a columnID
---- Changes to the button states during timer countdown for buffs and defbuffs (prob some more tweaking to go here)
---Known issues
+----- version Release 2.0.3 -----
+
+-- NOTES:
+--- Removed a loose print statement
+--- Removed a curious bug with tagging a target dead and spellData = nil
+--- Options spell list now returns to the top of the list on open
+--- Options Unlock uses internal lib ui now shows text properly when options opened more than one per session
+--- Options Close button uses internal lib
+--- Added buffLimit to the options panel for setting a limit to displayed buffs
+--- Add checkbox for displaying player buffs only or all of them
+
+-- Known issues
 --- Issue with priest special frames the voidFrame in particular -- will fix asap
-local min, max, abs = min, max, abs
-local UIParent, GetScreenWidth,GetScreenHeight,IsAltKeyDown = UIParent, GetScreenWidth, GetScreenHeight, IsAltKeyDown
+
+-- To Do
+--- Add more artifact info for other classes / specs?
+--- Limit buff bar. Also show hide option for buff bar
+--- Cleaner frames for options panel
+--- Options labels into the locale dictionary
+
+
+local UIParent = UIParent
 local iction = iction
-
 local sframe = CreateFrame("Frame", 'ictionRoot')
-if iction.debugUI then print("iction rootFrame success!") end
-
 --- Triggers attached to dummy frame for intial load of addon
 sframe:RegisterEvent("PLAYER_LOGIN")
 sframe:SetScript("OnEvent", function(self, event, arg1)

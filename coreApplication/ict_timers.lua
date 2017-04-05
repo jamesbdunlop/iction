@@ -8,21 +8,12 @@ function iction.runTimers()
         local spells = targetTable['spellData']
         if not spells then break end
         for spellID, spellData in pairs(spells) do
-            local bySpellname = false
-            if not iction.validSpellID(spellID) and not iction.validSpellName(spellData['spellName']) then
-                return
-            elseif not iction.validSpellID(spellID) and iction.validSpellName(spellData['spellName']) then
-                bySpellname = true
-            end
-
             local buttonTable = targetTable['buttons']
             local spellButton
-            if not bySpellname then
-                spellButton = iction.fetchButtonByID(buttonTable, spellID)
-            else
+            spellButton = iction.fetchButtonByID(buttonTable, spellID)
+            if not spellButton then
                 spellButton = iction.fetchButtonBySpellName(buttonTable, spellData['spellName'])
             end
-
             local endTime = spellData['expires']['endTime']
             local count = spellData['expires']['count']
             if count and count ~= 0 then
@@ -35,7 +26,7 @@ function iction.runTimers()
                 CD = false
             end
             local bgCol, vertCol, textCol, gameFont
-            if endTime then
+            if endTime and spellButton then
                 local remainingT = (endTime - GetTime())
                 if remainingT > 60 then
                     remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
@@ -73,7 +64,7 @@ function iction.runTimers()
                     gameFont = "GameFontWhite"
                     spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
                 end
-            else
+            elseif spellButton then
                 spellButton.text:SetText("")
                 bgCol = {1,1,0,1}
                 vertCol = {1,1,0,1}
@@ -110,9 +101,7 @@ end
 ictionBuffPadX = 0
 ictionBuffPadY = 0
 function iction.updateBuffTimers()
-    for x = 1, 100 do
-        local spellName, rank, icon, count, dispelType, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura("Player", x, "CANCELABLE|PLAYER|HELPFUL")
-        if not spellName then break end
+    local function displayBuff(spellName, spellID, rank, count, expires ,icon)
         local bgCol, vertCol, textCol, gameFont
         local active, button = iction.isBuffInCacheData(spellName)
         if not active then
@@ -174,7 +163,18 @@ function iction.updateBuffTimers()
             local remainingT = tonumber(string.format("%.1f", (button['expires'] - GetTime())))
             if remainingT < 120 and remainingT > 0 then
                 button['frame'].text:SetText(remainingT)
-        end end end
+    end end end
+    for x = 1, ictionDisplayBuffLimit do
+        local spellName, rank, icon, count, _, _, expires, caster, _, _, spellID, _, _, _, _, _, _, _, _ = UnitAura("Player", x, "CANCELABLE|PLAYER|HELPFUL")
+        if not spellName then break end
+        if not ictionDisplayOnlyPlayerBuffs then
+            displayBuff(spellName, spellID, rank, count, expires, icon)
+        elseif ictionDisplayOnlyPlayerBuffs then
+            if caster == "player" then
+                displayBuff(spellName, spellID, rank, count, expires, icon)
+            end
+        end
+    end
 end
 
 --- PRIEST SPECIFIC HANDLERS (TO REMOVE)

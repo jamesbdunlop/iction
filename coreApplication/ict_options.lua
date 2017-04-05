@@ -183,6 +183,43 @@ function iction.setOptionsFrame()
     end
     createScaleUIOptions()
 
+    local function createBuffLimitOptions()
+        ----------------------------------------------------------------------------------------------------------
+        --- BUFF LIMIT
+        iction.ict_buffLimitLabel = iction.optionsFrameBldr.frame:CreateFontString("BuffLimitLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_buffLimitLabel:SetText(iction.L['buffLimit'])
+        iction.ict_buffLimitLabel:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+        iction.ict_buffLimitLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, scaleUILabel-40)
+
+        iction.ict_BuffLimitIDXLabel = iction.optionsFrameBldr.frame:CreateFontString("ScaleIDXLabel", "OVERLAY", "GameFontNormal")
+        iction.ict_BuffLimitIDXLabel:SetText(ictionDisplayBuffLimit)
+        iction.ict_BuffLimitIDXLabel:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+        iction.ict_BuffLimitIDXLabel:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, scaleUILabel-40)
+
+        iction.ict_BuffLimit = CreateFrame("Slider", "ict_buffLImitSlider", iction.optionsFrameBldr.frame, "OptionsSliderTemplate")
+        iction.ict_BuffLimit.tooltip = iction.L['scaleUI']
+        iction.ict_BuffLimit:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
+        iction.ict_BuffLimit:SetPoint("RIGHT", iction.optionsFrameBldr.frame, -10, 0)
+        iction.ict_BuffLimit:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, scaleUIBoxTop-40)
+        iction.ict_BuffLimit:SetMinMaxValues(2, 20)
+        iction.ict_BuffLimit.minValue, iction.ict_BuffLimit.maxValue = iction.ict_BuffLimit:GetMinMaxValues()
+        iction.ict_BuffLimit:SetValue(ictionDisplayBuffLimit    )
+        iction.ict_BuffLimit:SetValueStep(1)
+        iction.ict_BuffLimit:SetOrientation("HORIZONTAL")
+        iction.ict_BuffLimit:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+        iction.ict_BuffLimit:SetBackdrop({
+                  bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+                  edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+                  tile = true, tileSize = 8, edgeSize = 8,
+                  insets = { left = 3, right = 3, top = 6, bottom = 6 }})
+        iction.ict_BuffLimit:SetScript("OnValueChanged", function(self, event, arg1)
+                            ictionDisplayBuffLimit = tonumber(string.format("%1d", event))
+                            ictionDisplayBuffLimit = tonumber(string.format("%1d", event))
+                            iction.ict_BuffLimitIDXLabel:SetText(string.format("%1d", ictionDisplayBuffLimit))
+                            end)
+    end
+    createBuffLimitOptions()
+
     if iction.class == iction.L['Priest'] and iction.spec == 3 then
         local function createSWDOptions()
             ----------------------------------------------------------------------------------------------------------
@@ -258,42 +295,61 @@ function iction.setOptionsFrame()
         createSWDOptions()
         createVoidOptions()
     end
+
     ----------------------------------------------------------------------------------------------------------
-    --- UNLOCK
-    ict_UnlockCBx = CreateFrame("CheckButton", "ict_unlock", iction.optionsFrameBldr.frame, "ChatConfigCheckButtonTemplate")
-    ict_UnlockCBx.tooltip = iction.L['unlockUITT']
-    ict_UnlockCBx:SetPoint("LEFT", iction.optionsFrameBldr.frame, 10, 0)
-    ict_UnlockCBx:SetPoint("BOTTOM", iction.optionsFrameBldr.frame, 0, 10)
-    ict_UnlockCBxtext = _G["ict_unlockText"]
-    ict_UnlockCBxtext:SetText(iction.L['unlockUILabel'])
-    ict_UnlockCBx:SetScript("OnClick", function()
-                            if ict_UnlockCBx:GetChecked() then iction.unlockUIElements(true)
-                            else iction.unlockUIElements(false) end
-                            end)
+    --- UNLOCK ----
+    local unlockButtonData = {}
+        unlockButtonData['uiName'] = 'UnlockButton'
+        unlockButtonData['template'] = "OptionsSmallCheckButtonTemplate"
+    iction.optionsUnlockbuttonBldr = {}
+        setmetatable(iction.optionsUnlockbuttonBldr, {__index = iction.UIButtonElement})
+        iction.optionsUnlockbuttonBldr.create(iction.optionsUnlockbuttonBldr, iction.optionsFrameBldr.frame, unlockButtonData, "BOTTOM", -(frameW/2.5), 0, "CheckButton")
+        iction.optionsUnlockbuttonBldr.buttonFrame:SetText(iction.L['unlockUILabel'])
+        iction.optionsUnlockbuttonBldr.buttonFrame:EnableMouse(true)
+        iction.optionsUnlockbuttonBldr.buttonFrame.tooltip = iction.L['unlockUITT']
+        iction.optionsUnlockbuttonBldr.buttonFrame:SetScript("OnClick", function(self)
+            if self:GetChecked() then
+                iction.unlockUIElements(true)
+            else
+                iction.unlockUIElements(false) end
+            end)
 
-    ---------------------
-    --- Close button ----
-    local closeOptionsButton = CreateFrame("Button", "Close", iction.optionsFrameBldr.frame, "UIPanelButtonTemplate")
-    closeOptionsButton:SetFrameStrata("MEDIUM")
-    closeOptionsButton:SetPoint("BOTTOMRIGHT", iction.optionsFrameBldr.frame, -5, -8)
-    closeOptionsButton:SetWidth(45)
-    closeOptionsButton:SetHeight(25)
+    ----------------------------------------------------------------------------------------------------------
+    --- USER BUFF ONLY ----
+    local userBuffsButtonData = {}
+          userBuffsButtonData['uiName'] = 'UserBuffButton'
+          userBuffsButtonData['template'] = "OptionsSmallCheckButtonTemplate"
+    iction.userBuffButtonBldr = {}
+        setmetatable(iction.userBuffButtonBldr, {__index = iction.UIButtonElement})
+        iction.userBuffButtonBldr.create(iction.userBuffButtonBldr, iction.optionsFrameBldr.frame, unlockButtonData, "BOTTOMLEFT", frameW/2.5, 0, "CheckButton")
+        iction.userBuffButtonBldr.buttonFrame:SetText(iction.L['playerBuffsOnly'])
+        iction.userBuffButtonBldr.buttonFrame:EnableMouse(true)
 
-    --- Create the texture for the close button
-    local closeButText = closeOptionsButton:CreateTexture(nil, "ARTWORK")
-          closeButText:SetAllPoints(true)
-          closeButText:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-          closeButText:SetVertexColor(0.9,0.3,0.3, 0)
-    closeOptionsButton:Show()
-    --- Create the fontString for the close button
-    local fnt = closeOptionsButton:CreateFontString(nil, "OVERLAY", "GameFontWhite")
-          fnt:SetFont(iction.font, 12, "OVERLAY", "THICKOUTLINE")
-          fnt:SetPoint("CENTER", closeOptionsButton, 0, 0)
-          fnt:SetText(iction.L['close'])
-    closeOptionsButton.text = fnt
-    closeOptionsButton:SetScript("OnClick", function()
-        closeOptionsUI()
-        if setCount ~= curTgtCnt then ReloadUI() end
-    end)
+        if ictionDisplayOnlyPlayerBuffs then iction.userBuffButtonBldr.buttonFrame:SetChecked(true) end
+        iction.userBuffButtonBldr.buttonFrame:SetScript("OnClick", function(self)
+            if self:GetChecked() then
+                ictionDisplayOnlyPlayerBuffs = true
+            else
+                ictionDisplayOnlyPlayerBuffs = false
+            end
+            end)
+
+    ----------------------------------------------------------------------------------------------------------
+    --- CLOSE ----
+    local closeButtonData = {}
+        closeButtonData['uiName'] = 'CloseButton'
+        closeButtonData['template'] = "UIPanelButtonTemplate"
+    iction.optionsClosebuttonBldr = {}
+        setmetatable(iction.optionsClosebuttonBldr, {__index = iction.UIButtonElement})
+        iction.optionsClosebuttonBldr.create(iction.optionsClosebuttonBldr, iction.optionsFrameBldr.frame, unlockButtonData, "BOTTOMRIGHT", 0, -25)
+        iction.optionsClosebuttonBldr.buttonFrame:SetText(iction.L['close'])
+        iction.optionsClosebuttonBldr.buttonFrame:EnableMouse(true)
+        iction.optionsClosebuttonBldr.buttonFrame:SetWidth(55)
+        iction.optionsClosebuttonBldr.buttonFrame:SetHeight(55)
+        iction.optionsClosebuttonBldr.buttonFrame:SetScript("OnClick", function()
+                closeOptionsUI()
+                if setCount ~= curTgtCnt then ReloadUI() end
+            end)
+
     iction.optionsFrameBldr.frame:Show()
 end

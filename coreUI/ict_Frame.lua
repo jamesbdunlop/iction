@@ -209,18 +209,17 @@ end
 
 ------------------------------------------------------------------------------------------------------------------------
 --- BUTTON
-function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
+function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY, buttonType)
     --- Extract data
     self.data = data
-    self.frameName = self.data['uiName'] -- use this to match activeSpells to as id is fickle
-    self.id = self.data['id']  -- note here the spell id from the spell book for corruption is 172 but cast its 146739
-    self.rank = self.data['rank']
-    self.castingTime = self.data['castingTime']
-    self.minRange = self.data['minRange']
-    self.maxRange = self.data['maxRange']
-    self.icon = self.data['icon']
-
-    self.buttonFrame = CreateFrame("Button", name, pFrame, nil)
+    self.frameName = self.data['uiName'] or nil-- use this to match activeSpells to as id is fickle
+    self.id = self.data['id'] or '' -- note here the spell id from the spell book for corruption is 172 but cast its 146739
+    self.rank = self.data['rank'] or ''
+    self.castingTime = self.data['castingTime'] or ''
+    self.minRange = self.data['minRange'] or ''
+    self.maxRange = self.data['maxRange'] or ''
+    self.icon = self.data['icon'] or ''
+    self.buttonFrame = CreateFrame(buttonType or "Button", self.frameName, pFrame, self.data["template"] or nil)
     self.buttonFrame:SetFrameStrata("MEDIUM")
     self.buttonFrame:EnableMouse(false)
     self.buttonFrame:SetDisabledFontObject("GameFontDisable")
@@ -233,7 +232,7 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY)
     self.texture = self.buttonFrame:CreateTexture(nil, "ARTWORK")
         self.texture:SetAllPoints(true)
         self.texture:SetTexture(self.icon)
-        self.texture:SetVertexColor(0.9,0.3,0.3, .5)
+        self.texture:SetVertexColor(1,1,1, 1)
     -- Create the fontString for the button
     self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 16, 1, 1, 1, 1)
 end
@@ -291,7 +290,7 @@ function iction.UISpellScrollFrameElement.create(self, data)
     self.textures = {}
     -- Create the frame --
     self.scrollframe = CreateFrame("ScrollFrame", self.data['uiName'], self.data['uiParentFrame'] or UIParent, self.data['uiInherits'])
-    self.frame = CreateFrame("Frame", 'SpellList',  self.scrollframe)
+    self.frame = CreateFrame("Frame", 'SpellList',  self.scrollframe, "ThinBorderTemplate")
     self.scrollframe:SetScrollChild(self.frame)
     self.scrollframe:SetWidth(self.data['w'])
     self.scrollframe:SetHeight(self.data['h'])
@@ -314,6 +313,9 @@ function iction.UISpellScrollFrameElement.create(self, data)
     -- Default fontString
     self.frame:Show()
     self.scrollframe:Show()
+    self.scrollframe:SetVerticalScroll(1)
+    self.scrollframe:UpdateScrollChildRect()
+
 end
 
 function iction.UISpellScrollFrameElement.addItems(self, t)
@@ -338,11 +340,23 @@ function iction.UISpellScrollFrameElement.addItems(self, t)
                         --- Add an empty table now
                         iction.initSpellTable()
                     end
-                    table.insert(ictionValidSpells[iction.class][iction.spec]["spells"], {id = spellData['id'], name = spellData['uiName']})
+                    local found = false
+                    for x = 1, iction.tablelength(ictionValidSpells[iction.class][iction.spec]["spells"]) do
+                        if ictionValidSpells[iction.class][iction.spec]["spells"][x] then
+                            if ictionValidSpells[iction.class][iction.spec]["spells"]['id']  == spellData['id'] then
+                                found = true
+                            end
+                        end
+                    end
+                    if not found then
+                        table.insert(ictionValidSpells[iction.class][iction.spec]["spells"], {id = spellData['id'], name = spellData['uiName']})
+                        print("Added ".. spellData['id'] .. " to validSpells")
+                    end
                 else
-                    for i=1, iction.tablelength(validSpells) do
-                        if ictionValidSpells[iction.class][iction.spec]["spells"][i]['id'] == spellData['id'] then
-                            table.remove(ictionValidSpells[iction.class][iction.spec]["spells"], i)
+                    for x = 1, iction.tablelength(ictionValidSpells[iction.class][iction.spec]["spells"]) do
+                        if ictionValidSpells[iction.class][iction.spec]["spells"][x]['id'] == spellData['id'] then
+                            table.remove(ictionValidSpells[iction.class][iction.spec]["spells"], x)
+                            print("Removed ".. spellData['id'] .. " from validSpells")
                         end
                     end
                 end
@@ -369,6 +383,7 @@ function iction.UISpellScrollFrameElement.addItems(self, t)
     end
     self.scrollframe:SetMaxResize(300, h)
     self.frame:SetHeight(h)
+    self.scrollframe:SetVerticalScroll(1)
 end
 
 function iction.UISpellScrollFrameElement.createTextures(self, data)
@@ -547,6 +562,7 @@ function iction.UICheckBoxListFrameElement.create(self, data)
     -- Default fontString
     self.frame:Show()
     self.scrollframe:Show()
+    self.scrollframe:SetVerticalScroll(1)
 end
 
 function iction.UICheckBoxListFrameElement.addItems(self, t, checkBoxTable)
@@ -575,20 +591,21 @@ function iction.UICheckBoxListFrameElement.addItems(self, t, checkBoxTable)
             table.insert(checkBoxTable, checkBox)
         -- THE LABEL
         local fnt = self.frame:CreateFontString("checkBoxOptionsLabel_"..checkBoxes['label'], 'OVERLAY')
-            fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')
-            fnt:SetFontObject("GameFontWhite")
-            fnt:SetTextColor(1,1, 1, 1)
-            fnt:SetText(checkBoxes['label'])
-            if i == 1 then
-                fnt:SetPoint("TOPLEFT", self.frame, 24, -4)  -- anchors the first string, parent should be the content frame
-            else
-                fnt:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 24, y-4)
-            end
+              fnt:SetFont(iction.font, 14, 'OVERLAY', 'THICKOUTLINE')
+              fnt:SetFontObject("GameFontWhite")
+              fnt:SetTextColor(1,1, 1, 1)
+              fnt:SetText(checkBoxes['label'])
+              if i == 1 then
+                  fnt:SetPoint("TOPLEFT", self.frame, 24, -4)  -- anchors the first string, parent should be the content frame
+              else
+                  fnt:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 24, y-4)
+              end
         y = y -26
         h = h +26
     end
     self.scrollframe:SetMaxResize(300, h)
     self.frame:SetHeight(h)
+    self.scrollframe:SetVerticalScroll(1)
 end
 
 function iction.UICheckBoxListFrameElement.createTextures(self, data)

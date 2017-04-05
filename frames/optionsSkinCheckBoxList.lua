@@ -9,7 +9,7 @@ iction.ictSkinListFrameData = {
                                 SetClampedToScreen = false,
                                 uiInherits = "UIPanelScrollFrameTemplate",
                                 w = 100,
-                                h = 145,
+                                h = 110,
                                 bgCol = {r = 1, g = 0, b= 0, a = 0},
                                 strata = "MEDIUM",
                                 pointPosition = {point = "LEFT",
@@ -19,6 +19,6 @@ iction.ictSkinListFrameData = {
                                 textures = { [1] = {name = "ictionSkinCheckBoxListBG",
                                                     allPoints = true,
                                                     level = "ARTWORK",
-                                                    texture= "Interface\\ChatFrame\\ChatFrameBackground",
+                                                    texture= "",
                                                     vr = 0.4, vg = 0.5, vb = 0.1, va = 0.85  } },
                                 }

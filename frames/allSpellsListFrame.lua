@@ -20,5 +20,5 @@ iction.ictSpellsListFrameData = {
                                                     allPoints = true,
                                                     level = "ARTWORK",
                                                     texture= "Interface\\ChatFrame\\ChatFrameBackground",
-                                                    vr = 0.4, vg = 0.5, vb = 0.1, va = 0.85  } },
+                                                    vr = 0.5, vg = 0.1, vb = 0.1, va = 0.85  } },
                                 }

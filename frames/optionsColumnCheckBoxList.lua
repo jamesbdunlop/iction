@@ -9,7 +9,7 @@ iction.ictColumnCheckBoxListFrameData = {
                                 SetClampedToScreen = false,
                                 uiInherits = "UIPanelScrollFrameTemplate",
                                 w = 150,
-                                h = 145,
+                                h = 110,
                                 bgCol = {r = 1, g = 0, b= 0, a = 1},
                                 strata = "MEDIUM",
                                 pointPosition = {point = "RIGHT",
@@ -19,6 +19,6 @@ iction.ictColumnCheckBoxListFrameData = {
                                 textures = { [1] = {name = "ictionColumnCheckBoxListBG",
                                                     allPoints = true,
                                                     level = "ARTWORK",
-                                                    texture= "Interface\\ChatFrame\\ChatFrameBackground",
+                                                    texture= "",
                                                     vr = 0.4, vg = 0.5, vb = 0.1, va = 0.85  } },
                                 }

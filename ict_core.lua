@@ -40,7 +40,7 @@ iction.debugUI = false
 iction.debugUITimers = false
 iction.debugUITargetSpell = false
 iction.debugRunningTimers = false
-iction.debugWatcher = false
+iction.debugWatcher = true
 iction.debugBuffs = false
 
 iction.playerGUID = nil
@@ -94,9 +94,16 @@ sframe:SetScript("OnEvent", function(self, event, arg1)
         else
             iction.VoidboltScale = ictionVoidBoltScale
         end
-
         if not ictionValidSpells then
             ictionValidSpells = {}
+        end
+
+        if not ictionDisplayBuffLimit then
+            ictionDisplayBuffLimit = 5
+        end
+
+        if not ictionDisplayOnlyPlayerBuffs then
+            ictionDisplayOnlyPlayerBuffs = false
         end
     end
 end)

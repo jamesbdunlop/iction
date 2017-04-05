@@ -38,6 +38,9 @@ L['HorizontalBuffBar'] = "Horizontal BuffBar?"
 L['HorizontalBuffBarText'] = "\124c00FFFF44Set BuffBar to Horizontal"
 L['VerticalBuffBarText'] = "\124c00FFFF44Set BuffBar to Vertical"
 L['close'] = "Close"
+L['buffLimit'] = "Buff Limit"
+L['playerBuffsOnly'] = "Only Plyr Buffs"
+
 --- UI stuff
 L['Warlock'] = 'Warlock'
 L['Priest'] = 'Priest'
