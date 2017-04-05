@@ -21,9 +21,10 @@ function iction.runTimers()
             end
 
             local CD
+            CD = false
             if not endTime then
                 endTime = iction.fetchCooldownET(spellID)
-                CD = false
+                CD = true
             end
             local bgCol, vertCol, textCol, gameFont
             if endTime and spellButton then
@@ -36,9 +37,8 @@ function iction.runTimers()
                     textCol = {.5,.5,.5,1}
                     gameFont = "GameFontDarkGraySmall"
                     spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                elseif remainingT < 60 and remainingT > 5 then
+                elseif remainingT < 60.0 and remainingT > 5.0 then
                     remainingT = tonumber(string.format("%.1f", remainingT))
-                    spellButton.text:SetText(remainingT)
                     bgCol = {1,1,1,1}
                     vertCol = {1,1,1,1}
                     textCol = {1,1,1,1}
@@ -48,27 +48,45 @@ function iction.runTimers()
                         gameFont = "NumberFontNormalYellow"
                     end
                     spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                elseif remainingT <= 5 and remainingT > .1 then
-                    remainingT = tonumber(string.format("%.1f", remainingT))
                     spellButton.text:SetText(remainingT)
-                    bgCol = {1,.5,.5,1}
-                    vertCol = {1,.5,.5,1}
-                    textCol = {1,0,0,1}
-                    gameFont = "GameFontRedLarge"
-                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                elseif remainingT <= 0 then
-                    spellButton.text:SetText("")
+                elseif remainingT <= 5.0 and remainingT > 1.1 then
+                    remainingT = tonumber(string.format("%.1f", remainingT))
                     bgCol = {1,1,1,1}
-                    vertCol = {1,.1,.1,.5}
-                    textCol = {1,1,0,1}
-                    gameFont = "GameFontWhite"
+                    vertCol = {1,.1,.1, 1}
+                    if CD then
+                        textCol = {1,1,0,1}
+                        gameFont = "NumberFontNormalYellow"
+                    else
+                        textCol = {1,0,0,1}
+                        gameFont = "GameFontRedLarge"
+                    end
                     spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
+                    spellButton.text:SetText(remainingT)
+                elseif remainingT <= 1.1 and remainingT > 0.0 then
+                    remainingT = tonumber(string.format("%.1f", remainingT))
+                    bgCol = {1,1,1,1}
+                    vertCol = {1,.1,.1, 1}
+                    textCol = {1,1,0,1}
+                    gameFont = "NumberFontNormalYellow"
+                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
+                    spellButton.text:SetText(remainingT)
+                elseif remainingT <= 0.0 then
+                    bgCol = {1,1,1,0}
+                    vertCol = {1,1,1,0}
+                    textCol = {1,1,1,0}
+                    gameFont = "GameFontWhite"
+                    if CD then
+                        vertCol = {1,1,1,1}
+                        gameFont = "NumberFontNormalYellow"
+                    end
+                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
+                    spellButton.text:SetText("")
                 end
-            elseif spellButton then
+            elseif not endTime and spellButton then
                 spellButton.text:SetText("")
-                bgCol = {1,1,0,1}
-                vertCol = {1,1,0,1}
-                textCol = {1,1,0,1}
+                bgCol = {1,1,1,0}
+                vertCol = {1,1,1,0}
+                textCol = {1,1,1,0}
                 gameFont = "GameFontWhite"
                 spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
             end
@@ -114,12 +132,15 @@ function iction.updateBuffTimers()
             local butFrameBldr = {}
                   setmetatable(butFrameBldr, {__index = iction.UIButtonElement})
                   butFrameBldr.create(butFrameBldr, iction.buffFrameBldr.frame, spellData, "LEFT", ictionBuffPadX, ictionBuffPadY)
+                  butFrameBldr.addCountFontString(butFrameBldr, "THICKOUTLINE", "OVERLAY", false, "LEFT", 0, -(iction.bh/2), 12, 1, 0, 0, 1)
             spellData['frame'] = butFrameBldr
             table.insert(iction.buffButtons, spellData)
             if iction.debugBuffs then print("Added buffButton spellID:" ..tostring(spellID)) end
             if iction.debugBuffs then print("Added buffButton spellName:" ..tostring(spellName)) end
             if iction.debugBuffs then print("-------") end
-
+            if count and count ~= 0 then
+                butFrameBldr.count:SetText(tostring(count))
+            end
             ictionBuffPadX = ictionBuffPadX + iction.bw + iction.ictionButtonFramePad
             local remainingT = (expires - GetTime())
             if remainingT and remainingT > 60 then
@@ -183,26 +204,25 @@ function iction.voidFrameUpdate()
     --- PRIEST VOID FRAME SPECIAL FRAME HANDLER
     local vbID = iction.vbID
     local bgCol, vertCol, textCol, gameFont
-    bgCol = {1,1,1,0}
-    vertCol = {1,1,1,0}
+    bgCol = {0,0,0,0}
+    vertCol = {0,0,0,0}
     textCol = {1,1,0,0}
     gameFont = "GameFontWhite"
     iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, bgCol, vertCol, textCol, gameFont)
     if iction.blizz_buffActive(194249) and not iction.isSpellOnCooldown(vbID) then
         bgCol = {1,1,1,0}
-        vertCol = {1,1,1,0}
-        textCol = {0,1,0,1}
+        vertCol = {1,1,1,.5}
+        textCol = {0,1,0,.5}
         gameFont = "GameFontWhite"
         iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, bgCol, vertCol, textCol, gameFont)
         iction.voidButtonBldr.text:SetText("")
 
     elseif iction.blizz_buffActive(194249) and iction.isSpellOnCooldown(vbID) then
         bgCol = {1,1,1,0}
-        vertCol = {1,1,1,0}
+        vertCol = {1,1,1,1}
         textCol = {1,1,0,1}
         gameFont = "NumberFontNormalYellow"
         iction.voidButtonBldr.setButtonState(iction.voidButtonBldr, bgCol, vertCol, textCol, gameFont)
-
         local _, duration, _ = GetSpellCooldown(vbID)
         if duration > 1.5 then
             local remainingT = iction.blizz_fetchCooldownET(vbID)

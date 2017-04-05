@@ -109,7 +109,7 @@ function iction.blizz_fetchCooldownET(spellID)
     local start, duration, _ = GetSpellCooldown(spellID)
     local actualFinish = start+duration
     local et = (actualFinish - GetTime()) + GetTime()
-    if start == 0 then
+    if start == 0 or et <= 1.25 then
         return false
     else
         return et

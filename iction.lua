@@ -8,16 +8,13 @@
 --- Options Close button uses internal lib
 --- Added buffLimit to the options panel for setting a limit to displayed buffs
 --- Add checkbox for displaying player buffs only or all of them
+--- Added a GCD to buttons (well kind of)
 
 -- Known issues
---- Issue with priest special frames the voidFrame in particular -- will fix asap
+--- Issue with priest special frames the voidFrame in particular
 
 -- To Do
 --- Add more artifact info for other classes / specs?
---- Limit buff bar. Also show hide option for buff bar
---- Cleaner frames for options panel
---- Options labels into the locale dictionary
-
 
 local UIParent = UIParent
 local iction = iction
