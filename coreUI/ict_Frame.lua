@@ -229,10 +229,10 @@ function iction.UIButtonElement.create(self, pFrame, data, align, posX, posY, bu
     self.buttonFrame:SetWidth(iction.bw)
     self.buttonFrame:SetHeight(iction.bh)
 
-    self.texture = self.buttonFrame:CreateTexture(nil, "ARTWORK")
+    self.texture = self.buttonFrame:CreateTexture(nil, "BACKGROUND")
         self.texture:SetAllPoints(true)
         self.texture:SetTexture(self.icon)
-        self.texture:SetVertexColor(1,1,1, 1)
+        self.texture:SetVertexColor(1,1,1, 0.5)
     -- Create the fontString for the button
     self.text = self.addFontString(self, "THICKOUTLINE", "OVERLAY", false, "CENTER", 0, 0, 16, 1, 1, 1, 1)
 end
@@ -262,8 +262,8 @@ function iction.UIButtonElement.addCountFontString(self, outline, strata, allPoi
 end
 
 function iction.UIButtonElement.setButtonState(self, bgCol, vertCol, textCol, gameFont)
-    self.buttonFrame:SetBackdropColor(bgCol[0], bgCol[1], bgCol[2], bgCol[3])
-    self.texture:SetVertexColor(vertCol[0], vertCol[1], vertCol[2], vertCol[3])
+    self.buttonFrame:SetBackdropColor(bgCol[1], bgCol[2], bgCol[3], bgCol[4])
+    self.texture:SetVertexColor(vertCol[1], vertCol[2], vertCol[3], vertCol[4])
     self.setButtonTextColor(self, textCol, gameFont)
 end
 

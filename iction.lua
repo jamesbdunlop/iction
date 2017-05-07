@@ -1,14 +1,4 @@
------ version Release 2.0.3 -----
-
--- NOTES:
---- Removed a loose print statement
---- Removed a curious bug with tagging a target dead and spellData = nil
---- Options spell list now returns to the top of the list on open
---- Options Unlock uses internal lib ui now shows text properly when options opened more than one per session
---- Options Close button uses internal lib
---- Added buffLimit to the options panel for setting a limit to displayed buffs
---- Add checkbox for displaying player buffs only or all of them
---- Added a GCD to buttons (well kind of)
+----- version Release 2.0.4 -----
 
 -- Known issues
 --- Issue with priest special frames the voidFrame in particular

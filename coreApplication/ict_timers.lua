@@ -29,30 +29,29 @@ function iction.runTimers()
             local bgCol, vertCol, textCol, gameFont
             if endTime and spellButton then
                 local remainingT = (endTime - GetTime())
+                local bgCol, vertCoil, textCol, gameFont
+                bgCol = {1,1,1,.5}
+                vertCol = {1,1,1,.5}
+                textCol = {1,1,0,1}
+                gameFont = "GameFontWhite"
                 if remainingT > 60 then
                     remainingT = tonumber(string.format("%.1d m", remainingT/60.0))
-                    spellButton.text:SetText(remainingT)
-                    bgCol = {.5,.5,.5,1}
-                    vertCol = {.5,.5,.5,1}
-                    textCol = {.5,.5,.5,1}
+                    bgCol = {.5,.5,.5, .85}
+                    vertCol = {.5,.5,.5, .85}
+                    textCol = {.5,.5,.5, 1}
                     gameFont = "GameFontDarkGraySmall"
-                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
                 elseif remainingT < 60.0 and remainingT > 5.0 then
                     remainingT = tonumber(string.format("%.1f", remainingT))
-                    bgCol = {1,1,1,1}
-                    vertCol = {1,1,1,1}
-                    textCol = {1,1,1,1}
-                    gameFont = "GameFontWhite"
+                    bgCol = {1,1,1,.85}
+                    vertCol = {1,1,1,.85}
                     if CD then
                         textCol = {1,1,0,1}
                         gameFont = "NumberFontNormalYellow"
                     end
-                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                    spellButton.text:SetText(remainingT)
                 elseif remainingT <= 5.0 and remainingT > 1.1 then
                     remainingT = tonumber(string.format("%.1f", remainingT))
-                    bgCol = {1,1,1,1}
-                    vertCol = {1,.1,.1, 1}
+                    bgCol = {1,.1,.1, 1}
+                    vertCol = {1,.1,.1,1}
                     if CD then
                         textCol = {1,1,0,1}
                         gameFont = "NumberFontNormalYellow"
@@ -60,28 +59,20 @@ function iction.runTimers()
                         textCol = {1,0,0,1}
                         gameFont = "GameFontRedLarge"
                     end
-                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                    spellButton.text:SetText(remainingT)
-                elseif remainingT <= 1.1 and remainingT > 0.0 then
+                elseif remainingT <= 1.1 and remainingT >= 0.1 then
                     remainingT = tonumber(string.format("%.1f", remainingT))
-                    bgCol = {1,1,1,1}
                     vertCol = {1,.1,.1, 1}
                     textCol = {1,1,0,1}
                     gameFont = "NumberFontNormalYellow"
-                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                    spellButton.text:SetText(remainingT)
-                elseif remainingT <= 0.0 then
-                    bgCol = {1,1,1,0}
-                    vertCol = {1,1,1,0}
-                    textCol = {1,1,1,0}
-                    gameFont = "GameFontWhite"
+                elseif remainingT <= 0.1 then
+                    remainingT = ""
                     if CD then
                         vertCol = {1,1,1,1}
                         gameFont = "NumberFontNormalYellow"
                     end
-                    spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
-                    spellButton.text:SetText("")
                 end
+                spellButton.setButtonState(spellButton, bgCol, vertCol, textCol, gameFont)
+                spellButton.text:SetText(remainingT)
             elseif not endTime and spellButton then
                 spellButton.text:SetText("")
                 bgCol = {1,1,1,0}
@@ -142,57 +133,43 @@ function iction.updateBuffTimers()
                 butFrameBldr.count:SetText(tostring(count))
             end
             ictionBuffPadX = ictionBuffPadX + iction.bw + iction.ictionButtonFramePad
-            local remainingT = (expires - GetTime())
-            if remainingT and remainingT > 60 then
-                remainingT = string.format("%.1d m", remainingT/60.0)
-                butFrameBldr.text:SetText(remainingT)
-                bgCol = {.5,.5,.5,.5}
-                vertCol = {.5,.5,.5,.5}
-                textCol = {1,1,1, 1}
-                gameFont = "GameFontWhite"
-                butFrameBldr.setButtonState(butFrameBldr, bgCol, vertCol, textCol, gameFont)
-            elseif remainingT and remainingT < 60 and remainingT > 5 then
-                remainingT = tonumber(string.format("%.1f", remainingT))
-                butFrameBldr.text:SetText(remainingT)
-                bgCol = {1,1,1,.7}
-                vertCol = {1,1,1,.5}
-                textCol = {1,1,0,1}
-                gameFont = "NumberFontNormalYellow"
-                butFrameBldr.setButtonState(butFrameBldr, bgCol, vertCol, textCol, gameFont)
-            elseif remainingT and remainingT <= 5 and remainingT > .1 then
-                remainingT = tonumber(string.format("%.1f", remainingT))
-                butFrameBldr.text:SetText(remainingT)
-                bgCol = {1,1,1,1}
-                vertCol = {1,0,0,.5}
-                textCol = {1,0,0,1}
-                gameFont = "GameFontRedLarge"
-                butFrameBldr.setButtonState(butFrameBldr, bgCol, vertCol, textCol, gameFont)
-            else
-                butFrameBldr.text:SetText("")
-                bgCol = {1,1,1,1}
-                vertCol = {1,1,1,1}
-                textCol = {1,1,1,1}
-                gameFont = "GameFontWhite"
-                butFrameBldr.setButtonState(butFrameBldr, bgCol, vertCol, textCol, gameFont)
-            end
         else
-            bgCol = {1,1,1,1}
-            vertCol = {1,1,1,.5}
-            textCol = {1,1,1,1}
-            gameFont = "GameFontWhite"
+            local remainingT = (button['expires'] - GetTime())
+            local bgCol, vertCol, textCol, gameFont, bText
+            bgCol = {1,1,1,0}
+            vertCol = {1,1,1,0}
+            textCol = {1,1,0,0}
+            gameFont = "NumberFontNormalYellow"
+            bText = ""
+            if remainingT and remainingT >= 60.0 then
+                bText = string.format("%.1d m", remainingT/60.0)
+            elseif remainingT and remainingT <= 60.0 and remainingT >= 5.0 then
+                bText = tonumber(string.format("%.1f", remainingT))
+                bgCol = {1,1,1,0.5}
+                vertCol = {1,1,1,0.5}
+                textCol = {1,1,0,1}
+            elseif remainingT and remainingT <= 5.0 and remainingT >= 0.1 then
+                bText = tonumber(string.format("%.1f", remainingT))
+                bgCol = {1,0.2,0.2, 1}
+                vertCol = {1,0.2,0.2, 1}
+                textCol = {1,1,0, 1}
+                gameFont = "GameFontRedLarge"
+            end
+            button['frame'].text:SetText(bText)
             button['frame'].setButtonState(button['frame'], bgCol, vertCol, textCol, gameFont)
-            local remainingT = tonumber(string.format("%.1f", (button['expires'] - GetTime())))
-            if remainingT < 120 and remainingT > 0 then
-                button['frame'].text:SetText(remainingT)
-    end end end
+        end
+    end
+    ---Now run through the buffs!
     for x = 1, ictionDisplayBuffLimit do
-        local spellName, rank, icon, count, _, _, expires, caster, _, _, spellID, _, _, _, _, _, _, _, _ = UnitAura("Player", x, "CANCELABLE|PLAYER|HELPFUL")
-        if not spellName then break end
-        if not ictionDisplayOnlyPlayerBuffs then
-            displayBuff(spellName, spellID, rank, count, expires, icon)
-        elseif ictionDisplayOnlyPlayerBuffs then
-            if caster == "player" then
+        local spellName, rank, icon, count, _, duration, expires, caster, _, _, spellID, _, _, _, _, _, _, _, _ = UnitAura("Player", x, "CANCELABLE|PLAYER|HELPFUL")
+        if duration and duration ~= 0 then
+            if not spellName then break end
+            if not ictionDisplayOnlyPlayerBuffs then
                 displayBuff(spellName, spellID, rank, count, expires, icon)
+            elseif ictionDisplayOnlyPlayerBuffs then
+                if caster == "player" then
+                    displayBuff(spellName, spellID, rank, count, expires, icon)
+                end
             end
         end
     end
