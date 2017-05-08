@@ -1,10 +1,5 @@
------ version Release 2.0.4 -----
-
--- Known issues
---- Issue with priest special frames the voidFrame in particular
-
--- To Do
---- Add more artifact info for other classes / specs?
+----- version Release 2.0.5 -----
+-- Quick patch for buffs > 1min flicking away on buff bar.
 
 local UIParent = UIParent
 local iction = iction
