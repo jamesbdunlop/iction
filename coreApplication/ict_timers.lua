@@ -143,6 +143,10 @@ function iction.updateBuffTimers()
             bText = ""
             if remainingT and remainingT >= 60.0 then
                 bText = string.format("%.1d m", remainingT/60.0)
+                bgCol = {1,1,1,1}
+                vertCol = {1,1,1,1}
+                textCol = {1,1,0,1}
+                gameFont = "NumberFontNormalYellow"
             elseif remainingT and remainingT <= 60.0 and remainingT >= 5.0 then
                 bText = tonumber(string.format("%.1f", remainingT))
                 bgCol = {1,1,1,0.5}
@@ -162,8 +166,9 @@ function iction.updateBuffTimers()
     ---Now run through the buffs!
     for x = 1, ictionDisplayBuffLimit do
         local spellName, rank, icon, count, _, duration, expires, caster, _, _, spellID, _, _, _, _, _, _, _, _ = UnitAura("Player", x, "CANCELABLE|PLAYER|HELPFUL")
-        if duration and duration ~= 0 then
+        if duration and duration > 0.10 then
             if not spellName then break end
+
             if not ictionDisplayOnlyPlayerBuffs then
                 displayBuff(spellName, spellID, rank, count, expires, icon)
             elseif ictionDisplayOnlyPlayerBuffs then
