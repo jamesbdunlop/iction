@@ -1,5 +1,5 @@
------ version Release 2.0.5 -----
--- Quick patch for buffs > 1min flicking away on buff bar.
+----- version Release 2.0.6 -----
+-- Vertical alpha fall off on the current target. Easier to read current target highlight.
 
 local UIParent = UIParent
 local iction = iction
