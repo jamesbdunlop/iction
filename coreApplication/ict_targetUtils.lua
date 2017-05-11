@@ -34,7 +34,8 @@ function iction.targetChanged(guid)
             local activeFrameBldr = iction.debuffColumns_currentTargetFrameBldr(guid)
             if activeFrameBldr then
                 iction.hlGuid = guid
-                activeFrameBldr.textures[1]:SetVertexColor(0, 1, 0, .15)
+                activeFrameBldr.textures[1]:SetVertexColor(0, 1, 0, .35)
+                activeFrameBldr.textures[1]:SetGradientAlpha("VERTICAL", .1, 1, .1, .8, .1, .5, .1, .1)
                 activeFrameBldr.textures[1]:SetAllPoints(true)
     end end end
 end

@@ -58,7 +58,6 @@ frames\voidFrame.lua
 frames\swdFrame.lua
 frames\insanityFrame.lua
 frames\artifactFrame.lua
-frames\highlightFrame.lua
 frames\spellFrame.lua
 frames\stackFrame.lua
 frames\skins.lua

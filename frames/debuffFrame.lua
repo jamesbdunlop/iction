@@ -16,6 +16,6 @@ iction.ictDeBuffColumnData = { uiType = "Frame",
                                                  relativePoint = "CENTER",
                                                  x = -2, y = 5},
                                 textures = { [1] = {name = 'default', allPoints = true, level = "ARTWORK",
-                                                    texture= "Interface\\ChatFrame\\ChatFrameBackground",
+                                                    texture = "Interface\\ChatFrame\\ChatFrameBackground",
                                                 vr = 1, vg = 1, vb = 1, va = 0 } },
                                 }

@@ -35,12 +35,13 @@ function iction.UIFrameElement.create(self, data)
     self.frame:Show()
 end
 
-function iction.UIFrameElement.createTextures(self, data)
+function iction.UIFrameElement.createTextures(self)
     local t = self.data['textures']
     local itr = iction.list_iter(t)
     while true do
         local textureData = itr()
         if textureData == nil then break end
+
         local texture = self.frame:CreateTexture(textureData['name'], textureData['level'])
         -- POINTS
         if textureData['allPoints'] then

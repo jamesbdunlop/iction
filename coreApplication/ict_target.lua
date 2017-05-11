@@ -45,7 +45,7 @@ function iction.createTarget(guid)
 
     local frmData = iction.ictSpellFrameData
           frmData['w'] = iction.bw + iction.ictionButtonFramePad
-          frmData['h'] = fh * iction.bh
+          frmData['h'] = (fh * iction.bh)+iction.bh/1.5
           frmData['pointPosition']["point"] = "BOTTOM"
           frmData['pointPosition']['relativeTo'] = iction.debuffColumns[colID].frame
           frmData['uiParentFrame'] = iction.debuffColumns[colID].frame
