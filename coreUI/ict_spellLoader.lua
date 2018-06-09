@@ -1,8 +1,8 @@
 local iction = iction
 function iction.getAllSpells()
     local spells = {}
-    --- Trawl the entire spell book for pells. Sick of trying to figure out the most important going to leave this up
-    --- to the user and a config panel.
+    --- Trawl the entire spell book for pells.
+    --- Sick of trying to figure out the most important! Going to leave this up to the user.
     local numTabs = GetNumSpellTabs()
     for i=1,numTabs do
         local name, _, offset, numSpells = GetSpellTabInfo(i)
@@ -19,9 +19,7 @@ function iction.getAllSpells()
                             spellData['maxRange'] = maxRange
                             spellData['icon'] = icon
                       table.insert(spells, spellData)
-                end end
-        end
-    end
+    end end end end
     return spells
 end
 

@@ -142,7 +142,7 @@ function iction.createTargetSpellData(guid, spellType, spellID, spellName)
                 targetData["spellData"][spellID] = spellInfo
             else
                 if guid == UnitGUID("Target") then
-                    local nme, _, _, count, _, duration, expires, _, _, _, _, _, _, _, _, _, _, _, _  = UnitDebuff("TARGET", spellName, nil, "PLAYER")
+                    local _, _, _, count, _, _, expires, _, _, _, _, _, _, _, _, _, _, _, _  = UnitDebuff("TARGET", spellName, nil, "PLAYER")
                     targetData["spellData"][spellID]["expires"]['endTime'] = expires
                     targetData["spellData"][spellID]["expires"]['count'] = count
                 end

@@ -39,3 +39,17 @@ function iction.targetChanged(guid)
                 activeFrameBldr.textures[1]:SetAllPoints(true)
     end end end
 end
+
+function iction.hasActivePlayerDebuff()
+    local found = false
+    for x = 1, 200 do
+        local _, _, _, _, _, _, _, caster, _, _, _, _, _, _, _, _, _, _, _ = UnitDebuff("target", x)
+        if caster == 'player' then
+            found = true
+            return true
+        end
+    end
+    if not found then
+        return false
+    end
+end

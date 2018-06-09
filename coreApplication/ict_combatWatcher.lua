@@ -15,13 +15,15 @@ function iction.watcher(self)
     self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     self:RegisterEvent("UNIT_DIED")
     self:RegisterEvent("COMPANION_UPDATE")
-    local function eventHandler(self, event, currentTime, eventName, sourceFlags, sourceGUID, sourceName, flags, prefix1,
+
+    local function eventHandler(self, event, currentTime, eventName, _, sourceGUID, sourceName, flags, prefix1,
                                 prefix2, prefix3, sufx1,  sufx2,  sufx3,  sufx4,  sufx5,  sufx6,  sufx7, sufx8,  sufx9, ...)
         local spellName, mobName, mobGUID, spellType, spellID
         mobGUID = prefix2
         spellType = sufx6
         spellID = sufx3
         spellName = sufx4
+
         if sourceGUID == iction.playerGUID then
             if iction.debugWatcher then print("#############") end
             if iction.debugWatcher then print("event: " .. tostring(event)) end
@@ -82,36 +84,46 @@ function iction.watcher(self)
         else
             iction.oocCleanup()
         end
+
+        --- Clear buff buttons
         if mobGUID == iction.playerGUID then
             iction.clearBuffButtons()
         end
 
-        if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            if UnitAffectingCombat("player") and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName ~= "SPELL_CAST_FAILED" and spellID ~= 27283 then ---and eventName ~= "SPELL_CAST_START" then
-                --- Account for some bullshit in the API where some events return this data and some return that....
-                if eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then spellType = "DEBUFF" end
 
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            if UnitAffectingCombat("player") and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName ~= "SPELL_CAST_FAILED" and spellID ~= 27283 then
+                --- Account for some bullshit in the API where some events return this data and some return that....
+                if eventName == "SPELL_PERIODIC_DAMAGE" or eventName == "SPELL_DAMAGE" then
+                    spellType = "DEBUFF"
+                end
+
+                --- Kill anything that isn't considered and enemy now...
+                if UnitAffectingCombat("player") and not iction.hasActivePlayerDebuff() and not UnitIsEnemy("player","target") then
+                    iction.targetsColumns_tagDead(UnitGUID("target"))
+                    return
+                end
+
+                --- Catch buffs fading off!
                 if eventName == 'SPELL_AURA_REMOVED' and mobGUID == iction.playerGUID then
                     iction.clearBuffButtons()
                     createTarget(mobGUID, spellType, spellID, spellName)
+                    return
                 end
 
-                if mobGUID ~= nil and string.find(mobGUID, "Creature", 1) then
-                    --------------------------------------------------------------------------------------
-                    --- COMBAT LOG USER CAST SPELLS ONLY
+                if mobGUID and string.find(mobGUID, "Creature", 1) then
                     createTarget(mobGUID, spellType, spellID, spellName)
+                    return
                 end
-            elseif UnitAffectingCombat("player") and sourceGUID == iction.playerGUID and mobGUID ~= iction.playerGUID and eventName == "SPELL_CAST_START" then
-                if mobGUID ~= nil and string.find(mobGUID, "Creature", 1) then
-                    --------------------------------------------------------------------------------------
-                    --- COMBAT LOG USER CAST SPELLS ONLY
-                    createTarget(mobGUID, spellType, spellID, spellName)
-                end
-            elseif UnitAffectingCombat("player") and eventName == 'UNIT_DIED' or eventName == 'PARTY_KILL' then
+
+            elseif eventName == 'UNIT_DIED' or eventName == 'PARTY_KILL' then
                 iction.targetsColumns_tagDead(mobGUID)
+                return
             end
         end
+
     end
+
     self:SetScript("OnEvent", eventHandler)
 
     -- ON UPDATE CHECKS

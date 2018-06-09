@@ -35,6 +35,7 @@ iction.buffButtons = {}
 iction.activeSpellTable = {}
 iction.validSpellTable = {}
 iction.targetExists = false
+
 --- DEBUG
 iction.debugUI = false
 iction.debugUITimers = false

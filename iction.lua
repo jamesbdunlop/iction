@@ -1,5 +1,6 @@
------ version Release 2.0.6 -----
--- Vertical alpha fall off on the current target. Easier to read current target highlight.
+----- version Release 2.0.7 -----
+-- Target is enemy check for things that don't actually die!
+-- Fix for casting fear on mob ooc and having it track correctly
 
 local UIParent = UIParent
 local iction = iction
